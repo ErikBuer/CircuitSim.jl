@@ -1,2 +1,3 @@
 # CircuitTypes.jl
-Abstract types for working with (electrical) circuits
+
+Abstract types for working with (electrical) circuits.
