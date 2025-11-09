@@ -244,4 +244,32 @@ abstract type AbstractHighPriorityBinary4Bit <: AbstractDigitalComponent end
 export AbstractExternalControlledVoltageSource
 abstract type AbstractExternalControlledVoltageSource <: AbstractExternalInterface end
 
+
+# SPICE-specific abstract kinds
+
+abstract type AbstractBehavioralSource <: ::AbstractActiveComponent end
+abstract type AbstractBehavioralVoltageSource <: AbstractBehavioralSource end
+abstract type AbstractBehavioralCurrentSource <: AbstractBehavioralSource end
+
+abstract type AbstractSubcircuitInstance <: ::AbstractComponent end
+abstract type AbstractSubcircuitDeclaration <: ::AbstractComponent end
+abstract type AbstractModelDeclaration <: ::AbstractComponent end
+
+abstract type AbstractIncludeDirective <: ::AbstractComponent end
+abstract type AbstractParameterDirective <: ::AbstractComponent end
+abstract type AbstractOptionDirective <: ::AbstractComponent end
+
+abstract type AbstractMOSFETModel <: ::AbstractActiveComponent end
+abstract type AbstractMOSFETLevel <: AbstractMOSFETModel end
+abstract type AbstractBSIMModel <: AbstractMOSFETLevel end
+abstract type AbstractEKVModel <: AbstractMOSFETLevel end
+
+abstract type AbstractMutualCouplingByK <: ::AbstractPassiveComponent end
+
+abstract type AbstractVoltageControlledSwitch <: ::AbstractActiveComponent end
+abstract type AbstractCurrentControlledSwitch <: ::AbstractActiveComponent end
+
+abstract type AbstractTransmissionLineSPICE <: ::AbstractTransmissionLine end
+
+
 end # module CircuitTypes
