@@ -16,4 +16,4 @@ include("qucsator.jl")
 include("ngspice.jl")
 
 
-end # module CircuitTypes
+end

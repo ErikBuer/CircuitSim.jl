@@ -70,11 +70,9 @@ function assign_nodes!(c::Circuit)
     return nothing
 end
 
-#########################
-# Netlist generation    #
-#########################
-
-# simple formatting helper for numeric values
+"""
+Simple formatting helper for numeric values
+"""
 format_value(v::Real) = sprint(x -> begin
     show(x, v)
 end)

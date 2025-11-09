@@ -1,12 +1,6 @@
-#########################
-# Basic hard components #
-#########################
-
-# We use the abstract types from abstract_types.jl in this repo as supertypes
-# (e.g. AbstractResistor). These are currently abstract placeholders, we
-# make concrete component structs that are subtypes where appropriate.
-
-# Two-pin passive components:
+"""
+Ideal Resistor
+"""
 mutable struct Resistor <: AbstractResistor
     name::String
     n1::Int
@@ -15,6 +9,9 @@ mutable struct Resistor <: AbstractResistor
     Resistor(name::AbstractString, value::Real) = new(String(name), 0, 0, value)
 end
 
+"""
+Ideal Capacitor
+"""
 mutable struct Capacitor <: AbstractCapacitor
     name::String
     n1::Int
@@ -23,6 +20,9 @@ mutable struct Capacitor <: AbstractCapacitor
     Capacitor(name::AbstractString, value::Real) = new(String(name), 0, 0, value)
 end
 
+"""
+Ideal Inductor
+"""
 mutable struct Inductor <: AbstractInductor
     name::String
     n1::Int
@@ -31,7 +31,9 @@ mutable struct Inductor <: AbstractInductor
     Inductor(name::AbstractString, value::Real) = new(String(name), 0, 0, value)
 end
 
-# DC Voltage source (two-pin)
+"""
+DC Voltage source (two-pin)
+"""
 mutable struct DCVoltageSource <: AbstractDCVoltageSource
     name::String
     nplus::Int
@@ -40,7 +42,9 @@ mutable struct DCVoltageSource <: AbstractDCVoltageSource
     DCVoltageSource(name::AbstractString, dc::Real) = new(String(name), 0, 0, dc)
 end
 
-# Ground (single pin). We'll map Ground's pin to node 0.
+"""
+Ground (single pin). We'll map Ground's pin to node 0.
+"""
 mutable struct Ground <: AbstractGround
     name::String
     n::Int
