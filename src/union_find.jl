@@ -1,9 +1,9 @@
 mutable struct UnionFind
-    parent::Dict{Int,Int}
-    UnionFind() = new(Dict{Int,Int}())
+    parent::Dict{UInt64,UInt64}
+    UnionFind() = new(Dict{UInt64,UInt64}())
 end
 
-function uf_find(uf::UnionFind, x::Int)
+function uf_find(uf::UnionFind, x::UInt64)
     p = uf.parent
     if !haskey(p, x)
         p[x] = x
@@ -17,7 +17,7 @@ function uf_find(uf::UnionFind, x::Int)
     return x
 end
 
-function uf_union!(uf::UnionFind, a::Int, b::Int)
+function uf_union!(uf::UnionFind, a::UInt64, b::UInt64)
     ra = uf_find(uf, a)
     rb = uf_find(uf, b)
     if ra == rb

@@ -5,8 +5,8 @@ mutable struct Circuit
     components::Vector{Any}
     uf::UnionFind
     # optional cache of assigned node numbers
-    _node_map::Dict{Int,Int}  # root-pinid => node number
-    Circuit() = new(Any[], UnionFind(), Dict{Int,Int}())
+    _node_map::Dict{UInt64,Int}  # root-pinid => node number
+    Circuit() = new(Any[], UnionFind(), Dict{UInt64,Int}())
 end
 
 """
@@ -52,6 +52,11 @@ macro connect(circ, a_expr, b_expr)
     a_field = a_expr.args[2]
     b_obj = b_expr.args[1]
     b_field = b_expr.args[2]
-    return :(connect!($circ, Pin($a_obj, $(QuoteNode(a_field))), Pin($b_obj, $(QuoteNode(b_field)))))
+
+    # Extract the symbols from QuoteNode if needed
+    a_sym = a_field isa QuoteNode ? a_field.value : a_field
+    b_sym = b_field isa QuoteNode ? b_field.value : b_field
+
+    return :(connect!($(esc(circ)), Pin($(esc(a_obj)), $(QuoteNode(a_sym))), Pin($(esc(b_obj)), $(QuoteNode(b_sym)))))
 end
 

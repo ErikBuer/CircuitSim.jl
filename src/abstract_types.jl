@@ -245,26 +245,26 @@ abstract type AbstractExternalControlledVoltageSource <: AbstractExternalInterfa
 
 # SPICE-specific abstract kinds
 
-abstract type AbstractBehavioralSource <: ::AbstractActiveComponent end
+abstract type AbstractBehavioralSource <: AbstractActiveComponent end
 abstract type AbstractBehavioralVoltageSource <: AbstractBehavioralSource end
 abstract type AbstractBehavioralCurrentSource <: AbstractBehavioralSource end
 
-abstract type AbstractSubcircuitInstance <: ::AbstractComponent end
-abstract type AbstractSubcircuitDeclaration <: ::AbstractComponent end
-abstract type AbstractModelDeclaration <: ::AbstractComponent end
+abstract type AbstractSubcircuitInstance <: AbstractCircuitComponent end
+abstract type AbstractSubcircuitDeclaration <: AbstractCircuitComponent end
+abstract type AbstractModelDeclaration <: AbstractCircuitComponent end
 
-abstract type AbstractIncludeDirective <: ::AbstractComponent end
-abstract type AbstractParameterDirective <: ::AbstractComponent end
-abstract type AbstractOptionDirective <: ::AbstractComponent end
+abstract type AbstractIncludeDirective <: AbstractCircuitComponent end
+abstract type AbstractParameterDirective <: AbstractCircuitComponent end
+abstract type AbstractOptionDirective <: AbstractCircuitComponent end
 
-abstract type AbstractMOSFETModel <: ::AbstractActiveComponent end
+abstract type AbstractMOSFETModel <: AbstractActiveComponent end
 abstract type AbstractMOSFETLevel <: AbstractMOSFETModel end
 abstract type AbstractBSIMModel <: AbstractMOSFETLevel end
 abstract type AbstractEKVModel <: AbstractMOSFETLevel end
 
-abstract type AbstractMutualCouplingByK <: ::AbstractPassiveComponent end
+abstract type AbstractMutualCouplingByK <: AbstractPassiveComponent end
 
-abstract type AbstractVoltageControlledSwitch <: ::AbstractActiveComponent end
-abstract type AbstractCurrentControlledSwitch <: ::AbstractActiveComponent end
+abstract type AbstractVoltageControlledSwitch <: AbstractActiveComponent end
+abstract type AbstractCurrentControlledSwitch <: AbstractActiveComponent end
 
-abstract type AbstractTransmissionLineSPICE <: ::AbstractTransmissionLine end
+abstract type AbstractTransmissionLineSPICE <: AbstractTransmissionLine end

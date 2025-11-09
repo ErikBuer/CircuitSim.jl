@@ -6,8 +6,8 @@ After calling assign_nodes!, the components' node fields are filled with integer
 """
 function assign_nodes!(c::Circuit)
     # build an index of all pin-ids that belong to node-like fields
-    rootset = Dict{Int,Int}() # root-pinid => temporary index
-    c._node_map = Dict{Int,Int}()  # final mapping root -> node number
+    rootset = Dict{UInt64,Int}() # root-pinid => temporary index
+    c._node_map = Dict{UInt64,Int}()  # final mapping root -> node number
 
     # helper: treat any field whose value is an Int and whose name looks like n or n1/n2/nplus etc.
     for comp in c.components
@@ -35,7 +35,7 @@ function assign_nodes!(c::Circuit)
     end
 
     # If there is a Ground in components, any root belonging to a Ground pin gets node 0
-    ground_roots = Set{Int}()
+    ground_roots = Set{UInt64}()
     for comp in c.components
         if comp isa Ground
             # assume field for ground is :n
