@@ -1,4 +1,29 @@
 """
+Check if qucsator is installed and available in PATH.
+Returns a tuple (is_installed::Bool, version::String, path::String)
+"""
+function check_qucsator()
+    try
+        result = read(`qucsator --version`, String)
+        lines = split(result, '\n')
+        version_line = ""
+        for line in lines
+            if occursin("qucsator", lowercase(line)) || occursin("qucs", lowercase(line))
+                version_line = strip(line)
+                break
+            end
+        end
+
+        # Get the path to qucsator executable
+        path = strip(read(`which qucsator`, String))
+
+        return (true, version_line, path)
+    catch e
+        return (false, "", "")
+    end
+end
+
+"""
 Module for generating Qucs-like netlists from CircuitTypes.jl circuits.
 """
 function netlist_qucs(c::Circuit)
@@ -24,4 +49,74 @@ function netlist_qucs(c::Circuit)
     end
 
     return join(lines, '\n')
+end
+
+"""
+Run qucsator simulation with the given circuit and analysis commands.
+
+# Arguments
+- `c::Circuit`: The circuit to simulate
+- `analysis::Vector{String}=""`: Qucs analysis commands (e.g., [".DC:DC1 Param=\"V1\" Start=\"0\" Stop=\"5\" Points=\"51\""])
+- `output_file::String=""`: Optional output file path. If empty, uses a temporary file.
+
+# Returns
+- `(success::Bool, output::String, netlist::String)`
+
+# Example
+```julia
+success, output, netlist = run_qucsator(c, [".DC:DC1 Param=\"V1\" Start=\"0\" Stop=\"5\" Points=\"51\""])
+```
+"""
+function run_qucsator(c::Circuit, analysis::Vector{String}=String[]; output_file::String="")
+    # Check if qucsator is installed
+    is_installed, version, path = check_qucsator()
+    if !is_installed
+        error("qucsator is not installed or not found in PATH. Please install Qucs first.")
+    end
+
+    # Generate netlist
+    netlist = netlist_qucs(c)
+
+    # Add analysis commands
+    if !isempty(analysis)
+        netlist = netlist * "\n" * join(analysis, "\n")
+    end
+
+    # Create temporary file for netlist
+    netlist_file = tempname() * ".net"
+    write(netlist_file, netlist)
+
+    # Determine output file
+    use_temp_output = isempty(output_file)
+    if use_temp_output
+        output_file = tempname() * ".dat"
+    end
+
+    try
+        # Run qucsator
+        result = read(`qucsator -i $netlist_file -o $output_file`, String)
+
+        # Read the output if it exists
+        output = ""
+        if isfile(output_file)
+            output = read(output_file, String)
+        else
+            output = result
+        end
+
+        # Clean up temporary files
+        rm(netlist_file, force=true)
+        if use_temp_output
+            rm(output_file, force=true)
+        end
+
+        return (true, output, netlist)
+    catch e
+        # Clean up on error
+        rm(netlist_file, force=true)
+        if use_temp_output
+            rm(output_file, force=true)
+        end
+        return (false, "Error running qucsator: $e", netlist)
+    end
 end

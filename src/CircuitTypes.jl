@@ -1,6 +1,8 @@
 module CircuitTypes
 
-export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!, netlist_qucs
+export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
+export netlist_qucs, netlist_ngspice
+export check_qucsator, run_qucsator, check_ngspice, run_ngspice
 export Resistor, Capacitor, Inductor, DCVoltageSource, Ground
 
 include("abstract_types.jl")
