@@ -1,10 +1,10 @@
 """
-Check if qucsator is installed and available in PATH.
+Check if qucsator_rf is installed and available in PATH.
 Returns a tuple (is_installed::Bool, version::String, path::String)
 """
 function check_qucsator()
     try
-        result = read(`qucsator --version`, String)
+        result = read(`qucsator_rf --version`, String)
         lines = split(result, '\n')
         version_line = ""
         for line in lines
@@ -14,8 +14,8 @@ function check_qucsator()
             end
         end
 
-        # Get the path to qucsator executable
-        path = strip(read(`which qucsator`, String))
+        # Get the path to qucsator_rf executable
+        path = strip(read(`which qucsator_rf`, String))
 
         return (true, version_line, path)
     catch e
@@ -68,10 +68,10 @@ success, output, netlist = run_qucsator(c, [".DC:DC1 Param=\"V1\" Start=\"0\" St
 ```
 """
 function run_qucsator(c::Circuit, analysis::Vector{String}=String[]; output_file::String="")
-    # Check if qucsator is installed
+    # Check if qucsator_rf is installed
     is_installed, version, path = check_qucsator()
     if !is_installed
-        error("qucsator is not installed or not found in PATH. Please install Qucs first.")
+        error("qucsator_rf is not installed or not found in PATH. Please install qucsator_rf first.")
     end
 
     # Generate netlist
@@ -93,8 +93,8 @@ function run_qucsator(c::Circuit, analysis::Vector{String}=String[]; output_file
     end
 
     try
-        # Run qucsator
-        result = read(`qucsator -i $netlist_file -o $output_file`, String)
+        # Run qucsator_rf
+        result = read(`qucsator_rf -i $netlist_file -o $output_file`, String)
 
         # Read the output if it exists
         output = ""
@@ -117,6 +117,6 @@ function run_qucsator(c::Circuit, analysis::Vector{String}=String[]; output_file
         if use_temp_output
             rm(output_file, force=true)
         end
-        return (false, "Error running qucsator: $e", netlist)
+        return (false, "Error running qucsator_rf: $e", netlist)
     end
 end
