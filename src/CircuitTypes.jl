@@ -11,6 +11,7 @@ export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
 export Resistor, Capacitor, Inductor
 export DCVoltageSource, DCCurrentSource
 export ACVoltageSource, ACCurrentSource
+export PowerSource
 export Ground
 
 # Netlist generation
@@ -100,5 +101,6 @@ include("components/dc_voltage_source.jl")
 include("components/dc_current_source.jl")
 include("components/ac_voltage_source.jl")
 include("components/ac_current_source.jl")
+include("components/power_source.jl")
 
 end

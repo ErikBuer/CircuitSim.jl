@@ -70,7 +70,7 @@ abstract type AbstractStrayTransformer <: AbstractPassiveComponent end
 # Sources
 export AbstractDCVoltageSource, AbstractDCCurrentSource, AbstractACVoltageSource, AbstractACCurrentSource,
     AbstractVoltagePulseSource, AbstractCurrentPulseSource, AbstractVoltageFileSource, AbstractCurrentFileSource,
-    AbstractVoltageRectifiedSource, AbstractCurrentRectifiedSource
+    AbstractVoltageRectifiedSource, AbstractCurrentRectifiedSource, AbstractPowerSource
 abstract type AbstractDCVoltageSource <: AbstractSource end
 abstract type AbstractDCCurrentSource <: AbstractSource end
 abstract type AbstractACVoltageSource <: AbstractSource end
@@ -79,6 +79,7 @@ abstract type AbstractVoltagePulseSource <: AbstractSource end
 abstract type AbstractCurrentPulseSource <: AbstractSource end
 abstract type AbstractVoltageFileSource <: AbstractSource end
 abstract type AbstractCurrentFileSource <: AbstractSource end
+abstract type AbstractPowerSource <: AbstractSource end
 abstract type AbstractVoltageRectifiedSource <: AbstractSource end
 abstract type AbstractCurrentRectifiedSource <: AbstractSource end
 

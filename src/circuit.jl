@@ -63,17 +63,30 @@ end
 """
 Walk all components, examine their integer fields (node fields), and assign canonical node numbers (small consecutive integers). Ground is node 0.
 After calling assign_nodes!, the components' node fields are filled with integers suitable for netlisting.
+
+Node fields are identified by name pattern: n, n1, n2, nplus, nminus, etc.
+Other Int fields (like port numbers) are left unchanged.
 """
 function assign_nodes!(c::Circuit)
     # build an index of all pin-ids that belong to node-like fields
     rootset = Dict{UInt64,Int}() # root-pinid => temporary index
     c._node_map = Dict{UInt64,Int}()  # final mapping root -> node number
 
-    # helper: treat any field whose value is an Int and whose name looks like n or n1/n2/nplus etc.
+    # helper: treat any field whose value is an Int and whose name looks like a node field
+    # Node field names: n, n1, n2, n3, ..., nplus, nminus, etc.
+    function is_node_field(fname::Symbol)::Bool
+        s = string(fname)
+        # Match: n, n1, n2, ..., nplus, nminus
+        return s == "n" ||
+               occursin(r"^n\d+$", s) ||
+               s == "nplus" ||
+               s == "nminus"
+    end
+
     for comp in c.components
         for fld in fieldnames(typeof(comp))
-            # filter to fields that are Int (we treat them as node fields)
-            if getfield(comp, fld) isa Int
+            # filter to fields that are Int AND have node-like names
+            if getfield(comp, fld) isa Int && is_node_field(fld)
                 p = Pin(comp, fld)
                 # If the pin currently has value 0 and is connected to nothing, leave as 0 (unconnected)
                 pid = pinid(p)
@@ -86,7 +99,7 @@ function assign_nodes!(c::Circuit)
     # collect roots
     for comp in c.components
         for fld in fieldnames(typeof(comp))
-            if getfield(comp, fld) isa Int
+            if getfield(comp, fld) isa Int && is_node_field(fld)
                 root = uf_find(c.uf, pinid(Pin(comp, fld)))
                 # we still register the root even if it's isolated (it will be its own root)
                 rootset[root] = 1
@@ -118,7 +131,7 @@ function assign_nodes!(c::Circuit)
     # write back numeric node numbers into component fields
     for comp in c.components
         for fld in fieldnames(typeof(comp))
-            if getfield(comp, fld) isa Int
+            if getfield(comp, fld) isa Int && is_node_field(fld)
                 root = uf_find(c.uf, pinid(Pin(comp, fld)))
                 # If the pin wasn't part of any union-find root mapping (shouldn't happen), set to 0
                 node = get(c._node_map, root, 0)
