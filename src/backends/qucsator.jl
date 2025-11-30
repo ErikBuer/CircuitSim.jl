@@ -1,6 +1,18 @@
 """
+Qucsator RF backend for circuit simulation.
+
+This module provides the interface to the qucsator_rf simulator.
+"""
+
+"""
+    check_qucsator() -> (Bool, String, String)
+
 Check if qucsator_rf is installed and available in PATH.
-Returns a tuple (is_installed::Bool, version::String, path::String)
+
+# Returns
+- `is_installed::Bool`: Whether qucsator_rf is available
+- `version::String`: Version string if available
+- `path::String`: Path to the executable
 """
 function check_qucsator()
     try
@@ -23,57 +35,16 @@ function check_qucsator()
     end
 end
 
-"""
-Module for generating Qucs native netlists from CircuitTypes.jl circuits.
-
-The Qucs netlist format uses:
-- Components: `Type:Name node1 node2 Property="value"...`
-- Actions: `.Type:Name Property="value"...`
-
-Node "gnd" is the ground reference.
-"""
-
 # Helper function to convert node number to Qucs node name
 qucs_node(n::Int) = n == 0 ? "gnd" : "_net$n"
 
 """
-    to_qucs_netlist(comp::AbstractComponent) -> String
+    to_qucs_netlist(comp::AbstractCircuitComponent) -> String
 
-Generate a Qucs netlist line for a component. Override this for each component type.
+Generate a Qucs netlist line for a component.
+Must be implemented for each component type in the component's file.
 """
 function to_qucs_netlist end
-
-function to_qucs_netlist(comp::Resistor)::String
-    "R:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) R=\"$(format_value(comp.value))\""
-end
-
-function to_qucs_netlist(comp::Capacitor)::String
-    "C:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) C=\"$(format_value(comp.value))\""
-end
-
-function to_qucs_netlist(comp::Inductor)::String
-    "L:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) L=\"$(format_value(comp.value))\""
-end
-
-function to_qucs_netlist(comp::DCVoltageSource)::String
-    "Vdc:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) U=\"$(format_value(comp.dc))\""
-end
-
-function to_qucs_netlist(comp::DCCurrentSource)::String
-    "Idc:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) I=\"$(format_value(comp.dc))\""
-end
-
-function to_qucs_netlist(comp::ACVoltageSource)::String
-    "Vac:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) U=\"$(format_value(comp.ac_mag))\" f=\"$(format_value(comp.freq))\" Phase=\"$(comp.ac_phase)\""
-end
-
-function to_qucs_netlist(comp::ACCurrentSource)::String
-    "Iac:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) I=\"$(format_value(comp.ac_mag))\" f=\"$(format_value(comp.freq))\" Phase=\"$(comp.ac_phase)\""
-end
-
-function to_qucs_netlist(comp::Ground)::String
-    ""  # Ground is implicit at gnd node, no netlist entry needed
-end
 
 # Fallback for unsupported components
 function to_qucs_netlist(comp::AbstractCircuitComponent)::String
