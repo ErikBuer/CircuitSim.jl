@@ -1,7 +1,7 @@
 module CircuitTypes
 
 export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
-export netlist_qucs, netlist_ngspice
+export netlist_qucs, netlist_ngspice, to_qucs_netlist, to_spice_netlist
 export check_qucsator, run_qucsator, simulate_qucsator, simulate, check_ngspice, run_ngspice
 export Resistor, Capacitor, Inductor
 export DCVoltageSource, DCCurrentSource
