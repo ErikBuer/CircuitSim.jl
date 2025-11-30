@@ -8,6 +8,14 @@ export DCVoltageSource, DCCurrentSource
 export ACVoltageSource, ACCurrentSource
 export Ground
 
+# Analysis types exports
+export AbstractAnalysis, AbstractSweepAnalysis
+export SweepType, LINEAR, LOGARITHMIC, LIST, CONSTANT
+export DCAnalysis, ACAnalysis, TransientAnalysis
+export SParameterAnalysis, ParameterSweep
+export HarmonicBalanceAnalysis, NoiseAnalysis
+export to_qucs_analysis, to_spice_analysis
+
 # Parser exports
 export SimulationStatus, SIM_SUCCESS, SIM_ERROR, SIM_PARSE_ERROR, SIM_NOT_RUN
 export DataVector, QucsDataset
@@ -26,8 +34,10 @@ include("pin.jl")
 include("union_find.jl")
 include("circuit.jl")
 
-
 include("utilities.jl")
+
+# Analysis types
+include("analysis.jl")
 
 # Supported backends
 include("qucsator.jl")

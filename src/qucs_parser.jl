@@ -583,32 +583,88 @@ function voltage_vector(result::SimulationResult, p::Pin)::Vector{Float64}
 end
 
 # Helper function to get node number from component and pin
-function _get_node_number(component::AbstractCircuitComponent, pin::Symbol)::Int
-    if component isa Resistor || component isa Capacitor || component isa Inductor
-        if pin == :n1
-            return component.n1
-        elseif pin == :n2
-            return component.n2
-        else
-            error("Invalid pin $pin for $(typeof(component)). Use :n1 or :n2")
-        end
-    elseif component isa DCVoltageSource
-        if pin == :nplus
-            return component.nplus
-        elseif pin == :nminus
-            return component.nminus
-        else
-            error("Invalid pin $pin for DCVoltageSource. Use :nplus or :nminus")
-        end
-    elseif component isa Ground
-        if pin == :n
-            return component.n
-        else
-            error("Invalid pin $pin for Ground. Use :n")
-        end
+# Uses multiple dispatch for type-safe pin access
+function _get_node_number(component::Resistor, pin::Symbol)::Int
+    if pin == :n1
+        return component.n1
+    elseif pin == :n2
+        return component.n2
     else
-        error("Unknown component type: $(typeof(component))")
+        error("Invalid pin $pin for Resistor. Use :n1 or :n2")
     end
+end
+
+function _get_node_number(component::Capacitor, pin::Symbol)::Int
+    if pin == :n1
+        return component.n1
+    elseif pin == :n2
+        return component.n2
+    else
+        error("Invalid pin $pin for Capacitor. Use :n1 or :n2")
+    end
+end
+
+function _get_node_number(component::Inductor, pin::Symbol)::Int
+    if pin == :n1
+        return component.n1
+    elseif pin == :n2
+        return component.n2
+    else
+        error("Invalid pin $pin for Inductor. Use :n1 or :n2")
+    end
+end
+
+function _get_node_number(component::DCVoltageSource, pin::Symbol)::Int
+    if pin == :nplus
+        return component.nplus
+    elseif pin == :nminus
+        return component.nminus
+    else
+        error("Invalid pin $pin for DCVoltageSource. Use :nplus or :nminus")
+    end
+end
+
+function _get_node_number(component::ACVoltageSource, pin::Symbol)::Int
+    if pin == :nplus
+        return component.nplus
+    elseif pin == :nminus
+        return component.nminus
+    else
+        error("Invalid pin $pin for ACVoltageSource. Use :nplus or :nminus")
+    end
+end
+
+function _get_node_number(component::DCCurrentSource, pin::Symbol)::Int
+    if pin == :nplus
+        return component.nplus
+    elseif pin == :nminus
+        return component.nminus
+    else
+        error("Invalid pin $pin for DCCurrentSource. Use :nplus or :nminus")
+    end
+end
+
+function _get_node_number(component::ACCurrentSource, pin::Symbol)::Int
+    if pin == :nplus
+        return component.nplus
+    elseif pin == :nminus
+        return component.nminus
+    else
+        error("Invalid pin $pin for ACCurrentSource. Use :nplus or :nminus")
+    end
+end
+
+function _get_node_number(component::Ground, pin::Symbol)::Int
+    if pin == :n
+        return component.n
+    else
+        error("Invalid pin $pin for Ground. Use :n")
+    end
+end
+
+# Fallback for unknown types
+function _get_node_number(component::AbstractCircuitComponent, pin::Symbol)::Int
+    error("Unknown component type: $(typeof(component))")
 end
 
 """

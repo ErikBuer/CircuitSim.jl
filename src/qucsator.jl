@@ -102,11 +102,13 @@ function netlist_qucs(c::Circuit)
 end
 
 """
-Run qucsator simulation with the given circuit and analysis commands.
+    run_qucsator(c::Circuit, analysis::AbstractAnalysis; output_file::String="")
+
+Run qucsator simulation with the given circuit and analysis.
 
 # Arguments
 - `c::Circuit`: The circuit to simulate
-- `analysis::Vector{String}=""`: Qucs analysis commands (e.g., [".DC:DC1 Param=\"V1\" Start=\"0\" Stop=\"5\" Points=\"51\""])
+- `analysis::AbstractAnalysis`: Analysis type (DCAnalysis, ACAnalysis, etc.)
 - `output_file::String=""`: Optional output file path. If empty, uses a temporary file.
 
 # Returns
@@ -114,10 +116,11 @@ Run qucsator simulation with the given circuit and analysis commands.
 
 # Example
 ```julia
-success, output, netlist = run_qucsator(c, [".DC:DC1 Param=\"V1\" Start=\"0\" Stop=\"5\" Points=\"51\""])
+success, output, netlist = run_qucsator(c, DCAnalysis())
+success, output, netlist = run_qucsator(c, ACAnalysis(1.0, 1e6, 101))
 ```
 """
-function run_qucsator(c::Circuit, analysis::Vector{String}=String[]; output_file::String="")
+function run_qucsator(c::Circuit, analysis::AbstractAnalysis; output_file::String="")
     # Check if qucsator_rf is installed
     is_installed, version, path = check_qucsator()
     if !is_installed
@@ -127,9 +130,73 @@ function run_qucsator(c::Circuit, analysis::Vector{String}=String[]; output_file
     # Generate netlist
     netlist = netlist_qucs(c)
 
-    # Add analysis commands
-    if !isempty(analysis)
-        netlist = netlist * "\n" * join(analysis, "\n")
+    # Add analysis command
+    analysis_str = to_qucs_analysis(analysis)
+    netlist = netlist * "\n" * analysis_str
+
+    # Ensure netlist ends with a newline (required by qucsator parser)
+    if !endswith(netlist, '\n')
+        netlist = netlist * "\n"
+    end
+
+    # Create temporary file for netlist
+    netlist_file = tempname() * ".net"
+    write(netlist_file, netlist)
+
+    # Determine output file
+    use_temp_output = isempty(output_file)
+    if use_temp_output
+        output_file = tempname() * ".dat"
+    end
+
+    try
+        # Run qucsator_rf
+        result = read(`qucsator_rf -i $netlist_file -o $output_file`, String)
+
+        # Read the output if it exists
+        output = ""
+        if isfile(output_file)
+            output = read(output_file, String)
+        else
+            output = result
+        end
+
+        # Clean up temporary files
+        rm(netlist_file, force=true)
+        if use_temp_output
+            rm(output_file, force=true)
+        end
+
+        return (true, output, netlist)
+    catch e
+        # Clean up on error
+        rm(netlist_file, force=true)
+        if use_temp_output
+            rm(output_file, force=true)
+        end
+        return (false, "Error running qucsator_rf: $e", netlist)
+    end
+end
+
+"""
+    run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_file::String="")
+
+Run qucsator simulation with multiple analysis types.
+"""
+function run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_file::String="")
+    # Check if qucsator_rf is installed
+    is_installed, version, path = check_qucsator()
+    if !is_installed
+        error("qucsator_rf is not installed or not found in PATH. Please install qucsator_rf first.")
+    end
+
+    # Generate netlist
+    netlist = netlist_qucs(c)
+
+    # Add all analysis commands
+    for analysis in analyses
+        analysis_str = to_qucs_analysis(analysis)
+        netlist = netlist * "\n" * analysis_str
     end
 
     # Ensure netlist ends with a newline (required by qucsator parser)
@@ -177,24 +244,17 @@ function run_qucsator(c::Circuit, analysis::Vector{String}=String[]; output_file
 end
 
 """
-Run qucsator simulation and parse the results.
+    simulate_qucsator(c::Circuit, analysis::AbstractAnalysis) -> QucsDataset
 
-# Arguments
-- `c::Circuit`: The circuit to simulate
-- `analysis::Vector{String}`: Qucs analysis commands
-
-# Returns
-- `QucsDataset` containing parsed simulation results
+Run qucsator simulation with an analysis struct and parse the results.
 
 # Example
 ```julia
-dataset = simulate_qucsator(c, [".DC:DC1 Param=\"V1\" Start=\"0\" Stop=\"5\" Points=\"51\""])
-if !has_errors(dataset)
-    v = get_real_vector(dataset, "V1.v")
-end
+dataset = simulate_qucsator(c, DCAnalysis())
+dataset = simulate_qucsator(c, ACAnalysis(1.0, 1e6, 101))
 ```
 """
-function simulate_qucsator(c::Circuit, analysis::Vector{String}=String[])::QucsDataset
+function simulate_qucsator(c::Circuit, analysis::AbstractAnalysis)::QucsDataset
     success, output, netlist = run_qucsator(c, analysis)
 
     if !success
@@ -214,14 +274,37 @@ function simulate_qucsator(c::Circuit, analysis::Vector{String}=String[])::QucsD
 end
 
 """
-    simulate(c::Circuit, analysis::Vector{String}=String[]) -> SimulationResult
+    simulate_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}) -> QucsDataset
 
-Run a qucsator simulation and return a high-level SimulationResult object
-that allows easy access to voltages and currents by component pin.
+Run qucsator simulation with multiple analysis types.
+"""
+function simulate_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis})::QucsDataset
+    success, output, netlist = run_qucsator(c, analyses)
+
+    if !success
+        return QucsDataset(
+            SIM_ERROR,
+            "",
+            Dict{String,DataVector}(),
+            Dict{String,DataVector}(),
+            [output],
+            String[],
+            output
+        )
+    end
+
+    return parse_qucs_dataset(output)
+end
+
+"""
+    simulate(c::Circuit, analysis::AbstractAnalysis) -> SimulationResult
+
+Run a qucsator simulation with an analysis struct and return a high-level 
+SimulationResult object.
 
 # Arguments
 - `c::Circuit`: The circuit to simulate
-- `analysis::Vector{String}`: Qucs analysis commands (e.g., [".DC:DC1 saveOPs=\"yes\""])
+- `analysis::AbstractAnalysis`: Analysis type (DCAnalysis, ACAnalysis, etc.)
 
 # Returns
 - `SimulationResult` with methods to query voltages/currents by component
@@ -243,17 +326,29 @@ add_component!(c, G)
 @connect c R2.n2 G.n
 @connect c V1.nminus G.n
 
-# Run simulation
-result = simulate(c, [".DC:DC1 saveOPs=\"yes\""])
+# Run DC analysis
+result = simulate(c, DCAnalysis())
 
 # Access results by component
 v_supply = voltage(result, V1, :nplus)     # 10.0 V
-v_mid = voltage(result, R1, :n2)           # 5.0 V (voltage at R1-R2 junction)
+v_mid = voltage(result, R1, :n2)           # 5.0 V
 i_source = current(result, V1)             # Current through V1
-v_drop = voltage_across(result, R1)        # Voltage drop across R1
+
+# Run AC analysis
+result_ac = simulate(c, ACAnalysis(1.0, 1e6, 101))
 ```
 """
-function simulate(c::Circuit, analysis::Vector{String}=String[])::SimulationResult
+function simulate(c::Circuit, analysis::AbstractAnalysis)::SimulationResult
     dataset = simulate_qucsator(c, analysis)
+    return SimulationResult(c, dataset)
+end
+
+"""
+    simulate(c::Circuit, analyses::Vector{<:AbstractAnalysis}) -> SimulationResult
+
+Run a qucsator simulation with multiple analysis types.
+"""
+function simulate(c::Circuit, analyses::Vector{<:AbstractAnalysis})::SimulationResult
+    dataset = simulate_qucsator(c, analyses)
     return SimulationResult(c, dataset)
 end

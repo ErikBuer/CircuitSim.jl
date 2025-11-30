@@ -97,7 +97,8 @@ println("\n" * "="^60)
 println("### Running Qucsator Simulation ###")
 println("="^60)
 
-result = simulate(c, [".DC:DC1 saveOPs=\"yes\""])
+# Using the new analysis struct instead of raw string
+result = simulate(c, DCAnalysis())
 
 if result.dataset.status == SIM_SUCCESS
     v_top = voltage(result, R1, :n1)
