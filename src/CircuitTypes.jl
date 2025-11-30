@@ -7,12 +7,24 @@ module CircuitTypes
 # Core types
 export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
 
-# Components
+# Components - Basic
 export Resistor, Capacitor, Inductor
 export DCVoltageSource, DCCurrentSource
 export ACVoltageSource, ACCurrentSource
 export PowerSource
 export Ground
+
+# Components - Substrate
+export Substrate
+
+# Components - Microstrip
+export MicrostripLine, MicrostripCorner, MicrostripMiteredBend
+export MicrostripStep, MicrostripOpen, MicrostripGap
+export MicrostripCoupled, MicrostripTee, MicrostripCross
+export MicrostripVia, MicrostripRadialStub, MicrostripLange
+
+# Components - Other RF
+export BondWire, SpiralInductor, CircularLoop
 
 # Netlist generation
 export netlist_qucs, netlist_ngspice
@@ -102,5 +114,27 @@ include("components/dc_current_source.jl")
 include("components/ac_voltage_source.jl")
 include("components/ac_current_source.jl")
 include("components/power_source.jl")
+
+# Substrate (needed by microstrip components)
+include("components/substrate.jl")
+
+# Microstrip components
+include("components/microstrip_line.jl")
+include("components/microstrip_corner.jl")
+include("components/microstrip_mitered_bend.jl")
+include("components/microstrip_step.jl")
+include("components/microstrip_open.jl")
+include("components/microstrip_gap.jl")
+include("components/microstrip_coupled.jl")
+include("components/microstrip_tee.jl")
+include("components/microstrip_cross.jl")
+include("components/microstrip_via.jl")
+include("components/microstrip_radial_stub.jl")
+include("components/microstrip_lange.jl")
+
+# Other RF components
+include("components/bond_wire.jl")
+include("components/spiral_inductor.jl")
+include("components/circular_loop.jl")
 
 end
