@@ -41,7 +41,28 @@ function netlist_ngspice(c::Circuit)
         elseif comp isa Inductor
             push!(lines, "L$(comp.name) $(comp.n1) $(comp.n2) $(comp.value)")
         elseif comp isa DCVoltageSource
+            # SPICE format: Vname nplus nminus DC value
             push!(lines, "V$(comp.name) $(comp.nplus) $(comp.nminus) DC $(comp.dc)")
+        elseif comp isa DCCurrentSource
+            # SPICE format: Iname nplus nminus DC value
+            # Current flows from nminus to nplus (into nplus)
+            push!(lines, "I$(comp.name) $(comp.nplus) $(comp.nminus) DC $(comp.dc)")
+        elseif comp isa ACVoltageSource
+            # SPICE format: Vname nplus nminus DC dcval AC acmag acphase SIN(vo va freq td theta phase)
+            # For transient: SIN(offset amplitude freq delay damping phase)
+            # For AC analysis: AC acmag acphase
+            if comp.dc != 0.0
+                push!(lines, "V$(comp.name) $(comp.nplus) $(comp.nminus) DC $(comp.dc) AC $(comp.ac_mag) $(comp.ac_phase) SIN($(comp.dc) $(comp.ac_mag) $(comp.freq) 0 0 $(comp.ac_phase))")
+            else
+                push!(lines, "V$(comp.name) $(comp.nplus) $(comp.nminus) AC $(comp.ac_mag) $(comp.ac_phase) SIN(0 $(comp.ac_mag) $(comp.freq) 0 0 $(comp.ac_phase))")
+            end
+        elseif comp isa ACCurrentSource
+            # SPICE format: Iname nplus nminus DC dcval AC acmag acphase SIN(vo va freq td theta phase)
+            if comp.dc != 0.0
+                push!(lines, "I$(comp.name) $(comp.nplus) $(comp.nminus) DC $(comp.dc) AC $(comp.ac_mag) $(comp.ac_phase) SIN($(comp.dc) $(comp.ac_mag) $(comp.freq) 0 0 $(comp.ac_phase))")
+            else
+                push!(lines, "I$(comp.name) $(comp.nplus) $(comp.nminus) AC $(comp.ac_mag) $(comp.ac_phase) SIN(0 $(comp.ac_mag) $(comp.freq) 0 0 $(comp.ac_phase))")
+            end
         elseif comp isa Ground
             push!(lines, "* Ground $(comp.name) -> node 0")
         else

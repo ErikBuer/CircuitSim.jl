@@ -56,6 +56,22 @@ function netlist_qucs(c::Circuit)
             nplus = comp.nplus == 0 ? "gnd" : "_net$(comp.nplus)"
             nminus = comp.nminus == 0 ? "gnd" : "_net$(comp.nminus)"
             push!(lines, "Vdc:$(comp.name) $nplus $nminus U=\"$(format_value(comp.dc))\"")
+        elseif comp isa DCCurrentSource
+            # Qucs format: Idc:Name nplus nminus I="value"
+            nplus = comp.nplus == 0 ? "gnd" : "_net$(comp.nplus)"
+            nminus = comp.nminus == 0 ? "gnd" : "_net$(comp.nminus)"
+            push!(lines, "Idc:$(comp.name) $nplus $nminus I=\"$(format_value(comp.dc))\"")
+        elseif comp isa ACVoltageSource
+            # Qucs format: Vac:Name nplus nminus U="amplitude" f="frequency" Phase="phase"
+            # For DC operating point, we also include Vdc contribution
+            nplus = comp.nplus == 0 ? "gnd" : "_net$(comp.nplus)"
+            nminus = comp.nminus == 0 ? "gnd" : "_net$(comp.nminus)"
+            push!(lines, "Vac:$(comp.name) $nplus $nminus U=\"$(format_value(comp.ac_mag))\" f=\"$(format_value(comp.freq))\" Phase=\"$(comp.ac_phase)\"")
+        elseif comp isa ACCurrentSource
+            # Qucs format: Iac:Name nplus nminus I="amplitude" f="frequency" Phase="phase"
+            nplus = comp.nplus == 0 ? "gnd" : "_net$(comp.nplus)"
+            nminus = comp.nminus == 0 ? "gnd" : "_net$(comp.nminus)"
+            push!(lines, "Iac:$(comp.name) $nplus $nminus I=\"$(format_value(comp.ac_mag))\" f=\"$(format_value(comp.freq))\" Phase=\"$(comp.ac_phase)\"")
         elseif comp isa Ground
             # Ground is implicit at gnd node, no netlist entry needed
         else

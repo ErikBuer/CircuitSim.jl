@@ -452,11 +452,83 @@ function current(result::SimulationResult, component::AbstractDCVoltageSource)::
 end
 
 """
+    current(result::SimulationResult, component::AbstractDCCurrentSource) -> Float64
+
+Get the current through a DC current source. For ideal current sources,
+this returns the specified source current.
+
+# Arguments
+- `result`: The simulation result  
+- `component`: The DC current source component
+
+# Returns
+- Current through the source (positive = into positive terminal)
+"""
+function current(result::SimulationResult, component::AbstractDCCurrentSource)::Float64
+    var_name = "$(component.name).I"
+
+    if haskey(result.dataset.independent_vars, var_name)
+        return real(result.dataset.independent_vars[var_name].values[1])
+    elseif haskey(result.dataset.dependent_vars, var_name)
+        return real(result.dataset.dependent_vars[var_name].values[1])
+    else
+        # For ideal current sources, the current is simply the source value
+        # (if not explicitly saved in results)
+        return component.dc
+    end
+end
+
+"""
+    current(result::SimulationResult, component::AbstractACVoltageSource) -> ComplexF64
+
+Get the current through an AC voltage source.
+"""
+function current(result::SimulationResult, component::AbstractACVoltageSource)::ComplexF64
+    var_name = "$(component.name).I"
+
+    if haskey(result.dataset.independent_vars, var_name)
+        return result.dataset.independent_vars[var_name].values[1]
+    elseif haskey(result.dataset.dependent_vars, var_name)
+        return result.dataset.dependent_vars[var_name].values[1]
+    else
+        error("Current through $(component.name) not found in results. Available: $(list_vectors(result.dataset))")
+    end
+end
+
+"""
+    current(result::SimulationResult, component::AbstractACCurrentSource) -> ComplexF64
+
+Get the current through an AC current source.
+"""
+function current(result::SimulationResult, component::AbstractACCurrentSource)::ComplexF64
+    var_name = "$(component.name).I"
+
+    if haskey(result.dataset.independent_vars, var_name)
+        return result.dataset.independent_vars[var_name].values[1]
+    elseif haskey(result.dataset.dependent_vars, var_name)
+        return result.dataset.dependent_vars[var_name].values[1]
+    else
+        # For ideal current sources, return magnitude at 0 phase if not in results
+        return complex(component.ac_mag * cosd(component.ac_phase), component.ac_mag * sind(component.ac_phase))
+    end
+end
+
+"""
     current_vector(result::SimulationResult, component::AbstractDCVoltageSource) -> Vector{Float64}
 
 Get all current values through a voltage source (for sweeps/transient).
 """
 function current_vector(result::SimulationResult, component::AbstractDCVoltageSource)::Vector{Float64}
+    var_name = "$(component.name).I"
+    return get_real_vector(result.dataset, var_name)
+end
+
+"""
+    current_vector(result::SimulationResult, component::AbstractDCCurrentSource) -> Vector{Float64}
+
+Get all current values through a DC current source (for sweeps/transient).
+"""
+function current_vector(result::SimulationResult, component::AbstractDCCurrentSource)::Vector{Float64}
     var_name = "$(component.name).I"
     return get_real_vector(result.dataset, var_name)
 end

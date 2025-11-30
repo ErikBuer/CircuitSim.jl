@@ -3,7 +3,10 @@ module CircuitTypes
 export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
 export netlist_qucs, netlist_ngspice
 export check_qucsator, run_qucsator, simulate_qucsator, simulate, check_ngspice, run_ngspice
-export Resistor, Capacitor, Inductor, DCVoltageSource, Ground
+export Resistor, Capacitor, Inductor
+export DCVoltageSource, DCCurrentSource
+export ACVoltageSource, ACCurrentSource
+export Ground
 
 # Parser exports
 export SimulationStatus, SIM_SUCCESS, SIM_ERROR, SIM_PARSE_ERROR, SIM_NOT_RUN
