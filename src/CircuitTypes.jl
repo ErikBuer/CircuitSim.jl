@@ -2,8 +2,20 @@ module CircuitTypes
 
 export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
 export netlist_qucs, netlist_ngspice
-export check_qucsator, run_qucsator, check_ngspice, run_ngspice
+export check_qucsator, run_qucsator, simulate_qucsator, simulate, check_ngspice, run_ngspice
 export Resistor, Capacitor, Inductor, DCVoltageSource, Ground
+
+# Parser exports
+export SimulationStatus, SIM_SUCCESS, SIM_ERROR, SIM_PARSE_ERROR, SIM_NOT_RUN
+export DataVector, QucsDataset
+export parse_qucs_value, parse_qucs_dataset
+export get_real_vector, get_imag_vector, get_complex_vector
+export list_vectors, has_errors, print_summary
+
+# High-level result access exports
+export SimulationResult
+export voltage, voltage_vector, voltage_between
+export current, current_vector
 
 include("abstract_types.jl")
 include("components.jl")
@@ -17,5 +29,8 @@ include("utilities.jl")
 # Supported backends
 include("qucsator.jl")
 include("ngspice.jl")
+
+# Output parsers
+include("qucs_parser.jl")
 
 end
