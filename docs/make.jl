@@ -26,6 +26,9 @@ makedocs(
     sitename="CircuitTypes.jl",
     pages=Any[
         "index.md",
+        "Examples"=>[
+            "Examples/lowpass_filter.md",
+        ],
         "api_reference.md",
     ],
     doctest=true,

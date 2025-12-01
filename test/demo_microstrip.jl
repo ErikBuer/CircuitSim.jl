@@ -7,15 +7,15 @@ This creates a simple microstrip lowpass filter using stepped impedance sections
 
 using CircuitTypes
 
-println("=" ^ 60)
+println("="^60)
 println("Microstrip Components Demo")
-println("=" ^ 60)
+println("="^60)
 
 # Define substrate - FR4 for demonstration
 println("\n1. Substrate Definition")
-println("-" ^ 40)
+println("-"^40)
 
-fr4 = Substrate("FR4", 
+fr4 = Substrate("FR4",
     er=4.5,      # Relative permittivity
     h=1.6e-3,    # 1.6mm height
     t=35e-6,     # 35µm copper
@@ -37,7 +37,7 @@ println("RO4003C Substrate: ", to_qucs_netlist(ro4003c))
 # =============================================================================
 
 println("\n2. Microstrip Line Segments")
-println("-" ^ 40)
+println("-"^40)
 
 # Standard 50Ω line (width depends on substrate)
 line_50ohm = MicrostripLine("TL1", fr4, w=3.0e-3, l=25e-3)
@@ -56,7 +56,7 @@ println("Lo-Z Line: ", to_qucs_netlist(line_lo_z))
 # =============================================================================
 
 println("\n3. Microstrip Discontinuities")
-println("-" ^ 40)
+println("-"^40)
 
 # Width step between high and low impedance
 step1 = MicrostripStep("STEP1", fr4, w1=0.5e-3, w2=8.0e-3)
@@ -83,7 +83,7 @@ println("Open End: ", to_qucs_netlist(open_end))
 # =============================================================================
 
 println("\n4. Microstrip Junctions")
-println("-" ^ 40)
+println("-"^40)
 
 # T-junction (for power dividers, stubs)
 tee = MicrostripTee("TEE1", fr4, w1=3.0e-3, w2=3.0e-3, w3=3.0e-3)
@@ -98,7 +98,7 @@ println("Cross: ", to_qucs_netlist(cross))
 # =============================================================================
 
 println("\n5. Coupled Structures")
-println("-" ^ 40)
+println("-"^40)
 
 # Coupled microstrip lines (for filters, couplers)
 coupled = MicrostripCoupled("CPL1", fr4, w=1.0e-3, l=20e-3, s=0.2e-3)
@@ -113,7 +113,7 @@ println("Lange Coupler: ", to_qucs_netlist(lange))
 # =============================================================================
 
 println("\n6. Vias and Stubs")
-println("-" ^ 40)
+println("-"^40)
 
 # Via to ground
 via = MicrostripVia("VIA1", fr4, d=0.3e-3)
@@ -128,7 +128,7 @@ println("Radial Stub: ", to_qucs_netlist(radial))
 # =============================================================================
 
 println("\n7. Inductors and Interconnects")
-println("-" ^ 40)
+println("-"^40)
 
 # Spiral inductor
 spiral = SpiralInductor("SP1", fr4, w=0.2e-3, s=0.15e-3, di=2e-3, turns=4.5)
@@ -146,9 +146,9 @@ println("Circular Loop: ", to_qucs_netlist(loop))
 # Build a Simple Stepped Impedance Lowpass Filter
 # =============================================================================
 
-println("\n" * "=" ^ 60)
+println("\n" * "="^60)
 println("Building a Stepped Impedance Lowpass Filter")
-println("=" ^ 60)
+println("="^60)
 
 # Create circuit
 circ = Circuit()
@@ -205,7 +205,7 @@ assign_nodes!(circ)
 
 # Print netlist
 println("\nQucs Netlist:")
-println("-" ^ 40)
+println("-"^40)
 # Print substrate definition first
 println(to_qucs_netlist(substrate))
 # Print component netlist
