@@ -7,6 +7,7 @@ export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
 
 # Components - Basic
 export Resistor, Capacitor, Inductor
+export CapacitorQ, InductorQ
 export DCVoltageSource, DCCurrentSource
 export ACVoltageSource, ACCurrentSource
 export PowerSource
@@ -23,6 +24,12 @@ export MicrostripVia, MicrostripRadialStub, MicrostripLange
 
 # Components - Other RF
 export BondWire, SpiralInductor, CircularLoop
+
+# Components - RF Building Blocks
+export DCBlock, DCFeed, BiasTee
+export Amplifier, Isolator, Attenuator
+export Circulator, PhaseShifter
+export Coupler, Hybrid
 
 # Netlist generation
 export netlist_qucs, netlist_ngspice
@@ -90,6 +97,8 @@ include("backends/ngspice.jl")
 include("components/resistor.jl")
 include("components/capacitor.jl")
 include("components/inductor.jl")
+include("components/capacitor_q.jl")
+include("components/inductor_q.jl")
 include("components/ground.jl")
 include("components/dc_voltage_source.jl")
 include("components/dc_current_source.jl")
@@ -118,5 +127,17 @@ include("components/microstrip_lange.jl")
 include("components/bond_wire.jl")
 include("components/spiral_inductor.jl")
 include("components/circular_loop.jl")
+
+# RF building blocks
+include("components/dc_block.jl")
+include("components/dc_feed.jl")
+include("components/bias_tee.jl")
+include("components/amplifier.jl")
+include("components/isolator.jl")
+include("components/attenuator.jl")
+include("components/circulator.jl")
+include("components/phase_shifter.jl")
+include("components/coupler.jl")
+include("components/hybrid.jl")
 
 end
