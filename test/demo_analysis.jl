@@ -9,9 +9,7 @@ println("="^70)
 println("CircuitTypes.jl - Analysis Types Demo")
 println("="^70)
 
-# =============================================================================
 # Part 1: Show all Analysis Types
-# =============================================================================
 
 println("\n### Available Analysis Types ###\n")
 
@@ -54,9 +52,7 @@ noise = NoiseAnalysis(10.0, 100e3, 101, "_net1", "V1")
 println("   $(noise)")
 println("   Netlist: $(to_qucs_analysis(noise))")
 
-# =============================================================================
 # Part 2: Build a test circuit (RC low-pass filter)
-# =============================================================================
 
 println("\n" * "="^70)
 println("### Building RC Low-Pass Filter Circuit ###")
@@ -88,9 +84,7 @@ println("  Cutoff frequency: fc = 1/(2πRC) = $(round(fc, digits=1)) Hz")
 println("\nGenerated Qucs Netlist:")
 println(netlist_qucs(c))
 
-# =============================================================================
 # Part 3: Run DC Analysis
-# =============================================================================
 
 println("\n" * "="^70)
 println("### DC Analysis ###")
@@ -110,9 +104,7 @@ else
     println("  ✗ Failed: ", result_dc.dataset.errors)
 end
 
-# =============================================================================
 # Part 4: Run DC Analysis with custom parameters
-# =============================================================================
 
 println("\n" * "="^70)
 println("### DC Analysis with Custom Parameters ###")
@@ -129,9 +121,7 @@ else
     println("  ✗ Failed: ", result_dc2.dataset.errors)
 end
 
-# =============================================================================
 # Part 5: Show generated analysis commands
-# =============================================================================
 
 println("\n" * "="^70)
 println("### Summary of Analysis Netlist Commands ###")

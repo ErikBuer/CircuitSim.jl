@@ -1,8 +1,4 @@
 """
-Ideal Resistor component.
-"""
-
-"""
     Resistor <: AbstractResistor
 
 Ideal resistor with two terminals.
@@ -26,25 +22,13 @@ mutable struct Resistor <: AbstractResistor
     Resistor(name::AbstractString, value::Real) = new(String(name), 0, 0, value)
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_netlist(comp::Resistor)::String
     "R:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) R=\"$(format_value(comp.value))\""
 end
 
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
-
 function to_spice_netlist(comp::Resistor)::String
     "R$(comp.name) $(comp.n1) $(comp.n2) $(comp.value)"
 end
-
-# =============================================================================
-# Result Access Helpers
-# =============================================================================
 
 function _get_node_number(component::Resistor, pin::Symbol)::Int
     if pin == :n1

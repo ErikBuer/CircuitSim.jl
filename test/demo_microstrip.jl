@@ -32,9 +32,7 @@ ro4003c = Substrate("RO4003C",
 )
 println("RO4003C Substrate: ", to_qucs_netlist(ro4003c))
 
-# =============================================================================
 # Basic Microstrip Components
-# =============================================================================
 
 println("\n2. Microstrip Line Segments")
 println("-"^40)
@@ -51,9 +49,7 @@ println("Hi-Z Line: ", to_qucs_netlist(line_hi_z))
 line_lo_z = MicrostripLine("TL_LO", fr4, w=8.0e-3, l=10e-3)
 println("Lo-Z Line: ", to_qucs_netlist(line_lo_z))
 
-# =============================================================================
 # Discontinuities
-# =============================================================================
 
 println("\n3. Microstrip Discontinuities")
 println("-"^40)
@@ -78,9 +74,7 @@ println("Gap: ", to_qucs_netlist(gap))
 open_end = MicrostripOpen("OPEN1", fr4, w=3.0e-3)
 println("Open End: ", to_qucs_netlist(open_end))
 
-# =============================================================================
 # Junctions
-# =============================================================================
 
 println("\n4. Microstrip Junctions")
 println("-"^40)
@@ -93,9 +87,7 @@ println("T-Junction: ", to_qucs_netlist(tee))
 cross = MicrostripCross("CROSS1", fr4, w1=3.0e-3, w2=3.0e-3, w3=3.0e-3, w4=3.0e-3)
 println("Cross: ", to_qucs_netlist(cross))
 
-# =============================================================================
 # Coupled Lines and Couplers
-# =============================================================================
 
 println("\n5. Coupled Structures")
 println("-"^40)
@@ -108,9 +100,7 @@ println("Coupled Lines: ", to_qucs_netlist(coupled))
 lange = MicrostripLange("LANGE1", ro4003c, w=0.15e-3, l=10e-3, s=0.1e-3, n=4)
 println("Lange Coupler: ", to_qucs_netlist(lange))
 
-# =============================================================================
 # Via and Special Structures
-# =============================================================================
 
 println("\n6. Vias and Stubs")
 println("-"^40)
@@ -123,9 +113,7 @@ println("Via: ", to_qucs_netlist(via))
 radial = MicrostripRadialStub("RSTUB1", fr4, ri=0.5e-3, ro=5.0e-3, alpha=60.0)
 println("Radial Stub: ", to_qucs_netlist(radial))
 
-# =============================================================================
 # Inductors and Interconnects
-# =============================================================================
 
 println("\n7. Inductors and Interconnects")
 println("-"^40)
@@ -142,9 +130,7 @@ println("Bond Wire: ", to_qucs_netlist(wire))
 loop = CircularLoop("LOOP1", r=5e-3, w=0.5e-3)
 println("Circular Loop: ", to_qucs_netlist(loop))
 
-# =============================================================================
 # Build a Simple Stepped Impedance Lowpass Filter
-# =============================================================================
 
 println("\n" * "="^60)
 println("Building a Stepped Impedance Lowpass Filter")

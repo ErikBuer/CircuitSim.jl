@@ -34,10 +34,6 @@ struct HarmonicBalanceAnalysis <: AbstractAnalysis
     end
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_analysis(a::HarmonicBalanceAnalysis)::String
     parts = [".HB:$(a.name)"]
     push!(parts, "n=\"$(a.harmonics)\"")

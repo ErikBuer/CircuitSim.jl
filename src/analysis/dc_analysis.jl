@@ -35,10 +35,6 @@ struct DCAnalysis <: AbstractAnalysis
     end
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_analysis(a::DCAnalysis)::String
     parts = [".DC:$(a.name)"]
     push!(parts, "saveOPs=\"$(a.save_ops ? "yes" : "no")\"")
@@ -46,10 +42,6 @@ function to_qucs_analysis(a::DCAnalysis)::String
     push!(parts, "saveAll=\"$(a.save_all ? "yes" : "no")\"")
     return join(parts, " ")
 end
-
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
 
 function to_spice_analysis(a::DCAnalysis)::String
     ".op"

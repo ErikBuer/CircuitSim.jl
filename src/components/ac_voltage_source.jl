@@ -47,17 +47,9 @@ mutable struct ACVoltageSource <: AbstractACVoltageSource
         new(String(name), 0, 0, dc, ac_mag, ac_phase, freq)
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_netlist(comp::ACVoltageSource)::String
     "Vac:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) U=\"$(format_value(comp.ac_mag))\" f=\"$(format_value(comp.freq))\" Phase=\"$(comp.ac_phase)\""
 end
-
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
 
 function to_spice_netlist(comp::ACVoltageSource)::String
     if comp.dc != 0.0
@@ -66,10 +58,6 @@ function to_spice_netlist(comp::ACVoltageSource)::String
         "V$(comp.name) $(comp.nplus) $(comp.nminus) AC $(comp.ac_mag) $(comp.ac_phase) SIN(0 $(comp.ac_mag) $(comp.freq) 0 0 $(comp.ac_phase))"
     end
 end
-
-# =============================================================================
-# Result Access Helpers
-# =============================================================================
 
 function _get_node_number(component::ACVoltageSource, pin::Symbol)::Int
     if pin == :nplus

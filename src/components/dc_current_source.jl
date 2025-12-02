@@ -27,25 +27,13 @@ mutable struct DCCurrentSource <: AbstractDCCurrentSource
     DCCurrentSource(name::AbstractString, dc::Real) = new(String(name), 0, 0, dc)
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_netlist(comp::DCCurrentSource)::String
     "Idc:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) I=\"$(format_value(comp.dc))\""
 end
 
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
-
 function to_spice_netlist(comp::DCCurrentSource)::String
     "I$(comp.name) $(comp.nplus) $(comp.nminus) DC $(comp.dc)"
 end
-
-# =============================================================================
-# Result Access Helpers
-# =============================================================================
 
 function _get_node_number(component::DCCurrentSource, pin::Symbol)::Int
     if pin == :nplus

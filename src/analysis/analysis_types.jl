@@ -1,14 +1,4 @@
 """
-Analysis types for circuit simulation.
-
-This module defines the abstract type hierarchy and common types for analysis configurations.
-"""
-
-# ============================================================================
-# Abstract Analysis Type Hierarchy
-# ============================================================================
-
-"""
     AbstractAnalysis
 
 Abstract base type for all circuit analyses.
@@ -22,9 +12,6 @@ Abstract type for sweep-based analyses (AC, SP, parameter sweeps).
 """
 abstract type AbstractSweepAnalysis <: AbstractAnalysis end
 
-# ============================================================================
-# Sweep Type Enum
-# ============================================================================
 
 """
     SweepType
@@ -43,10 +30,6 @@ Values:
     LIST        # List of discrete values
     CONSTANT    # Single constant value
 end
-
-# ============================================================================
-# Dispatch Functions (to be implemented by each analysis type)
-# ============================================================================
 
 """
     to_qucs_analysis(analysis::AbstractAnalysis) -> String

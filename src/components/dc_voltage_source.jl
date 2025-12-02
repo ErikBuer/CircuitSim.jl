@@ -26,25 +26,13 @@ mutable struct DCVoltageSource <: AbstractDCVoltageSource
     DCVoltageSource(name::AbstractString, dc::Real) = new(String(name), 0, 0, dc)
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_netlist(comp::DCVoltageSource)::String
     "Vdc:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) U=\"$(format_value(comp.dc))\""
 end
 
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
-
 function to_spice_netlist(comp::DCVoltageSource)::String
     "V$(comp.name) $(comp.nplus) $(comp.nminus) DC $(comp.dc)"
 end
-
-# =============================================================================
-# Result Access Helpers
-# =============================================================================
 
 function _get_node_number(component::DCVoltageSource, pin::Symbol)::Int
     if pin == :nplus

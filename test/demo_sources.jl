@@ -10,9 +10,7 @@ println("="^60)
 println("CircuitTypes.jl - Multi-Simulator Source Components Demo")
 println("="^60)
 
-# =============================================================================
 # Part 1: Show all source types
-# =============================================================================
 
 println("\n### Available Source Types ###\n")
 
@@ -41,9 +39,7 @@ println("  → AC magnitude: $(i_ac.ac_mag) A = $(i_ac.ac_mag * 1000) mA")
 println("  → Frequency: $(i_ac.freq) Hz")
 println("  → Phase: $(i_ac.ac_phase)°")
 
-# =============================================================================
 # Part 2: Build a test circuit
-# =============================================================================
 
 println("\n" * "="^60)
 println("### Building Test Circuit ###")
@@ -73,9 +69,7 @@ add_component!(c, G)
 @connect c R2.n2 G.n
 @connect c I1.nminus G.n
 
-# =============================================================================
 # Part 3: Generate netlists for both simulators
-# =============================================================================
 
 println("\n" * "="^60)
 println("### Qucs Netlist ###")
@@ -89,9 +83,7 @@ println("="^60)
 println()
 println(netlist_ngspice(c))
 
-# =============================================================================
 # Part 4: Run Qucs simulation and verify
-# =============================================================================
 
 println("\n" * "="^60)
 println("### Running Qucsator Simulation ###")
@@ -129,9 +121,7 @@ else
     println("Simulation failed: ", result.dataset.errors)
 end
 
-# =============================================================================
 # Part 5: Show AC source netlist generation
-# =============================================================================
 
 println("\n" * "="^60)
 println("### AC Source Netlist Generation ###")

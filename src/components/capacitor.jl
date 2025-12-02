@@ -1,8 +1,4 @@
 """
-Ideal Capacitor component.
-"""
-
-"""
     Capacitor <: AbstractCapacitor
 
 Ideal capacitor with two terminals.
@@ -26,25 +22,13 @@ mutable struct Capacitor <: AbstractCapacitor
     Capacitor(name::AbstractString, value::Real) = new(String(name), 0, 0, value)
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_netlist(comp::Capacitor)::String
     "C:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) C=\"$(format_value(comp.value))\""
 end
 
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
-
 function to_spice_netlist(comp::Capacitor)::String
     "C$(comp.name) $(comp.n1) $(comp.n2) $(comp.value)"
 end
-
-# =============================================================================
-# Result Access Helpers
-# =============================================================================
 
 function _get_node_number(component::Capacitor, pin::Symbol)::Int
     if pin == :n1

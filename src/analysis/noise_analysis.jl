@@ -47,10 +47,6 @@ struct NoiseAnalysis <: AbstractSweepAnalysis
     end
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_analysis(a::NoiseAnalysis)::String
     type_str = a.sweep_type == LOGARITHMIC ? "log" : "lin"
     parts = [".Noise:$(a.name)"]
@@ -62,10 +58,6 @@ function to_qucs_analysis(a::NoiseAnalysis)::String
     push!(parts, "Src=\"$(a.source)\"")
     return join(parts, " ")
 end
-
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
 
 function to_spice_analysis(a::NoiseAnalysis)::String
     type_str = a.sweep_type == LOGARITHMIC ? "dec" : "lin"

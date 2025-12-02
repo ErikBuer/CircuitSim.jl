@@ -46,9 +46,6 @@ struct SParameterAnalysis <: AbstractSweepAnalysis
     end
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
 
 function to_qucs_analysis(a::SParameterAnalysis)::String
     type_str = a.sweep_type == LOGARITHMIC ? "log" : "lin"

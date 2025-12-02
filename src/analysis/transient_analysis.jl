@@ -56,10 +56,6 @@ struct TransientAnalysis <: AbstractAnalysis
     end
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_analysis(a::TransientAnalysis)::String
     parts = [".TR:$(a.name)"]
     push!(parts, "Type=\"lin\"")
@@ -70,9 +66,6 @@ function to_qucs_analysis(a::TransientAnalysis)::String
     return join(parts, " ")
 end
 
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
 
 function to_spice_analysis(a::TransientAnalysis)::String
     step = (a.stop - a.start) / (a.points - 1)

@@ -48,10 +48,6 @@ struct ParameterSweep <: AbstractSweepAnalysis
     end
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_analysis(a::ParameterSweep)::String
     type_str = a.sweep_type == LOGARITHMIC ? "log" : "lin"
     inner_str = to_qucs_analysis(a.inner_analysis)
@@ -71,10 +67,6 @@ function to_qucs_analysis(a::ParameterSweep)::String
     push!(lines, join(parts, " "))
     return join(lines, "\n")
 end
-
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
 
 function to_spice_analysis(a::ParameterSweep)::String
     # SPICE parameter sweep is more complex, using .step

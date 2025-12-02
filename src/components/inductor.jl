@@ -1,8 +1,4 @@
 """
-Ideal Inductor component.
-"""
-
-"""
     Inductor <: AbstractInductor
 
 Ideal inductor with two terminals.
@@ -26,25 +22,13 @@ mutable struct Inductor <: AbstractInductor
     Inductor(name::AbstractString, value::Real) = new(String(name), 0, 0, value)
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_netlist(comp::Inductor)::String
     "L:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) L=\"$(format_value(comp.value))\""
 end
 
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
-
 function to_spice_netlist(comp::Inductor)::String
     "L$(comp.name) $(comp.n1) $(comp.n2) $(comp.value)"
 end
-
-# =============================================================================
-# Result Access Helpers
-# =============================================================================
 
 function _get_node_number(component::Inductor, pin::Symbol)::Int
     if pin == :n1

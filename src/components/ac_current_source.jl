@@ -44,17 +44,9 @@ mutable struct ACCurrentSource <: AbstractACCurrentSource
         new(String(name), 0, 0, dc, ac_mag, ac_phase, freq)
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_netlist(comp::ACCurrentSource)::String
     "Iac:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) I=\"$(format_value(comp.ac_mag))\" f=\"$(format_value(comp.freq))\" Phase=\"$(comp.ac_phase)\""
 end
-
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
 
 function to_spice_netlist(comp::ACCurrentSource)::String
     if comp.dc != 0.0
@@ -63,10 +55,6 @@ function to_spice_netlist(comp::ACCurrentSource)::String
         "I$(comp.name) $(comp.nplus) $(comp.nminus) AC $(comp.ac_mag) $(comp.ac_phase) SIN(0 $(comp.ac_mag) $(comp.freq) 0 0 $(comp.ac_phase))"
     end
 end
-
-# =============================================================================
-# Result Access Helpers
-# =============================================================================
 
 function _get_node_number(component::ACCurrentSource, pin::Symbol)::Int
     if pin == :nplus

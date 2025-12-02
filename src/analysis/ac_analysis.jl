@@ -41,10 +41,6 @@ struct ACAnalysis <: AbstractSweepAnalysis
     end
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_analysis(a::ACAnalysis)::String
     type_str = a.sweep_type == LOGARITHMIC ? "log" : "lin"
     parts = [".AC:$(a.name)"]
@@ -54,10 +50,6 @@ function to_qucs_analysis(a::ACAnalysis)::String
     push!(parts, "Points=\"$(a.points)\"")
     return join(parts, " ")
 end
-
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
 
 function to_spice_analysis(a::ACAnalysis)::String
     type_str = a.sweep_type == LOGARITHMIC ? "dec" : "lin"

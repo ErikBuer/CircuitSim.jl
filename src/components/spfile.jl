@@ -1,8 +1,4 @@
 """
-S-parameter file (Touchstone) component.
-"""
-
-"""
     SPfile <: AbstractSParameterFile
 
 S-parameter file (Touchstone format) component.

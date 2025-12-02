@@ -1,8 +1,6 @@
 module CircuitTypes
 
-# =============================================================================
 # Exports
-# =============================================================================
 
 # Core types
 export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
@@ -54,21 +52,13 @@ export SimulationResult
 export voltage, voltage_vector, voltage_between
 export current, current_vector
 
-# =============================================================================
 # Abstract Types (must be loaded first)
-# =============================================================================
 
 include("abstract_types.jl")
 
-# =============================================================================
-# Utilities
-# =============================================================================
-
 include("utilities.jl")
 
-# =============================================================================
 # Analysis Types (abstracts must be loaded before concrete types)
-# =============================================================================
 
 include("analysis/analysis_types.jl")
 include("analysis/dc_analysis.jl")
@@ -79,31 +69,23 @@ include("analysis/parameter_sweep.jl")
 include("analysis/harmonic_balance_analysis.jl")
 include("analysis/noise_analysis.jl")
 
-# =============================================================================
 # Core Infrastructure
-# =============================================================================
 
 include("pin.jl")
 include("union_find.jl")
 include("circuit.jl")
 
-# =============================================================================
 # Parser (must be loaded before backends that use QucsDataset)
-# =============================================================================
 
 include("parser/qucs_dataset.jl")
 include("parser/simulation_result.jl")
 
-# =============================================================================
 # Backends (declares dispatch function stubs)
-# =============================================================================
 
 include("backends/qucsator.jl")
 include("backends/ngspice.jl")
 
-# =============================================================================
 # Components (implements dispatch methods for each component)
-# =============================================================================
 
 include("components/resistor.jl")
 include("components/capacitor.jl")

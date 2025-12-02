@@ -22,25 +22,13 @@ mutable struct Ground <: AbstractGround
     Ground(name::AbstractString="GND") = new(String(name), 0)
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_netlist(comp::Ground)::String
     ""  # Ground is implicit at gnd node, no netlist entry needed
 end
 
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
-
 function to_spice_netlist(comp::Ground)::String
     "* Ground $(comp.name) -> node 0"
 end
-
-# =============================================================================
-# Result Access Helpers
-# =============================================================================
 
 function _get_node_number(component::Ground, pin::Symbol)::Int
     if pin == :n

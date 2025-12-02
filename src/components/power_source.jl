@@ -54,10 +54,6 @@ mutable struct PowerSource <: AbstractPowerSource
     end
 end
 
-# =============================================================================
-# Qucs Netlist Generation
-# =============================================================================
-
 function to_qucs_netlist(comp::PowerSource)::String
     parts = ["Pac:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.nplus))")
@@ -70,10 +66,6 @@ function to_qucs_netlist(comp::PowerSource)::String
     end
     return join(parts, " ")
 end
-
-# =============================================================================
-# SPICE Netlist Generation
-# =============================================================================
 
 function to_spice_netlist(comp::PowerSource)::String
     # SPICE doesn't have a direct equivalent - use a voltage source with internal resistance
@@ -89,10 +81,6 @@ function to_spice_netlist(comp::PowerSource)::String
     push!(lines, "R$(comp.name)_z0 $(comp.nplus)_int $(comp.nplus) $(comp.z0)")
     return join(lines, "\n")
 end
-
-# =============================================================================
-# Result Access Helpers
-# =============================================================================
 
 function _get_node_number(component::PowerSource, pin::Symbol)::Int
     if pin == :nplus
