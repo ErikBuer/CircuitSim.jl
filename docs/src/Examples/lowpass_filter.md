@@ -16,8 +16,8 @@ using CairoMakie
 circ = Circuit()
 
 # Ports
-port1 = PowerSource("P1", 1, z0=50.0, power=-30.0, freq=1e9)
-port2 = PowerSource("P2", 2, z0=50.0, power=-30.0, freq=1e9)
+port1 = ACPowerSource("P1", 1, impedance=50.0, power_dbm=-30.0, frequency=1e9)
+port2 = ACPowerSource("P2", 2, impedance=50.0, power_dbm=-30.0, frequency=1e9)
 add_component!(circ, port1)
 add_component!(circ, port2)
 
@@ -74,13 +74,13 @@ println("Available vectors: ", list_vectors(result))
 ## Plotting Results
 
 ```@example lpf
-# Extract frequency and S-parameters
-freq_vec = get_real_vector(result, "frequency")
+# Extract frequency and S-parameters using convenience methods
+freq_vec = get_frequency(result)
 freq_mhz = freq_vec ./ 1e6
 
 # Get S11 and S21 (complex values)
-s11_complex = get_complex_vector(result, "S[1,1]")
-s21_complex = get_complex_vector(result, "S[2,1]")
+s11_complex = get_sparameter(result, 1, 1)
+s21_complex = get_sparameter(result, 2, 1)
 
 # Convert to dB
 s11_db = 20 .* log10.(abs.(s11_complex))

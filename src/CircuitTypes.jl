@@ -8,10 +8,12 @@ export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
 # Components - Basic
 export Resistor, Capacitor, Inductor
 export CapacitorQ, InductorQ
+export Ground
+
+# Sources
 export DCVoltageSource, DCCurrentSource
 export ACVoltageSource, ACCurrentSource
-export PowerSource
-export Ground
+export ACPowerSource, Pac
 
 # Components - Substrate
 export Substrate
@@ -53,6 +55,8 @@ export DataVector, QucsDataset
 export parse_qucs_value, parse_qucs_dataset
 export get_real_vector, get_imag_vector, get_complex_vector
 export list_vectors, has_errors, print_summary
+# Analysis-specific convenience methods
+export get_frequency, get_time, get_sparameter, get_node_voltage, get_s_matrix_size
 
 # High-level result access exports
 export SimulationResult
@@ -101,11 +105,13 @@ include("components/inductor.jl")
 include("components/capacitor_q.jl")
 include("components/inductor_q.jl")
 include("components/ground.jl")
-include("components/dc_voltage_source.jl")
-include("components/dc_current_source.jl")
-include("components/ac_voltage_source.jl")
-include("components/ac_current_source.jl")
-include("components/power_source.jl")
+
+# Sources
+include("sources/dc_voltage_source.jl")
+include("sources/dc_current_source.jl")
+include("sources/ac_voltage_source.jl")
+include("sources/ac_current_source.jl")
+include("sources/ac_power_source.jl")
 
 # Substrate (needed by microstrip components)
 include("components/substrate.jl")

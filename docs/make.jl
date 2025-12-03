@@ -28,7 +28,7 @@ makedocs(
         "index.md",
         "Examples"=>[
             "Examples/lowpass_filter.md",
-            "Examples/amplifier_compression.md",
+            "Examples/amplifier.md",
         ],
         "api_reference.md",
     ],

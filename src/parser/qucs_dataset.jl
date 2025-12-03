@@ -340,3 +340,143 @@ function print_summary(dataset::QucsDataset)
         println("  • $name: $(length(dv.values)) points$deps_str")
     end
 end
+
+# Analysis-specific convenience methods for common access patterns
+
+"""
+    get_frequency(dataset::QucsDataset) -> Vector{Float64}
+
+Get the frequency vector for S-parameter, AC, or other frequency-domain analyses.
+Looks for 'frequency', 'acfrequency', or 'hbfrequency' (for HB analysis, returns unique frequencies).
+
+# Returns
+- Vector of frequency values in Hz
+
+# Throws
+- ErrorException if no frequency vector found
+"""
+function get_frequency(dataset::QucsDataset)::Vector{Float64}
+    # S-parameter and other frequency sweeps
+    if haskey(dataset.independent_vars, "frequency")
+        return real.(dataset.independent_vars["frequency"].values)
+    end
+    # AC analysis
+    if haskey(dataset.independent_vars, "acfrequency")
+        return real.(dataset.independent_vars["acfrequency"].values)
+    end
+    # Harmonic balance (returns the harmonic frequency vector)
+    if haskey(dataset.independent_vars, "hbfrequency")
+        return real.(dataset.independent_vars["hbfrequency"].values)
+    end
+    
+    error("No frequency vector found in dataset. Available independent variables: $(collect(keys(dataset.independent_vars)))")
+end
+
+"""
+    get_time(dataset::QucsDataset) -> Vector{Float64}
+
+Get the time vector for transient analyses.
+
+# Returns
+- Vector of time values in seconds
+
+# Throws
+- ErrorException if no time vector found
+"""
+function get_time(dataset::QucsDataset)::Vector{Float64}
+    if haskey(dataset.independent_vars, "time")
+        return real.(dataset.independent_vars["time"].values)
+    end
+    
+    error("No time vector found in dataset. Available independent variables: $(collect(keys(dataset.independent_vars)))")
+end
+
+"""
+    get_sparameter(dataset::QucsDataset, i::Int, j::Int) -> Vector{ComplexF64}
+
+Get S-parameter S[i,j] from dataset.
+
+# Arguments
+- `dataset::QucsDataset`: The simulation results
+- `i::Int`: Output port number (1-indexed)
+- `j::Int`: Input port number (1-indexed)
+
+# Returns
+- Vector of complex S-parameter values
+
+# Example
+```julia
+s21 = get_sparameter(result, 2, 1)  # Forward transmission
+s11 = get_sparameter(result, 1, 1)  # Input reflection
+```
+"""
+function get_sparameter(dataset::QucsDataset, i::Int, j::Int)::Vector{ComplexF64}
+    name = "S[$i,$j]"
+    if haskey(dataset.dependent_vars, name)
+        return dataset.dependent_vars[name].values
+    end
+    
+    error("S-parameter '$name' not found in dataset. Available S-parameters: $(filter(n -> startswith(n, "S["), collect(keys(dataset.dependent_vars))))")
+end
+
+"""
+    get_node_voltage(dataset::QucsDataset, node_name::String) -> Vector{ComplexF64}
+
+Get voltage at a named node.
+
+# Arguments
+- `dataset::QucsDataset`: The simulation results  
+- `node_name::String`: Node name (e.g., "net1", "vout")
+
+# Returns
+- Vector of complex voltage values
+
+# Example
+```julia
+v_out = get_node_voltage(result, "net5")
+```
+"""
+function get_node_voltage(dataset::QucsDataset, node_name::String)::Vector{ComplexF64}
+    # Try both with and without .V suffix
+    names_to_try = [node_name, "$(node_name).V", "v.$(node_name)"]
+    
+    for name in names_to_try
+        if haskey(dataset.dependent_vars, name)
+            return dataset.dependent_vars[name].values
+        end
+    end
+    
+    error("Node voltage '$node_name' not found in dataset. Available voltage vectors: $(filter(n -> contains(n, ".V") || startswith(n, "v."), collect(keys(dataset.dependent_vars))))")
+end
+
+"""
+    get_s_matrix_size(dataset::QucsDataset) -> Int
+
+Determine the size of the S-parameter matrix (number of ports).
+
+# Returns
+- Number of ports in the S-parameter matrix
+
+# Example
+```julia
+n_ports = get_s_matrix_size(result)  # Returns 2 for a 2-port network
+```
+"""
+function get_s_matrix_size(dataset::QucsDataset)::Int
+    max_port = 0
+    for name in keys(dataset.dependent_vars)
+        m = match(r"S\[(\d+),(\d+)\]", name)
+        if m !== nothing
+            i = parse(Int, m.captures[1])
+            j = parse(Int, m.captures[2])
+            max_port = max(max_port, i, j)
+        end
+    end
+    
+    if max_port == 0
+        error("No S-parameters found in dataset")
+    end
+    
+    return max_port
+end
+
