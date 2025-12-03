@@ -7,7 +7,10 @@ Format:
 <indep name size> ... values ... </indep>
 <dep name dep1 dep2 ...> ... values ... </dep>
 ```
+
+Inspired by qucs-s data structures for typed results.
 """
+
 
 """
     SimulationStatus
@@ -25,6 +28,70 @@ Values:
     SIM_ERROR = 1
     SIM_PARSE_ERROR = 2
     SIM_NOT_RUN = 3
+end
+
+"""
+    DCResult
+
+DC operating point results.
+
+# Fields
+- `voltages::Dict{String,Float64}`: Node voltages (node_name => voltage)
+- `currents::Dict{String,Float64}`: Branch currents (component_name => current)
+"""
+struct DCResult
+    voltages::Dict{String,Float64}
+    currents::Dict{String,Float64}
+end
+
+"""
+    ACResult
+
+AC analysis results (frequency sweep).
+
+# Fields
+- `frequencies_Hz::Vector{Float64}`: Frequency points
+- `voltages::Dict{String,Vector{ComplexF64}}`: Node voltages vs frequency
+- `currents::Dict{String,Vector{ComplexF64}}`: Branch currents vs frequency
+"""
+struct ACResult
+    frequencies_Hz::Vector{Float64}
+    voltages::Dict{String,Vector{ComplexF64}}
+    currents::Dict{String,Vector{ComplexF64}}
+end
+
+"""
+    TransientResult
+
+Transient analysis results (time domain).
+
+# Fields
+- `time_s::Vector{Float64}`: Time points
+- `voltages::Dict{String,Vector{Float64}}`: Node voltages vs time
+- `currents::Dict{String,Vector{Float64}}`: Branch currents vs time
+"""
+struct TransientResult
+    time_s::Vector{Float64}
+    voltages::Dict{String,Vector{Float64}}
+    currents::Dict{String,Vector{Float64}}
+end
+
+"""
+    SParameterResult
+
+S-parameter analysis results.
+
+# Fields
+- `frequencies_Hz::Vector{Float64}`: Frequency points
+- `num_ports::Int`: Number of ports
+- `s_matrix::Dict{Tuple{Int,Int},Vector{ComplexF64}}`: S[i,j] vs frequency
+- `z0_Ohm::Float64`: Reference impedance
+"""
+struct SParameterResult
+    frequencies_Hz::Vector{Float64}
+    num_ports::Int
+    s_matrix::Dict{Tuple{Int,Int},Vector{ComplexF64}}
+    z0_Ohm::Float64
 end
 
 """
@@ -58,6 +125,10 @@ Parsed simulation result containing all vectors and metadata.
 - `errors::Vector{String}`: Error messages
 - `warnings::Vector{String}`: Warning messages
 - `raw_output::String`: Raw simulator output
+
+# Typed Result Extraction
+Use `extract_dc_result()`, `extract_ac_result()`, `extract_transient_result()`, 
+or `extract_sparameter_result()` to get typed data structures.
 """
 struct QucsDataset
     status::SimulationStatus
@@ -368,7 +439,7 @@ function get_frequency(dataset::QucsDataset)::Vector{Float64}
     if haskey(dataset.independent_vars, "hbfrequency")
         return real.(dataset.independent_vars["hbfrequency"].values)
     end
-    
+
     error("No frequency vector found in dataset. Available independent variables: $(collect(keys(dataset.independent_vars)))")
 end
 
@@ -387,7 +458,7 @@ function get_time(dataset::QucsDataset)::Vector{Float64}
     if haskey(dataset.independent_vars, "time")
         return real.(dataset.independent_vars["time"].values)
     end
-    
+
     error("No time vector found in dataset. Available independent variables: $(collect(keys(dataset.independent_vars)))")
 end
 
@@ -415,7 +486,7 @@ function get_sparameter(dataset::QucsDataset, i::Int, j::Int)::Vector{ComplexF64
     if haskey(dataset.dependent_vars, name)
         return dataset.dependent_vars[name].values
     end
-    
+
     error("S-parameter '$name' not found in dataset. Available S-parameters: $(filter(n -> startswith(n, "S["), collect(keys(dataset.dependent_vars))))")
 end
 
@@ -439,13 +510,13 @@ v_out = get_node_voltage(result, "net5")
 function get_node_voltage(dataset::QucsDataset, node_name::String)::Vector{ComplexF64}
     # Try both with and without .V suffix
     names_to_try = [node_name, "$(node_name).V", "v.$(node_name)"]
-    
+
     for name in names_to_try
         if haskey(dataset.dependent_vars, name)
             return dataset.dependent_vars[name].values
         end
     end
-    
+
     error("Node voltage '$node_name' not found in dataset. Available voltage vectors: $(filter(n -> contains(n, ".V") || startswith(n, "v."), collect(keys(dataset.dependent_vars))))")
 end
 
@@ -472,11 +543,152 @@ function get_s_matrix_size(dataset::QucsDataset)::Int
             max_port = max(max_port, i, j)
         end
     end
-    
+
     if max_port == 0
         error("No S-parameters found in dataset")
     end
-    
+
+
     return max_port
 end
+
+# ============================================================================
+# Typed Result Extraction
+# ============================================================================
+
+"""
+    extract_dc_result(dataset::QucsDataset) -> DCResult
+
+Extract DC operating point results from dataset.
+
+# Returns
+- `DCResult` with voltages and currents dictionaries
+
+# Example
+```julia
+dc_data = extract_dc_result(dataset)
+v_out = dc_data.voltages["_net1"]
+i_supply = dc_data.currents["V1"]
+```
+"""
+function extract_dc_result(dataset::QucsDataset)::DCResult
+    voltages = Dict{String,Float64}()
+    currents = Dict{String,Float64}()
+
+    # Extract all node voltages (format: "_netN.V" or "nodename.V")
+    for (name, vec) in dataset.dependent_vars
+        if endswith(name, ".V")
+            node_name = replace(name, ".V" => "")
+            voltages[node_name] = real(vec.values[1])
+        elseif endswith(name, ".I")
+            comp_name = replace(name, ".I" => "")
+            currents[comp_name] = real(vec.values[1])
+        end
+    end
+
+    return DCResult(voltages, currents)
+end
+
+"""
+    extract_ac_result(dataset::QucsDataset) -> ACResult
+
+Extract AC analysis results from dataset.
+
+# Returns
+- `ACResult` with frequency sweep data
+
+# Example
+```julia
+ac_data = extract_ac_result(dataset)
+freqs = ac_data.frequencies_Hz
+v_out = ac_data.voltages["_net1"]  # ComplexF64 vector vs frequency
+```
+"""
+function extract_ac_result(dataset::QucsDataset)::ACResult
+    frequencies_Hz = get_frequency(dataset)
+    voltages = Dict{String,Vector{ComplexF64}}()
+    currents = Dict{String,Vector{ComplexF64}}()
+
+    # Extract all node voltages and branch currents
+    for (name, vec) in dataset.dependent_vars
+        if endswith(name, ".V")
+            node_name = replace(name, ".V" => "")
+            voltages[node_name] = vec.values
+        elseif endswith(name, ".I")
+            comp_name = replace(name, ".I" => "")
+            currents[comp_name] = vec.values
+        end
+    end
+
+    return ACResult(frequencies_Hz, voltages, currents)
+end
+
+"""
+    extract_transient_result(dataset::QucsDataset) -> TransientResult
+
+Extract transient analysis results from dataset.
+
+# Returns
+- `TransientResult` with time domain data
+
+# Example
+```julia
+tran_data = extract_transient_result(dataset)
+times = tran_data.time_s
+v_out = tran_data.voltages["_net1"]  # Float64 vector vs time
+```
+"""
+function extract_transient_result(dataset::QucsDataset)::TransientResult
+    time_s = get_time(dataset)
+    voltages = Dict{String,Vector{Float64}}()
+    currents = Dict{String,Vector{Float64}}()
+
+    # Extract all node voltages and branch currents (real values for transient)
+    for (name, vec) in dataset.dependent_vars
+        if endswith(name, ".V")
+            node_name = replace(name, ".V" => "")
+            voltages[node_name] = real.(vec.values)
+        elseif endswith(name, ".I")
+            comp_name = replace(name, ".I" => "")
+            currents[comp_name] = real.(vec.values)
+        end
+    end
+
+    return TransientResult(time_s, voltages, currents)
+end
+
+"""
+    extract_sparameter_result(dataset::QucsDataset; z0::Real=50.0) -> SParameterResult
+
+Extract S-parameter analysis results from dataset.
+
+# Arguments
+- `dataset::QucsDataset`: Parsed simulation output
+- `z0::Real=50.0`: Reference impedance in Ohms
+
+# Returns
+- `SParameterResult` with S-parameter matrix data
+
+# Example
+```julia
+sp_data = extract_sparameter_result(dataset)
+freqs = sp_data.frequencies_Hz
+s21 = sp_data.s_matrix[(2,1)]  # Forward transmission vs frequency
+```
+"""
+function extract_sparameter_result(dataset::QucsDataset; z0::Real=50.0)::SParameterResult
+    frequencies_Hz = get_frequency(dataset)
+    num_ports = get_s_matrix_size(dataset)
+    s_matrix = Dict{Tuple{Int,Int},Vector{ComplexF64}}()
+
+    # Extract all S-parameters
+    for i in 1:num_ports
+        for j in 1:num_ports
+            s_matrix[(i, j)] = get_sparameter(dataset, i, j)
+        end
+    end
+
+    return SParameterResult(frequencies_Hz, num_ports, s_matrix, Float64(z0))
+end
+
 

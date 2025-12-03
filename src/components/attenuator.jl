@@ -10,19 +10,10 @@ impedance matching.
 - `name::String`: Component identifier
 - `n1::Int`: Input terminal node number
 - `n2::Int`: Output terminal node number
-- `attenuation::Real`: Attenuation in dB
+- `attenuation::Real`: Attenuation in linear scale
 - `z0::Real`: Reference impedance in Ohms (default: 50)
 - `temp::Real`: Temperature in Celsius (default: 26.85)
 
-# Example
-```@example
-using CircuitTypes
-# 10 dB attenuator
-ATT1 = Attenuator("ATT1", 10.0)
-
-# 20 dB attenuator with 75Ω impedance
-ATT2 = Attenuator("ATT2", 20.0, z0=75.0)
-```
 """
 mutable struct Attenuator <: AbstractAttenuator
     name::String
@@ -44,7 +35,7 @@ function to_qucs_netlist(comp::Attenuator)::String
     parts = ["Attenuator:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n1))")
     push!(parts, "$(qucs_node(comp.n2))")
-    push!(parts, "L=\"$(format_value(comp.attenuation)) dB\"")
+    push!(parts, "L=\"$(format_value(comp.attenuation))\"")
     push!(parts, "Zref=\"$(format_value(comp.z0))\"")
     push!(parts, "Temp=\"$(format_value(comp.temp))\"")
     return join(parts, " ")

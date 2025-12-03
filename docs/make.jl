@@ -27,6 +27,7 @@ makedocs(
     pages=Any[
         "index.md",
         "Examples"=>[
+            "Examples/attenuator.md",
             "Examples/lowpass_filter.md",
             "Examples/amplifier.md",
         ],

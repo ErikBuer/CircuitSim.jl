@@ -49,16 +49,21 @@ export SParameterAnalysis, ParameterSweep
 export HarmonicBalanceAnalysis, NoiseAnalysis
 export to_qucs_analysis, to_spice_analysis
 
-# Parser exports
+# Parser exports - Base types
 export SimulationStatus, SIM_SUCCESS, SIM_ERROR, SIM_PARSE_ERROR, SIM_NOT_RUN
 export DataVector, QucsDataset
 export parse_qucs_value, parse_qucs_dataset
 export get_real_vector, get_imag_vector, get_complex_vector
 export list_vectors, has_errors, print_summary
-# Analysis-specific convenience methods
+
+# Parser exports - Typed result structures (Qucsator-specific)
+export DCResult, ACResult, TransientResult, SParameterResult
+export extract_dc_result, extract_ac_result, extract_transient_result, extract_sparameter_result
+
+# Parser exports - Analysis-specific convenience methods
 export get_frequency, get_time, get_sparameter, get_node_voltage, get_s_matrix_size
 
-# High-level result access exports
+# High-level result access exports (Qucsator-specific)
 export SimulationResult
 export voltage, voltage_vector, voltage_between
 export current, current_vector

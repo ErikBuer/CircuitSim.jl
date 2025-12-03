@@ -16,8 +16,8 @@ using CairoMakie
 circ = Circuit()
 
 # Ports
-port1 = ACPowerSource("P1", 1, impedance=50.0, power_dbm=-30.0, frequency=1e9)
-port2 = ACPowerSource("P2", 2, impedance=50.0, power_dbm=-30.0, frequency=1e9)
+port1 = Pac("P1", 1)
+port2 = Pac("P2", 2)
 add_component!(circ, port1)
 add_component!(circ, port2)
 
@@ -66,21 +66,28 @@ sparam = SParameterAnalysis(1e6, 1e9, 201,
 )
 
 # Run simulation
-result = simulate_qucsator(circ, sparam)
+dataset = simulate_qucsator(circ, sparam)
 
-println("Available vectors: ", list_vectors(result))
+# Extract typed S-parameter results
+sp_result = extract_sparameter_result(dataset)
+
+println("S-parameter simulation completed:")
+println("  Number of ports: ", sp_result.num_ports)
+println("  Frequency points: ", length(sp_result.frequencies_Hz))
+println("  Reference impedance: ", sp_result.z0_Ohm, " Ω")
 ```
 
 ## Plotting Results
 
-```@example lpf
-# Extract frequency and S-parameters using convenience methods
-freq_vec = get_frequency(result)
-freq_mhz = freq_vec ./ 1e6
+Extract S-parameters from the typed result structure.
 
-# Get S11 and S21 (complex values)
-s11_complex = get_sparameter(result, 1, 1)
-s21_complex = get_sparameter(result, 2, 1)
+```@example lpf
+# Get frequency vector in MHz
+freq_mhz = sp_result.frequencies_Hz ./ 1e6
+
+# Extract S-parameters from typed result
+s11_complex = sp_result.s_matrix[(1,1)]
+s21_complex = sp_result.s_matrix[(2,1)]
 
 # Convert to dB
 s11_db = 20 .* log10.(abs.(s11_complex))

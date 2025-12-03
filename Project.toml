@@ -5,6 +5,7 @@ authors = ["Erik Buer <buer94@gmail.com>"]
 
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 TouchstoneParser = "b369b07b-dee1-4342-88e3-29a776361291"
 
 [compat]

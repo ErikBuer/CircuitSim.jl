@@ -1,4 +1,4 @@
-# RF Amplifier S-Parameters
+# RF Amplifier
 
 S-parameter analysis of a 20 dB RF amplifier from 500 MHz to 6 GHz.
 
@@ -11,8 +11,8 @@ using CairoMakie
 # Create circuit
 circ = Circuit()
 
-# Amplifier: 20 dB gain, 3 dB noise figure
-amp = Amplifier("AMP1", 20.0, 3.0)
+# Amplifier: 20 dB gain = linear gain of 10, 3 dB NF = linear NF of 2
+amp = Amplifier("AMP1", 100.0, 1.0)
 add_component!(circ, amp)
 
 # AC power sources (S-parameter ports)
@@ -42,6 +42,11 @@ sparam = SParameterAnalysis(500e6, 6e9, 201)
 
 # Run simulation
 result = simulate_qucsator(circ, sparam)
+println(result)
+```
+
+
+```@example amp_sp
 
 # Extract data using convenience methods
 freq = get_frequency(result) ./ 1e9  # Convert to GHz
