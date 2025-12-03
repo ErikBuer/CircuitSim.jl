@@ -125,5 +125,5 @@ end
 println("\n" * "="^70)
 println("To simulate this circuit, you would run:")
 println("  analysis = SParameterAnalysis(start=500e6, stop=6e9, points=501)")
-println("  result = simulate(circuit, [analysis], backend=:qucsator)")
+println("  result = simulate_qucsator(circuit, [analysis], backend=:qucsator)")
 println("="^70)

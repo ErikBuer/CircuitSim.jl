@@ -18,7 +18,7 @@ Computes the DC operating point of the circuit.
 # Example
 ```julia
 analysis = DCAnalysis()
-result = simulate(circuit, analysis)
+result = simulate_qucsator(circuit, analysis)
 
 # With custom temperature
 analysis = DCAnalysis(temp=85.0)

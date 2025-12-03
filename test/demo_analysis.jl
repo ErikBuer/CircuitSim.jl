@@ -90,8 +90,8 @@ println("\n" * "="^70)
 println("### DC Analysis ###")
 println("="^70)
 
-println("\nRunning: simulate(c, DCAnalysis())")
-result_dc = simulate(c, DCAnalysis())
+println("\nRunning: simulate_qucsator(c, DCAnalysis())")
+result_dc = simulate_qucsator(c, DCAnalysis())
 
 if result_dc.dataset.status == SIM_SUCCESS
     v_in = voltage(result_dc, V1, :nplus)
@@ -110,8 +110,8 @@ println("\n" * "="^70)
 println("### DC Analysis with Custom Parameters ###")
 println("="^70)
 
-println("\nRunning: simulate(c, DCAnalysis(temp=85.0, save_all=true))")
-result_dc2 = simulate(c, DCAnalysis(temp=85.0, save_all=true))
+println("\nRunning: simulate_qucsator(c, DCAnalysis(temp=85.0, save_all=true))")
+result_dc2 = simulate_qucsator(c, DCAnalysis(temp=85.0, save_all=true))
 
 if result_dc2.dataset.status == SIM_SUCCESS
     println("  Simulation at 85°C completed!")

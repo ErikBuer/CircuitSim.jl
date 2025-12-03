@@ -23,7 +23,7 @@ Sweeps a component parameter and runs an inner analysis at each point.
 # Sweep R1 from 1kΩ to 10kΩ and run DC analysis at each point
 dc = DCAnalysis()
 sweep = ParameterSweep("R1.R", 1e3, 10e3, 10, dc)
-result = simulate(circuit, sweep)
+result = simulate_qucsator(circuit, sweep)
 
 # Logarithmic parameter sweep with AC inner analysis
 ac = ACAnalysis(1.0, 1e6, 101)

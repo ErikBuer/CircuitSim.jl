@@ -36,7 +36,7 @@ export netlist_qucs, netlist_ngspice
 export to_qucs_netlist, to_spice_netlist
 
 # Backend functions
-export check_qucsator, run_qucsator, simulate_qucsator, simulate
+export check_qucsator, run_qucsator, simulate_qucsator
 export check_ngspice, run_ngspice
 
 # Analysis types
@@ -58,6 +58,7 @@ export list_vectors, has_errors, print_summary
 export SimulationResult
 export voltage, voltage_vector, voltage_between
 export current, current_vector
+
 
 # Abstract Types (must be loaded first)
 

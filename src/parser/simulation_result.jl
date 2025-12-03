@@ -12,7 +12,7 @@ voltage and current at component pins.
 
 # Example
 ```julia
-result = simulate(c, DCAnalysis())
+result = simulate_qucsator(c, DCAnalysis())
 v = voltage(result, R1, :n1)      # Voltage at R1's n1 pin
 i = current(result, V1)           # Current through V1
 ```

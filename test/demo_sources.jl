@@ -90,7 +90,7 @@ println("### Running Qucsator Simulation ###")
 println("="^60)
 
 # Using the new analysis struct instead of raw string
-result = simulate(c, DCAnalysis())
+result = simulate_qucsator(c, DCAnalysis())
 
 if result.dataset.status == SIM_SUCCESS
     v_top = voltage(result, R1, :n1)

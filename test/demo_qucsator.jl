@@ -55,7 +55,7 @@ analysis = [".DC:DC1 saveOPs=\"yes\""]
 
 # Run the simulation using the high-level API
 println("\nExecuting simulation...")
-result = simulate(c, analysis)
+result = simulate_qucsator(c, analysis)
 
 # Print results
 println("\n" * "="^60)
