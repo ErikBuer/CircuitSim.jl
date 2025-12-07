@@ -28,8 +28,8 @@ println("="^70)
 c = Circuit()
 
 # Create 2-port amplifier circuit
-P1 = Pac("P1", 1)
-P2 = Pac("P2", 2)
+P1 = ACPowerSource("P1", 1, impedance=50.0)
+P2 = ACPowerSource("P2", 2, impedance=50.0)
 AMP = Amplifier("AMP1", 10.0, 1.41)  # 10x gain, NF=1.41
 
 add_component!(c, P1)

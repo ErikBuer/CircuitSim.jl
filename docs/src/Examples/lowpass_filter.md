@@ -16,8 +16,8 @@ using CairoMakie
 circ = Circuit()
 
 # Ports
-port1 = Pac("P1", 1)
-port2 = Pac("P2", 2)
+port1 = ACPowerSource("P1", 1, impedance=50.0)
+port2 = ACPowerSource("P2", 2, impedance=50.0)
 add_component!(circ, port1)
 add_component!(circ, port2)
 

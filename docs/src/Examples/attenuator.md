@@ -10,12 +10,11 @@ using CircuitTypes
 # Create circuit
 circ = Circuit()
 
-# Measurement ports
-port1 = Pac("P1", 1)  # Port 1
-port2 = Pac("P2", 2)  # Port 2
+# AC power sources (S-parameter ports)
+port1 = ACPowerSource("P1", 1, impedance=50.0)
+port2 = ACPowerSource("P2", 2, impedance=50.0)
 
-# 10 dB attenuator (linear ratio 3.162) with 50 Ω impedance
-att = Attenuator("ATT1", 20)
+att = Attenuator("ATT1", 30)
 
 # Add components
 add_component!(circ, port1)

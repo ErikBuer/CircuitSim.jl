@@ -28,6 +28,7 @@ makedocs(
         "index.md",
         "Examples"=>[
             "Examples/attenuator.md",
+            "Examples/resistor.md",
             "Examples/lowpass_filter.md",
             "Examples/amplifier.md",
         ],
