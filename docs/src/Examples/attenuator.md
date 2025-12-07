@@ -1,8 +1,8 @@
-# Attenuator
+# Attenuator S-Parameters
 
 ## Circuit Setup
 
-Create a 2-port measurement setup with the attenuator between two ports.
+Two-port measurement with 10 dB attenuator.
 
 ```@example att
 using CircuitTypes
@@ -14,107 +14,52 @@ circ = Circuit()
 port1 = ACPowerSource("P1", 1, impedance=50.0)
 port2 = ACPowerSource("P2", 2, impedance=50.0)
 
-att = Attenuator("ATT1", 30)
+# 10 dB attenuator
+att = Attenuator("ATT1", 10)
+
+# Ground
+gnd = Ground("GND")
 
 # Add components
 add_component!(circ, port1)
 add_component!(circ, att)
 add_component!(circ, port2)
+add_component!(circ, gnd)
 
-# Ground reference
-gnd = Ground("GND")
-add_component!(circ, gnd);
-```
-
-## Connections
-
-Connect Port 1 → Attenuator → Port 2 with proper grounding.
-
-```@example att
-# Port 1 to attenuator input
+# Connections
 @connect circ port1.nplus att.n1
-
-# Attenuator output to Port 2
 @connect circ att.n2 port2.nplus
-
-# Ground connections
 @connect circ port1.nminus gnd.n
 @connect circ port2.nminus gnd.n
 ```
 
 ## S-Parameter Simulation
 
-Run S-parameter analysis from 1 GHz to 10 GHz to verify the attenuator performance.
+Measure S-parameters at 5 GHz (qucsator requires at least 2 points).
 
 ```@example att
-# S-parameter analysis: 1-10 GHz, logarithmic sweep
-analysis = SParameterAnalysis(1e9, 10e9, 101,
-    sweep_type=LOGARITHMIC,
-    z0=50.0
-)
+# S-parameter analysis: 5 GHz with minimal span (2 points required by simulator)
+analysis = SParameterAnalysis(5e9, 5.001e9, 2, z0=50.0)
 
 # Run simulation
 dataset = simulate_qucsator(circ, analysis)
 
-# Extract typed S-parameter results
+# Extract S-parameters
 sp_result = extract_sparameter_result(dataset)
-```
 
-## Results Analysis
+# Get S-parameters at first frequency point
+s11 = sp_result.s_matrix[(1,1)][1]
+s21 = sp_result.s_matrix[(2,1)][1]
+s12 = sp_result.s_matrix[(1,2)][1]
+s22 = sp_result.s_matrix[(2,2)][1]
 
-Extract and display the S-parameters.
+s11_dB = 20 * log10(abs(s11))
+s21_dB = 20 * log10(abs(s21))
+s12_dB = 20 * log10(abs(s12))
+s22_dB = 20 * log10(abs(s22))
 
-```@example att
-# Get frequency vector in GHz
-freqs_GHz = sp_result.frequencies_Hz ./ 1e9
-
-# Extract S-parameters from typed result
-s11 = sp_result.s_matrix[(1,1)]  # Input reflection
-s21 = sp_result.s_matrix[(2,1)]  # Forward transmission (insertion loss)
-s12 = sp_result.s_matrix[(1,2)]  # Reverse transmission
-s22 = sp_result.s_matrix[(2,2)]  # Output reflection
-
-# Convert to dB
-s11_dB = 20 .* log10.(abs.(s11))
-s21_dB = 20 .* log10.(abs.(s21))
-s12_dB = 20 .* log10.(abs.(s12))
-s22_dB = 20 .* log10.(abs.(s22))
-
-nothing # hide
-```
-
-## Plotting with CairoMakie
-
-```@example att
-using CairoMakie
-
-fig = Figure(size=(900, 700), fontsize=14)
-
-# S21 and S12 (Insertion Loss and Isolation)
-ax1 = Axis(fig[1, 1],
-    xlabel = "Frequency [GHz]",
-    ylabel = "Magnitude [dB]",
-    title = "10 dB Attenuator - Transmission",
-)
-
-lines!(ax1, freqs_GHz, s21_dB, label="S₂₁ (Forward)", linewidth=2, color=:blue)
-lines!(ax1, freqs_GHz, s12_dB, label="S₁₂ (Reverse)", linewidth=2, color=:red, linestyle=:dash)
-
-ylims!(ax1, -40, 0)
-axislegend(ax1, position=:rb)
-
-# S11 and S22 (Return Loss)
-ax2 = Axis(fig[2, 1],
-    xlabel = "Frequency [GHz]",
-    ylabel = "Magnitude [dB]",
-    title = "10 dB Attenuator - Reflection",
-)
-
-lines!(ax2, freqs_GHz, s11_dB, label="S₁₁ (Input)", linewidth=2, color=:blue)
-lines!(ax2, freqs_GHz, s22_dB, label="S₂₂ (Output)", linewidth=2, color=:red, linestyle=:dash)
-
-ylims!(ax2, -40, 0)
-axislegend(ax2, position=:lb)
-
-fig
+println("S11 (input reflection) = $(s11_dB) dB")
+println("S21 (forward transmission) = $(s21_dB) dB")
+println("S12 (reverse transmission) = $(s12_dB) dB")
+println("S22 (output reflection) = $(s22_dB) dB")
 ```

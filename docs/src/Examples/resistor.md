@@ -36,7 +36,7 @@ Measure S11 near 5 GHz (qucsator requires at least 2 points).
 
 ```@example resistor
 # S-parameter analysis: 5 GHz with minimal span (2 points required by simulator)
-analysis = SParameterAnalysis(5e9, 5.1e9, 2, z0=50.0)
+analysis = SParameterAnalysis(5e9, 5.001e9, 2, z0=50.0)
 
 # Run simulation
 dataset = simulate_qucsator(circ, analysis)

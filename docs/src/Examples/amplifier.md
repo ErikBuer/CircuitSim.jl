@@ -1,43 +1,45 @@
-# RF Amplifier
+# Amplifier S-Parameters
 
-S-parameter analysis of a 20 dB RF amplifier from 500 MHz to 6 GHz.
+## Circuit Setup
 
-## Circuit
+Two-port measurement with 20 dB gain amplifier.
 
-```@example amp_sp
+```@example amp
 using CircuitTypes
-using CairoMakie
 
 # Create circuit
 circ = Circuit()
 
-# Amplifier: 20 dB gain = linear gain of 10, 3 dB NF = linear NF of 2
-amp = Amplifier("AMP1", 100.0, 1.0)
-add_component!(circ, amp)
-
 # AC power sources (S-parameter ports)
-p1 = ACPowerSource("P1", 1, impedance=50.0)
-p2 = ACPowerSource("P2", 2, impedance=50.0)
-add_component!(circ, p1)
-add_component!(circ, p2)
+port1 = ACPowerSource("P1", 1, impedance=50.0)
+port2 = ACPowerSource("P2", 2, impedance=50.0)
+
+# Amplifier voltage gain: 20 dB gain = linear gain of 10, NF = 2.0
+amp = Amplifier("AMP1", 10.0, 2.0)
+
 # Ground
 gnd = Ground("GND")
+
+# Add components
+add_component!(circ, port1)
+add_component!(circ, amp)
+add_component!(circ, port2)
 add_component!(circ, gnd)
 
-# Connect: P1 -> Amp -> P2
-@connect circ p1.nplus amp.n1
-@connect circ amp.n2 p2.nplus
-@connect circ p1.nminus gnd.n
-@connect circ p2.nminus gnd.n
-
-nothing # hide
+# Connections
+@connect circ port1.nplus amp.n1
+@connect circ amp.n2 port2.nplus
+@connect circ port1.nminus gnd.n
+@connect circ port2.nminus gnd.n
 ```
 
 ## S-Parameter Simulation
 
-```@example amp_sp
-# S-parameter analysis: 500 MHz to 6 GHz
-analysis = SParameterAnalysis(500e6, 6e9, 201, z0=50.0)
+Measure S-parameters at 2.4 GHz (qucsator requires at least 2 points).
+
+```@example amp
+# S-parameter analysis: 2.4 GHz with minimal span (2 points required by simulator)
+analysis = SParameterAnalysis(2.4e9, 2.4001e9, 2, z0=50.0)
 
 # Run simulation
 dataset = simulate_qucsator(circ, analysis)
@@ -45,41 +47,19 @@ dataset = simulate_qucsator(circ, analysis)
 # Extract S-parameters
 sp_result = extract_sparameter_result(dataset)
 
-# Get frequency in GHz
-freq_GHz = sp_result.frequencies_Hz ./ 1e9
+# Get S-parameters at first frequency point
+s11 = sp_result.s_matrix[(1,1)][1]
+s21 = sp_result.s_matrix[(2,1)][1]
+s12 = sp_result.s_matrix[(1,2)][1]
+s22 = sp_result.s_matrix[(2,2)][1]
 
-# Extract S-parameters
-s21 = sp_result.s_matrix[(2,1)]  # Forward gain
-s11 = sp_result.s_matrix[(1,1)]  # Input return loss
-s12 = sp_result.s_matrix[(1,2)]  # Reverse isolation
+s11_dB = 20 * log10(abs(s11))
+s21_dB = 20 * log10(abs(s21))
+s12_dB = 20 * log10(abs(s12))
+s22_dB = 20 * log10(abs(s22))
 
-# Convert to dB
-s21_dB = 20 .* log10.(abs.(s21))
-s11_dB = 20 .* log10.(abs.(s11))
-s12_dB = 20 .* log10.(abs.(s12))
-
-nothing # hide
-```
-
-## Plot
-
-```@example amp_sp
-fig = Figure(size=(900, 600))
-
-ax = Axis(fig[1, 1],
-    xlabel = "Frequency [GHz]",
-    ylabel = "Magnitude [dB]",
-    title = "Amplifier S-Parameters (20 dB gain, 50 Ω)"
-)
-
-lines!(ax, freq_GHz, s21_dB, label="S₂₁ (Forward Gain)", linewidth=2.5, color=:blue)
-lines!(ax, freq_GHz, s11_dB, label="S₁₁ (Input Return Loss)", linewidth=2, color=:red)
-lines!(ax, freq_GHz, s12_dB, label="S₁₂ (Reverse Isolation)", linewidth=2, color=:green)
-
-hlines!(ax, [0], linestyle=:dash, color=:gray, linewidth=1)
-axislegend(ax, position=:rb)
-
-ylims!(ax, -60, 25)
-
-fig
+println("S11 (input reflection) = $(s11_dB) dB")
+println("S21 (forward gain) = $(s21_dB) dB")
+println("S12 (reverse isolation) = $(s12_dB) dB")
+println("S22 (output reflection) = $(s22_dB) dB")
 ```
