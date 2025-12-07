@@ -60,3 +60,28 @@ println("S21 (forward gain) = $(s21_dB) dB")
 println("S12 (reverse isolation) = $(s12_dB) dB")
 println("S22 (output reflection) = $(s22_dB) dB")
 ```
+
+## Noise Parameters
+
+Enable noise parameter extraction to get noise figure, minimum noise figure, optimal source reflection coefficient, and equivalent noise resistance.
+
+```@example amp
+# S-parameter analysis with noise enabled
+analysis_noise = SParameterAnalysis(2.4e9, 2.4001e9, 2, z0=50.0, noise=true)
+sp_noise = simulate_qucsator(circ, analysis_noise)
+
+# Extract noise parameters at first frequency
+if !isnothing(sp_noise.F)
+    F_dB = 10 * log10(sp_noise.F[1])
+    Fmin_dB = 10 * log10(sp_noise.Fmin[1])
+    Sopt_mag = abs(sp_noise.Sopt[1])
+    Sopt_angle_deg = angle(sp_noise.Sopt[1]) * 180 / π
+    Rn = sp_noise.Rn_Ohm[1]
+    
+    println("Noise Parameters:")
+    println("  F (Noise Figure) = $(round(F_dB, digits=2)) dB")
+    println("  Fmin (Minimum NF) = $(round(Fmin_dB, digits=2)) dB")
+    println("  Γopt = $(round(Sopt_mag, digits=3)) ∠ $(round(Sopt_angle_deg, digits=1))°")
+    println("  Rn = $(round(Rn, digits=2)) Ω")
+end
+```

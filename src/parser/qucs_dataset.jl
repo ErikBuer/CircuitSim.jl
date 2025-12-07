@@ -86,12 +86,20 @@ S-parameter analysis results.
 - `num_ports::Int`: Number of ports
 - `s_matrix::Dict{Tuple{Int,Int},Vector{ComplexF64}}`: S[i,j] vs frequency
 - `z0_Ohm::Float64`: Reference impedance
+- `F::Union{Nothing,Vector{Float64}}`: Noise figure (linear, not dB) vs frequency (if noise analysis enabled)
+- `Fmin::Union{Nothing,Vector{Float64}}`: Minimum noise figure (linear) vs frequency (if noise analysis enabled)
+- `Sopt::Union{Nothing,Vector{ComplexF64}}`: Optimal source reflection coefficient vs frequency (if noise analysis enabled)
+- `Rn_Ohm::Union{Nothing,Vector{Float64}}`: Equivalent noise resistance in Ohms vs frequency (if noise analysis enabled)
 """
 struct SParameterResult
     frequencies_Hz::Vector{Float64}
     num_ports::Int
     s_matrix::Dict{Tuple{Int,Int},Vector{ComplexF64}}
     z0_Ohm::Float64
+    F::Union{Nothing,Vector{Float64}}
+    Fmin::Union{Nothing,Vector{Float64}}
+    Sopt::Union{Nothing,Vector{ComplexF64}}
+    Rn_Ohm::Union{Nothing,Vector{Float64}}
 end
 
 """
@@ -667,13 +675,21 @@ Extract S-parameter analysis results from dataset.
 - `z0::Real=50.0`: Reference impedance in Ohms
 
 # Returns
-- `SParameterResult` with S-parameter matrix data
+- `SParameterResult` with S-parameter matrix data and noise parameters (if noise analysis was enabled)
 
 # Example
 ```julia
 sp_data = extract_sparameter_result(dataset)
 freqs = sp_data.frequencies_Hz
 s21 = sp_data.s_matrix[(2,1)]  # Forward transmission vs frequency
+
+# Noise parameters (if available)
+if !isnothing(sp_data.F)
+    nf_db = 10 * log10.(sp_data.F)  # Convert to dB
+    fmin_db = 10 * log10.(sp_data.Fmin)  # Minimum NF in dB
+    gamma_opt = sp_data.Sopt  # Optimal source reflection coefficient
+    rn = sp_data.Rn_Ohm  # Equivalent noise resistance
+end
 ```
 """
 function extract_sparameter_result(dataset::QucsDataset; z0::Real=50.0)::SParameterResult
@@ -688,7 +704,18 @@ function extract_sparameter_result(dataset::QucsDataset; z0::Real=50.0)::SParame
         end
     end
 
-    return SParameterResult(frequencies_Hz, num_ports, s_matrix, Float64(z0))
+    # Extract noise parameters if present
+    # Noise parameters are computed by qucsator when Noise="yes" in S-parameter analysis
+    # F: Noise figure (linear)
+    # Fmin: Minimum noise figure (linear)
+    # Sopt: Optimal source reflection coefficient for minimum noise
+    # Rn: Equivalent noise resistance (Ohms)
+    F = haskey(dataset.dependent_vars, "F") ? real.(dataset.dependent_vars["F"].values) : nothing
+    Fmin = haskey(dataset.dependent_vars, "Fmin") ? real.(dataset.dependent_vars["Fmin"].values) : nothing
+    Sopt = haskey(dataset.dependent_vars, "Sopt") ? dataset.dependent_vars["Sopt"].values : nothing
+    Rn_Ohm = haskey(dataset.dependent_vars, "Rn") ? real.(dataset.dependent_vars["Rn"].values) : nothing
+
+    return SParameterResult(frequencies_Hz, num_ports, s_matrix, Float64(z0), F, Fmin, Sopt, Rn_Ohm)
 end
 
 """
