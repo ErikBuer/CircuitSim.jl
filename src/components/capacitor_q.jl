@@ -35,13 +35,15 @@ mutable struct CapacitorQ <: AbstractCapacitorWithQualityFactor
 end
 
 function to_qucs_netlist(comp::CapacitorQ)::String
-    # Qucs uses the syntax C:name n1 n2 C="value" Q="q" F="freq"
-    parts = ["C:$(comp.name)"]
+    # Qucsator-RF uses CAPQ component with properties C, Q, f, Mode
+    # CAPQ:name n1 n2 C="value" Q="q" f="freq" Mode="Constant"
+    parts = ["CAPQ:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n1))")
     push!(parts, "$(qucs_node(comp.n2))")
     push!(parts, "C=\"$(format_value(comp.value))\"")
     push!(parts, "Q=\"$(format_value(comp.q))\"")
-    push!(parts, "F=\"$(format_value(comp.freq))\"")
+    push!(parts, "f=\"$(format_value(comp.freq))\"")
+    push!(parts, "Mode=\"Constant\"")
     return join(parts, " ")
 end
 

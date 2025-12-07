@@ -27,8 +27,9 @@ makedocs(
     pages=Any[
         "index.md",
         "Examples"=>[
-            "Examples/attenuator.md",
             "Examples/resistor.md",
+            "Examples/capacitor_q.md",
+            "Examples/attenuator.md",
             "Examples/lowpass_filter.md",
             "Examples/amplifier.md",
         ],

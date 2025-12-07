@@ -35,13 +35,15 @@ mutable struct InductorQ <: AbstractInductorWithQualityFactor
 end
 
 function to_qucs_netlist(comp::InductorQ)::String
-    # Qucs uses the syntax L:name n1 n2 L="value" Q="q" F="freq"
-    parts = ["L:$(comp.name)"]
+    # Qucsator-RF uses INDQ component with properties L, Q, f, Mode
+    # INDQ:name n1 n2 L="value" Q="q" f="freq" Mode="Constant"
+    parts = ["INDQ:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n1))")
     push!(parts, "$(qucs_node(comp.n2))")
     push!(parts, "L=\"$(format_value(comp.value))\"")
     push!(parts, "Q=\"$(format_value(comp.q))\"")
-    push!(parts, "F=\"$(format_value(comp.freq))\"")
+    push!(parts, "f=\"$(format_value(comp.freq))\"")
+    push!(parts, "Mode=\"Constant\"")
     return join(parts, " ")
 end
 

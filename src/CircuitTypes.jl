@@ -66,6 +66,9 @@ export extract_dc_result, extract_ac_result, extract_transient_result, extract_s
 # Parser exports - Analysis-specific convenience methods
 export get_frequency, get_time, get_sparameter, get_node_voltage, get_s_matrix_size
 
+# Utility functions
+export s2z, s2z_series
+
 
 # Abstract Types (must be loaded first)
 
@@ -91,16 +94,13 @@ include("union_find.jl")
 include("circuit.jl")
 
 # Parser (must be loaded before backends that use QucsDataset)
-
 include("parser/qucs_dataset.jl")
 
 # Backends (declares dispatch function stubs)
-
 include("backends/qucsator.jl")
 include("backends/ngspice.jl")
 
 # Components (implements dispatch methods for each component)
-
 include("components/resistor.jl")
 include("components/capacitor.jl")
 include("components/inductor.jl")
