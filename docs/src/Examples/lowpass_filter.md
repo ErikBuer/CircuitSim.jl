@@ -200,8 +200,8 @@ ax2 = Axis(fig2[1, 1],
     title = "AC Voltage Response",
 )
 
-lines!(ax2, freq_ac_mhz, v_in_db, label="Input Voltage", linewidth=2, color=:blue)
-lines!(ax2, freq_ac_mhz, v_out_db, label="Output Voltage", linewidth=2, color=:red)
+lines!(ax2, freq_ac_mhz, v_in_db, label="Input Voltage", linewidth=2)
+lines!(ax2, freq_ac_mhz, v_out_db, label="Output Voltage", linewidth=2)
 
 xlims!(ax2, 0, 1000)
 axislegend(ax2, position=:lb)
