@@ -5,6 +5,8 @@ format_value(v::Real) = sprint(x -> begin
     show(x, v)
 end)
 
+using StaticArrays
+
 """
     s2z(S::Matrix, z0=50.0) -> Matrix
 
@@ -46,13 +48,15 @@ julia> abs(Z[1,1] - z_load) < 1e-10  # Verify Z11 matches load impedance
 true
 ```
 """
-function s2z(S::Matrix, z0=50.0)::Matrix
+function s2z(S::AbstractMatrix, z0=50.0)
     # Identity matrix
-    I = [1.0 0.0; 0.0 1.0]
+    I = @SMatrix [1.0 0.0; 0.0 1.0]
+
+    # Convert S to SMatrix if needed
+    S_static = S isa SMatrix ? S : SMatrix{2,2}(S)
 
     # Z = z0 * (I + S) * inv(I - S)
-    # Mathematically equivalent to Delta-based formula but more compact
-    Z = z0 * (I + S) * inv(I - S)
+    Z = z0 * (I + S_static) * inv(I - S_static)
 
     return Z
 end
@@ -88,7 +92,7 @@ julia> using CircuitTypes
 
 julia> z0 = 50.0;
 
-julia> z_series = 0.0 - 100.0im;  # 100Ω capacitive reactance
+julia> z_series = 0.0 - 100.0im;  # 100 Ω capacitive reactance
 
 julia> A, B, C, D = 1.0+0.0im, z_series, 0.0+0.0im, 1.0+0.0im;  # ABCD for series element
 
@@ -106,7 +110,7 @@ julia> abs(z_extracted - z_series) < 1e-10  # Verify extracted impedance matches
 true
 ```
 """
-function s2z_series(S::Matrix, z0=50.0)::ComplexF64
+function s2z_series(S::AbstractMatrix, z0=50.0)::ComplexF64
     # Use S-parameter to ABCD conversion for robustness
     # For a series element: A=1, B=Z_series, C=0, D=1
     # The series impedance is the B parameter
