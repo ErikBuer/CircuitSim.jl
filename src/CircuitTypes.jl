@@ -66,11 +66,6 @@ export extract_dc_result, extract_ac_result, extract_transient_result, extract_s
 # Parser exports - Analysis-specific convenience methods
 export get_frequency, get_time, get_sparameter, get_node_voltage, get_s_matrix_size
 
-# High-level result access exports (Qucsator-specific)
-export SimulationResult
-export voltage, voltage_vector, voltage_between
-export current, current_vector
-
 
 # Abstract Types (must be loaded first)
 
@@ -98,7 +93,6 @@ include("circuit.jl")
 # Parser (must be loaded before backends that use QucsDataset)
 
 include("parser/qucs_dataset.jl")
-include("parser/simulation_result.jl")
 
 # Backends (declares dispatch function stubs)
 
