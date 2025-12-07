@@ -57,7 +57,7 @@ export get_real_vector, get_imag_vector, get_complex_vector
 export list_vectors, has_errors, print_summary
 
 # Parser exports - Typed result structures (Qucsator-specific)
-export DCResult, ACResult, TransientResult, SParameterResult
+export DCResult, ACResult, TransientResult, SParameterResult, MultiAnalysisResult
 export extract_dc_result, extract_ac_result, extract_transient_result, extract_sparameter_result
 
 # Parser exports - Analysis-specific convenience methods

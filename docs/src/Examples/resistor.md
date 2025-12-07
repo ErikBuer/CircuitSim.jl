@@ -38,11 +38,8 @@ Measure S11 near 5 GHz (qucsator requires at least 2 points).
 # S-parameter analysis: 5 GHz with minimal span (2 points required by simulator)
 analysis = SParameterAnalysis(5e9, 5.001e9, 2, z0=50.0)
 
-# Run simulation
-dataset = simulate_qucsator(circ, analysis)
-
-# Extract S-parameters
-sp_result = extract_sparameter_result(dataset)
+# Run simulation - returns typed SParameterResult directly
+sp_result = simulate_qucsator(circ, analysis)
 
 # Get S11 at first frequency point (reflection coefficient)
 s11 = sp_result.s_matrix[(1,1)][1]

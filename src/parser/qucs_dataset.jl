@@ -691,4 +691,81 @@ function extract_sparameter_result(dataset::QucsDataset; z0::Real=50.0)::SParame
     return SParameterResult(frequencies_Hz, num_ports, s_matrix, Float64(z0))
 end
 
+"""
+    MultiAnalysisResult
+
+Results from multiple analyses run simultaneously.
+
+Contains the raw QucsDataset plus typed results for each analysis type found.
+
+# Fields
+- `dataset::QucsDataset`: Raw parsed dataset with all vectors
+- `dc::Union{Nothing,DCResult}`: DC analysis results (if DC analysis was run)
+- `ac::Union{Nothing,ACResult}`: AC analysis results (if AC analysis was run)
+- `transient::Union{Nothing,TransientResult}`: Transient analysis results (if transient analysis was run)
+- `sparameter::Union{Nothing,SParameterResult}`: S-parameter results (if S-parameter analysis was run)
+
+# Example
+```julia
+# Run DC + S-parameter analysis together
+results = simulate_qucsator(circ, [DCAnalysis(), SParameterAnalysis(1e9, 10e9, 101)])
+
+# Access DC results
+if !isnothing(results.dc)
+    v_node = results.dc.voltages["_net1"]
+end
+
+# Access S-parameter results
+if !isnothing(results.sparameter)
+    s21 = results.sparameter.s_matrix[(2,1)]
+end
+```
+"""
+struct MultiAnalysisResult
+    dataset::QucsDataset
+    dc::Union{Nothing,DCResult}
+    ac::Union{Nothing,ACResult}
+    transient::Union{Nothing,TransientResult}
+    sparameter::Union{Nothing,SParameterResult}
+end
+
+"""
+    MultiAnalysisResult(dataset::QucsDataset, analyses::Vector{<:AbstractAnalysis})
+
+Create a MultiAnalysisResult by extracting typed results for each analysis type.
+
+# Arguments
+- `dataset::QucsDataset`: Parsed simulation output
+- `analyses::Vector{<:AbstractAnalysis}`: List of analyses that were run
+
+# Returns
+- `MultiAnalysisResult` with typed results for each analysis found
+"""
+function MultiAnalysisResult(dataset::QucsDataset, analyses::Vector{<:AbstractAnalysis})
+    # Extract results based on analysis types present
+    dc = nothing
+    ac = nothing
+    transient = nothing
+    sparameter = nothing
+
+    for analysis in analyses
+        try
+            if analysis isa DCAnalysis && isnothing(dc)
+                dc = extract_dc_result(dataset)
+            elseif analysis isa ACAnalysis && isnothing(ac)
+                ac = extract_ac_result(dataset)
+            elseif analysis isa TransientAnalysis && isnothing(transient)
+                transient = extract_transient_result(dataset)
+            elseif analysis isa SParameterAnalysis && isnothing(sparameter)
+                sparameter = extract_sparameter_result(dataset, z0=analysis.z0)
+            end
+        catch e
+            # If extraction fails for this analysis, leave it as nothing
+            @warn "Failed to extract results for $(typeof(analysis)): $e"
+        end
+    end
+
+    return MultiAnalysisResult(dataset, dc, ac, transient, sparameter)
+end
+
 

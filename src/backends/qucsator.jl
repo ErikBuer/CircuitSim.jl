@@ -215,21 +215,132 @@ function run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_f
 end
 
 """
-    simulate_qucsator(c::Circuit, analysis::AbstractAnalysis) -> QucsDataset
+    simulate_qucsator(c::Circuit, analysis::DCAnalysis) -> DCResult
 
-Run qucsator simulation with an analysis struct and parse the results.
+Run qucsator DC simulation and return typed DC results.
 
 # Example
 ```julia
-dataset = simulate_qucsator(c, DCAnalysis())
-dataset = simulate_qucsator(c, ACAnalysis(1.0, 1e6, 101))
+dc_result = simulate_qucsator(circ, DCAnalysis())
+v_node = dc_result.voltages["_net1"]
+i_source = dc_result.currents["V1"]
+```
+"""
+function simulate_qucsator(c::Circuit, analysis::DCAnalysis)::DCResult
+    success, output, netlist = run_qucsator(c, analysis)
+
+    if !success
+        error("DC simulation failed: $output")
+    end
+
+    dataset = parse_qucs_dataset(output)
+
+    if has_errors(dataset)
+        error("DC simulation returned errors: $(dataset.errors)")
+    end
+
+    return extract_dc_result(dataset)
+end
+
+"""
+    simulate_qucsator(c::Circuit, analysis::ACAnalysis) -> ACResult
+
+Run qucsator AC simulation and return typed AC results.
+
+# Example
+```julia
+ac_result = simulate_qucsator(circ, ACAnalysis(1e6, 1e9, 101))
+freqs = ac_result.frequencies_Hz
+v_out = ac_result.voltages["_net1"]
+```
+"""
+function simulate_qucsator(c::Circuit, analysis::ACAnalysis)::ACResult
+    success, output, netlist = run_qucsator(c, analysis)
+
+    if !success
+        error("AC simulation failed: $output")
+    end
+
+    dataset = parse_qucs_dataset(output)
+
+    if has_errors(dataset)
+        error("AC simulation returned errors: $(dataset.errors)")
+    end
+
+    return extract_ac_result(dataset)
+end
+
+"""
+    simulate_qucsator(c::Circuit, analysis::TransientAnalysis) -> TransientResult
+
+Run qucsator transient simulation and return typed transient results.
+
+# Example
+```julia
+tran_result = simulate_qucsator(circ, TransientAnalysis(1e-3, points=1001))
+times = tran_result.time_s
+v_out = tran_result.voltages["_net1"]
+```
+"""
+function simulate_qucsator(c::Circuit, analysis::TransientAnalysis)::TransientResult
+    success, output, netlist = run_qucsator(c, analysis)
+
+    if !success
+        error("Transient simulation failed: $output")
+    end
+
+    dataset = parse_qucs_dataset(output)
+
+    if has_errors(dataset)
+        error("Transient simulation returned errors: $(dataset.errors)")
+    end
+
+    return extract_transient_result(dataset)
+end
+
+"""
+    simulate_qucsator(c::Circuit, analysis::SParameterAnalysis) -> SParameterResult
+
+Run qucsator S-parameter simulation and return typed S-parameter results.
+
+# Example
+```julia
+sp_result = simulate_qucsator(circ, SParameterAnalysis(1e9, 10e9, 101))
+freqs = sp_result.frequencies_Hz
+s21 = sp_result.s_matrix[(2,1)]
+```
+"""
+function simulate_qucsator(c::Circuit, analysis::SParameterAnalysis)::SParameterResult
+    success, output, netlist = run_qucsator(c, analysis)
+
+    if !success
+        error("S-parameter simulation failed: $output")
+    end
+
+    dataset = parse_qucs_dataset(output)
+
+    if has_errors(dataset)
+        error("S-parameter simulation returned errors: $(dataset.errors)")
+    end
+
+    return extract_sparameter_result(dataset, z0=analysis.z0)
+end
+
+"""
+    simulate_qucsator(c::Circuit, analysis::AbstractAnalysis) -> QucsDataset
+
+Fallback for other analysis types - returns raw QucsDataset.
+
+# Example
+```julia
+dataset = simulate_qucsator(circ, HarmonicBalanceAnalysis(1e9))
+dataset = simulate_qucsator(circ, NoiseAnalysis(1e6, 1e9, 101, "out", "V1"))
 ```
 """
 function simulate_qucsator(c::Circuit, analysis::AbstractAnalysis)::QucsDataset
     success, output, netlist = run_qucsator(c, analysis)
 
     if !success
-        # Return a dataset with error status
         return QucsDataset(
             SIM_ERROR,
             "",
@@ -245,24 +356,41 @@ function simulate_qucsator(c::Circuit, analysis::AbstractAnalysis)::QucsDataset
 end
 
 """
-    simulate_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}) -> QucsDataset
+    simulate_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}) -> MultiAnalysisResult
 
-Run qucsator simulation with multiple analysis types.
+Run qucsator simulation with multiple analysis types and return typed results.
+
+Returns a MultiAnalysisResult containing typed results for each analysis that was run.
+
+# Example
+```julia
+# Run DC + S-parameter analysis together (DC provides operating point for nonlinear components)
+results = simulate_qucsator(circ, [DCAnalysis(), SParameterAnalysis(1e9, 10e9, 101)])
+
+# Access DC results
+v_node = results.dc.voltages["_net1"]
+i_source = results.dc.currents["V1"]
+
+# Access S-parameter results
+freqs = results.sparameter.frequencies_Hz
+s21 = results.sparameter.s_matrix[(2,1)]
+
+# Raw dataset still available if needed
+dataset = results.dataset
+```
 """
-function simulate_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis})::QucsDataset
+function simulate_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis})::MultiAnalysisResult
     success, output, netlist = run_qucsator(c, analyses)
 
     if !success
-        return QucsDataset(
-            SIM_ERROR,
-            "",
-            Dict{String,DataVector}(),
-            Dict{String,DataVector}(),
-            [output],
-            String[],
-            output
-        )
+        error("Multi-analysis simulation failed: $output")
     end
 
-    return parse_qucs_dataset(output)
+    dataset = parse_qucs_dataset(output)
+
+    if has_errors(dataset)
+        error("Multi-analysis simulation returned errors: $(dataset.errors)")
+    end
+
+    return MultiAnalysisResult(dataset, analyses)
 end

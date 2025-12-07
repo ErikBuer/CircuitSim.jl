@@ -65,11 +65,8 @@ sparam = SParameterAnalysis(1e6, 1e9, 201,
     z0=50.0
 )
 
-# Run simulation
-dataset = simulate_qucsator(circ, sparam)
-
-# Extract typed S-parameter results
-sp_result = extract_sparameter_result(dataset)
+# Run simulation - returns typed SParameterResult directly
+sp_result = simulate_qucsator(circ, sparam)
 
 println("S-parameter simulation completed:")
 println("  Number of ports: ", sp_result.num_ports)
