@@ -15,6 +15,9 @@ export DCVoltageSource, DCCurrentSource
 export ACVoltageSource, ACCurrentSource
 export ACPowerSource, Pac
 
+# Probes
+export VoltageProbe, CurrentProbe
+
 # Components - Substrate
 export Substrate
 
@@ -117,6 +120,10 @@ include("sources/dc_current_source.jl")
 include("sources/ac_voltage_source.jl")
 include("sources/ac_current_source.jl")
 include("sources/ac_power_source.jl")
+
+# Probes
+include("probes/voltage_probe.jl")
+include("probes/current_probe.jl")
 
 # Substrate (needed by microstrip components)
 include("components/substrate.jl")

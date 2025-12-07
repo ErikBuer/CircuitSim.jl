@@ -560,9 +560,7 @@ function get_s_matrix_size(dataset::QucsDataset)::Int
     return max_port
 end
 
-# ============================================================================
 # Typed Result Extraction
-# ============================================================================
 
 """
     extract_dc_result(dataset::QucsDataset) -> DCResult
@@ -618,12 +616,13 @@ function extract_ac_result(dataset::QucsDataset)::ACResult
     currents = Dict{String,Vector{ComplexF64}}()
 
     # Extract all node voltages and branch currents
+    # Note: qucsator outputs lowercase .v and .i for AC analysis
     for (name, vec) in dataset.dependent_vars
-        if endswith(name, ".V")
-            node_name = replace(name, ".V" => "")
+        if endswith(name, ".V") || endswith(name, ".v")
+            node_name = replace(replace(name, ".V" => ""), ".v" => "")
             voltages[node_name] = vec.values
-        elseif endswith(name, ".I")
-            comp_name = replace(name, ".I" => "")
+        elseif endswith(name, ".I") || endswith(name, ".i")
+            comp_name = replace(replace(name, ".I" => ""), ".i" => "")
             currents[comp_name] = vec.values
         end
     end
