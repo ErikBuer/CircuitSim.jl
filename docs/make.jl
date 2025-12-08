@@ -32,6 +32,8 @@ makedocs(
             "Examples/attenuator.md",
             "Examples/lowpass_filter.md",
             "Examples/amplifier.md",
+            "Examples/file_voltage_source.md",
+            "Examples/file_current_source.md",
         ],
         "api_reference.md",
     ],

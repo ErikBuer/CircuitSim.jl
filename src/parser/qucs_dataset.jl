@@ -651,12 +651,13 @@ function extract_transient_result(dataset::QucsDataset)::TransientResult
     currents = Dict{String,Vector{Float64}}()
 
     # Extract all node voltages and branch currents (real values for transient)
+    # Note: Transient analysis uses .Vt (voltage-time) and .It (current-time) suffixes
     for (name, vec) in dataset.dependent_vars
-        if endswith(name, ".V")
-            node_name = replace(name, ".V" => "")
+        if endswith(name, ".Vt")
+            node_name = replace(name, ".Vt" => "")
             voltages[node_name] = real.(vec.values)
-        elseif endswith(name, ".I")
-            comp_name = replace(name, ".I" => "")
+        elseif endswith(name, ".It")
+            comp_name = replace(name, ".It" => "")
             currents[comp_name] = real.(vec.values)
         end
     end

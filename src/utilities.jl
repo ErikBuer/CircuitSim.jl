@@ -14,12 +14,12 @@ Convert S-parameter matrix to Z-parameter matrix for a two-port network.
 
 # Arguments
 
-- `S`: 2×2 S-parameter matrix
+- `S`: 2x2 S-parameter matrix
 - `z0`: Reference impedance (default: 50.0 Ω)
 
 # Returns
 
-- 2×2 Z-parameter matrix
+- 2x2 Z-parameter matrix
 
 # Note
 
@@ -72,7 +72,7 @@ the impedance is the B parameter of the ABCD matrix.
 
 # Arguments
 
-- `S`: 2×2 S-parameter matrix
+- `S`: 2x2 S-parameter matrix
 - `z0`: Reference impedance (default: 50.0 Ω)
 
 # Returns

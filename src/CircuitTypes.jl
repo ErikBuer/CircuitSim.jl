@@ -14,6 +14,7 @@ export Ground
 export DCVoltageSource, DCCurrentSource
 export ACVoltageSource, ACCurrentSource
 export ACPowerSource, Pac
+export FileVoltageSource, FileCurrentSource
 
 # Probes
 export VoltageProbe, CurrentProbe
@@ -108,12 +109,18 @@ include("components/capacitor_q.jl")
 include("components/inductor_q.jl")
 include("components/ground.jl")
 
+# File I/O utilities
+include("io/file_loader.jl")
+
 # Sources
+include("sources/file_source_helpers.jl")
 include("sources/dc_voltage_source.jl")
 include("sources/dc_current_source.jl")
 include("sources/ac_voltage_source.jl")
 include("sources/ac_current_source.jl")
 include("sources/ac_power_source.jl")
+include("sources/file_voltage_source.jl")
+include("sources/file_current_source.jl")
 
 # Probes
 include("probes/voltage_probe.jl")

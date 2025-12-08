@@ -24,7 +24,7 @@ mutable struct Amplifier <: AbstractPowerAmplifier
     nf::Real
     z_in::Real
     z_out::Real
-    p1db::Real
+    p1db::Real          # TODO. Is this implemented in backends?
 
     function Amplifier(name::AbstractString, gain::Real, nf::Real=1.0;
         z_in::Real=50.0, z_out::Real=50.0, p1db::Real=20.0)

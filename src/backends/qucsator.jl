@@ -121,8 +121,15 @@ function run_qucsator(c::Circuit, analysis::AbstractAnalysis; output_file::Strin
     end
 
     try
-        # Run qucsator_rf
-        result = read(`qucsator_rf -i $netlist_file -o $output_file`, String)
+        # Run qucsator_rf from the directory containing the netlist
+        # This ensures data files referenced by basename are found
+        netlist_dir = dirname(netlist_file)
+        netlist_base = basename(netlist_file)
+        output_base = basename(output_file)
+
+        result = cd(netlist_dir) do
+            read(`qucsator_rf -i $netlist_base -o $output_base`, String)
+        end
 
         # Read the output if it exists
         output = ""
@@ -186,8 +193,15 @@ function run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_f
     end
 
     try
-        # Run qucsator_rf
-        result = read(`qucsator_rf -i $netlist_file -o $output_file`, String)
+        # Run qucsator_rf from the directory containing the netlist
+        # This ensures data files referenced by basename are found
+        netlist_dir = dirname(netlist_file)
+        netlist_base = basename(netlist_file)
+        output_base = basename(output_file)
+
+        result = cd(netlist_dir) do
+            read(`qucsator_rf -i $netlist_base -o $output_base`, String)
+        end
 
         # Read the output if it exists
         output = ""
