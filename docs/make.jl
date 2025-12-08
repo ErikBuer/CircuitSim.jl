@@ -26,16 +26,19 @@ makedocs(
     sitename="CircuitTypes.jl",
     pages=Any[
         "index.md",
-        "Examples"=>[
+        "Components"=>[
             "Examples/resistor.md",
             "Examples/capacitor_q.md",
             "Examples/attenuator.md",
-            "Examples/lowpass_filter.md",
             "Examples/amplifier.md",
-            "Examples/dc_divider.md",
-            "Examples/ac_divider.md",
             "Examples/file_voltage_source.md",
             "Examples/file_current_source.md",
+        ],
+        "Examples"=>[
+            "Examples/lowpass_filter.md",
+            "Examples/dc_divider.md",
+            "Examples/ac_divider.md",
+            "Examples/pin_current.md",
         ],
         "api_reference.md",
     ],
