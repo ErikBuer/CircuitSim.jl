@@ -8,31 +8,35 @@ using Documenter
 const LOCAL = get(ENV, "LOCAL", "false") == "true"
 
 if LOCAL
-    include("../src/CircuitTypes.jl")
-    using .CircuitTypes
+    include("../src/CircuitSim.jl")
+    using .CircuitSim
 else
-    using CircuitTypes
+    using CircuitSim
     ENV["GKSwstype"] = "100"
 end
 
-DocMeta.setdocmeta!(CircuitTypes, :DocTestSetup, :(using CircuitTypes); recursive=true)
+DocMeta.setdocmeta!(CircuitSim, :DocTestSetup, :(using CircuitSim); recursive=true)
 
 
 makedocs(
-    modules=[CircuitTypes],
+    modules=[CircuitSim],
     format=Documenter.HTML(
         size_threshold=500 * 1024,  # 500 KiB threshold (default is 200 KiB)
     ),
-    sitename="CircuitTypes.jl",
+    sitename="CircuitSim.jl",
     pages=Any[
         "index.md",
+        "Sources"=>[
+            "Sources/file_voltage_source.md",
+            "Sources/file_current_source.md",
+        ],
         "Components"=>[
-            "Examples/resistor.md",
-            "Examples/capacitor_q.md",
-            "Examples/attenuator.md",
-            "Examples/amplifier.md",
-            "Examples/file_voltage_source.md",
-            "Examples/file_current_source.md",
+            "Components/resistor.md",
+            "Components/capacitor_q.md",
+            "Components/attenuator.md",
+            "Components/amplifier.md",
+            "Components/voltage_probe.md",
+            "Components/current_probe.md",
         ],
         "Examples"=>[
             "Examples/lowpass_filter.md",
@@ -46,6 +50,6 @@ makedocs(
 )
 
 deploydocs(
-    repo="github.com/ErikBuer/CircuitTypes.jl.git",
+    repo="github.com/ErikBuer/CircuitSim.jl.git",
     push_preview=true,
 )

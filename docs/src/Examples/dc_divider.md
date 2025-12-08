@@ -1,7 +1,7 @@
 # DC Analysis - Resistor Divider
 
 ```@example dc_divider
-using CircuitTypes
+using CircuitSim
 
 # 10V source with resistor divider (1kΩ and 500Ω)
 V = DCVoltageSource("V1", 10.0)

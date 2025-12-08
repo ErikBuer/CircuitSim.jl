@@ -32,7 +32,7 @@ numerical issue.
 # Examples
 
 ```jldoctest
-julia> using CircuitTypes
+julia> using CircuitSim
 
 julia> z_load = 75.0 + 0.0im;  # 75 Ω resistive load
 
@@ -88,7 +88,7 @@ with direct Z-parameter conversion for open circuits.
 # Examples
 
 ```jldoctest
-julia> using CircuitTypes
+julia> using CircuitSim
 
 julia> z0 = 50.0;
 

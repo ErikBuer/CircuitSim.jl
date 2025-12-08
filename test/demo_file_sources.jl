@@ -2,7 +2,7 @@
 Test file-based voltage and current sources.
 """
 
-using CircuitTypes
+using CircuitSim
 
 println("\n=== Testing File-Based Sources ===\n")
 

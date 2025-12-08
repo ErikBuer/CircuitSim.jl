@@ -11,7 +11,7 @@ This demonstrates a complete RF transmitter front-end:
 - Attenuator for testing
 """
 
-using CircuitTypes
+using CircuitSim
 
 println("="^70)
 println("RF Transmitter Chain Example")

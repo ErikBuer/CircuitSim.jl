@@ -1,4 +1,4 @@
-name = "CircuitTypes"
+name = "CircuitSim"
 uuid = "d23419fb-c42c-4a7b-bf83-7ff8eeedf333"
 version = "0.0.1"
 authors = ["Erik Buer <buer94@gmail.com>"]

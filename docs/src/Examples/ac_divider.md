@@ -1,7 +1,7 @@
 # AC Analysis - Capacitor Divider
 
 ```@example ac_divider
-using CircuitTypes
+using CircuitSim
 using Printf
 
 # 1V AC source with capacitor divider (1nF and 2nF)

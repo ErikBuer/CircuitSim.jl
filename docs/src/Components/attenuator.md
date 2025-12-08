@@ -1,11 +1,11 @@
-# Attenuator S-Parameters
+# Attenuator
 
 ## Circuit Setup
 
 Two-port measurement with 10 dB attenuator.
 
 ```@example att
-using CircuitTypes
+using CircuitSim
 
 # Create circuit
 circ = Circuit()

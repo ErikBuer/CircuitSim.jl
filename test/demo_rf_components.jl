@@ -1,5 +1,5 @@
 """
-Demo script showing usage of RF components in CircuitTypes.jl
+Demo script showing usage of RF components in CircuitSim.jl
 
 This demonstrates:
 - Quality factor components (CapacitorQ, InductorQ)
@@ -10,7 +10,7 @@ This demonstrates:
 - Power dividers/combiners (Coupler, Hybrid)
 """
 
-using CircuitTypes
+using CircuitSim
 
 println("="^70)
 println("RF Components Demo")

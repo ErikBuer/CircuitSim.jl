@@ -1,11 +1,11 @@
-# Amplifier S-Parameters
+# Amplifier
 
 ## Circuit Setup
 
 Two-port measurement with 20 dB gain amplifier.
 
 ```@example amp
-using CircuitTypes
+using CircuitSim
 
 # Create circuit
 circ = Circuit()

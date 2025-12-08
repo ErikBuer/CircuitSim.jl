@@ -17,7 +17,7 @@ sources from reflections.
 
 # Example
 ```@example
-using CircuitTypes
+using CircuitSim
 # Standard isolator: 0.5 dB forward loss, 20 dB isolation
 ISO1 = Isolator("ISO1")
 

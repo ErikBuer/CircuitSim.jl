@@ -1,11 +1,11 @@
-# Resistor S-Parameters
+# Resistor
 
 ## Circuit Setup
 
 Single port with a 100 Ω resistor to ground.
 
 ```@example resistor
-using CircuitTypes
+using CircuitSim
 
 # Create circuit
 circ = Circuit()

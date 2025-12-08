@@ -1,7 +1,7 @@
 # Pin Current Example
 
 ```@example pin_current
-using CircuitTypes
+using CircuitSim
 
 V = DCVoltageSource("V", 10.0)
 R = Resistor("R", 100.0)

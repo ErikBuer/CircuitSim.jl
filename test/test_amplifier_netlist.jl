@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # Test to verify amplifier netlist generation
 
-using CircuitTypes
+using CircuitSim
 
 println("="^70)
 println("Amplifier Netlist Test")

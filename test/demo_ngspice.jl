@@ -1,4 +1,4 @@
-using CircuitTypes
+using CircuitSim
 
 # build circuit
 c = Circuit()

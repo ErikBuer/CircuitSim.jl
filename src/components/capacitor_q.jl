@@ -13,7 +13,7 @@ Capacitor with quality factor for RF simulations.
 
 # Example
 ```@example
-using CircuitTypes
+using CircuitSim
 C1 = CapacitorQ("C1", 10e-12, 50.0)  # 10pF capacitor with Q=50
 C2 = CapacitorQ("C2", 100e-12, 100.0, freq=2.4e9)  # 100pF, Q=100 at 2.4 GHz
 ```

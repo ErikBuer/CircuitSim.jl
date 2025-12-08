@@ -19,7 +19,7 @@ between two ports with a specific phase relationship.
 
 # Example
 ```@example
-using CircuitTypes
+using CircuitSim
 # 90 degree hybrid (quadrature hybrid)
 HYB1 = Hybrid("HYB1")
 

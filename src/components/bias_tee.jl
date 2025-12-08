@@ -18,7 +18,7 @@ A bias tee has three ports:
 
 # Example
 ```@example
-using CircuitTypes
+using CircuitSim
 # Standard bias tee
 BT1 = BiasTee("BT1")
 

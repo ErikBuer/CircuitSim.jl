@@ -1,5 +1,5 @@
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
-CircuitTypes = "d23419fb-c42c-4a7b-bf83-7ff8eeedf333"
+CircuitSim = "d23419fb-c42c-4a7b-bf83-7ff8eeedf333"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"

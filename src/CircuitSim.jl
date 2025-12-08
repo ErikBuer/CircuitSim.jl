@@ -98,7 +98,6 @@ include("circuit.jl")
 # Parser (must be loaded before backends that use QucsDataset)
 include("parser/qucs_dataset.jl")
 include("parser/simulation_result.jl")
-export get_probe_voltage, get_probe_current
 
 # Backends (declares dispatch function stubs)
 include("backends/qucsator.jl")

@@ -4,10 +4,10 @@
 # This demonstrates that the same circuit components can be used to generate
 # netlists for multiple simulators.
 
-using CircuitTypes
+using CircuitSim
 
 println("="^60)
-println("CircuitTypes.jl - Multi-Simulator Source Components Demo")
+println("CircuitSim.jl - Multi-Simulator Source Components Demo")
 println("="^60)
 
 # Part 1: Show all source types

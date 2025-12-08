@@ -16,7 +16,7 @@ maintaining amplitude (ideally).
 
 # Example
 ```@example
-using CircuitTypes
+using CircuitSim
 # 90 degree phase shifter
 PS1 = PhaseShifter("PS1", 90.0)
 

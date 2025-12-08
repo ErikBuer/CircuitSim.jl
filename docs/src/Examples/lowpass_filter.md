@@ -9,7 +9,7 @@ A Pi-type lowpass filter uses shunt capacitors to ground and a series inductor.
 This creates a 3rd-order filter with a well-defined cutoff frequency.
 
 ```@example lpf
-using CircuitTypes
+using CircuitSim
 using CairoMakie
 
 # Create circuit

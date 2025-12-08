@@ -3,7 +3,7 @@
 This example demonstrates the `CapacitorQ` component, which models a capacitor with frequency-dependent losses characterized by a quality factor Q.
 
 ```@example capq
-using CircuitTypes
+using CircuitSim
 using CairoMakie
 
 # Create circuit for S-parameter analysis

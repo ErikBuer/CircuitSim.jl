@@ -11,7 +11,7 @@ This keeps parsing in qucs_dataset.jl and makes it easy to add
 other simulation engines later.
 """
 
-using CircuitTypes
+using CircuitSim
 
 println("="^70)
 println("Typed Result Extraction Demo")
@@ -102,12 +102,12 @@ dc_result = extract_dc_result(dataset_dc)
 println("\nDC Operating Point:")
 println("  Voltages:")
 for (node, v) in sort(collect(dc_result.voltages))
-    println("    $node: $(v) V")
+   println("    $node: $(v) V")
 end
 
 println("\n  Currents:")
 for (comp, i) in sort(collect(dc_result.currents))
-    println("    $comp: $(i) A")
+   println("    $comp: $(i) A")
 end
 
 # ============================================================================

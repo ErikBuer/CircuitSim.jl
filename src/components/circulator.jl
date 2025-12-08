@@ -17,7 +17,7 @@ Commonly used for isolating transmitter and receiver sharing an antenna.
 
 # Example
 ```@example
-using CircuitTypes
+using CircuitSim
 # Standard circulator
 CIRC1 = Circulator("CIRC1")
 

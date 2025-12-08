@@ -5,7 +5,7 @@ Microstrip component demo - demonstrates microstrip components for RF/microwave 
 This creates a simple microstrip lowpass filter using stepped impedance sections.
 """
 
-using CircuitTypes
+using CircuitSim
 
 println("="^60)
 println("Microstrip Components Demo")

@@ -56,7 +56,7 @@ Example:
 
 # Example
 ```@example
-using CircuitTypes
+using CircuitSim
 
 # Vector mode - automatic file handling (CSV format)
 time = [0.0, 1e-9, 2e-9, 3e-9, 4e-9]

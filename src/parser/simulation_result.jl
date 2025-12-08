@@ -255,3 +255,71 @@ function get_component_power(result::DCResult, component, pin_pos::Symbol, pin_n
         error("Current not available for component $(component.name)")
     end
 end
+
+"""
+    get_probe_voltage(result, probe)
+
+Get voltage measured by a VoltageProbe.
+
+# Arguments
+
+- `result`: DCResult, ACResult, or TransientResult
+- `probe`: VoltageProbe instance or probe name as String
+
+# Returns
+
+- For DC: Float64 voltage
+- For AC: Vector{ComplexF64} voltage vs frequency
+- For Transient: Vector{Float64} voltage vs time
+
+# Example
+
+```julia
+VP = VoltageProbe("VP1")
+# ... build circuit with probe ...
+dc = simulate_qucsator(circ, DCAnalysis())
+v_measured = get_probe_voltage(dc, VP)
+```
+"""
+function get_probe_voltage(result::Union{DCResult,ACResult,TransientResult}, probe)
+    probe_name = isa(probe, String) ? probe : probe.name
+    if !haskey(result.voltages, probe_name)
+        available = sort(collect(keys(result.voltages)))
+        error("Voltage probe '$probe_name' not found. Available voltages: $available")
+    end
+    return result.voltages[probe_name]
+end
+
+"""
+    get_probe_current(result, probe)
+
+Get current measured by a CurrentProbe.
+
+# Arguments
+
+- `result`: DCResult, ACResult, or TransientResult
+- `probe`: CurrentProbe instance or probe name as String
+
+# Returns
+
+- For DC: Float64 current
+- For AC: Vector{ComplexF64} current vs frequency
+- For Transient: Vector{Float64} current vs time
+
+# Example
+
+```julia
+IP = CurrentProbe("IP1")
+# ... build circuit with probe ...
+dc = simulate_qucsator(circ, DCAnalysis())
+i_measured = get_probe_current(dc, IP)
+```
+"""
+function get_probe_current(result::Union{DCResult,ACResult,TransientResult}, probe)
+    probe_name = isa(probe, String) ? probe : probe.name
+    if !haskey(result.currents, probe_name)
+        available = sort(collect(keys(result.currents)))
+        error("Current probe '$probe_name' not found. Available currents: $available")
+    end
+    return result.currents[probe_name]
+end

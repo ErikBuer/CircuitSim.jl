@@ -14,7 +14,7 @@ Typically implemented as a large inductor.
 
 # Example
 ```@example
-using CircuitTypes
+using CircuitSim
 # Default DC feed (1 mH)
 DCF1 = DCFeed("DCF1")
 

@@ -1,12 +1,12 @@
 #!/usr/bin/env julia
 # Demo: Analysis Types for Qucsator Simulation
 #
-# This demonstrates all the analysis types supported by CircuitTypes.jl
+# This demonstrates all the analysis types supported by CircuitSim.jl
 
-using CircuitTypes
+using CircuitSim
 
 println("="^70)
-println("CircuitTypes.jl - Analysis Types Demo")
+println("CircuitSim.jl - Analysis Types Demo")
 println("="^70)
 
 # Part 1: Show all Analysis Types

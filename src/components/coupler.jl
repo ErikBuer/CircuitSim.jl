@@ -19,7 +19,7 @@ Ports: 1=input, 2=through, 3=coupled, 4=isolated
 
 # Example
 ```@example
-using CircuitTypes
+using CircuitSim
 # 3 dB (50/50) directional coupler
 DC1 = Coupler("DC1", 3.0)
 

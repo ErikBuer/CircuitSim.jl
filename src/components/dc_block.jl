@@ -14,7 +14,7 @@ Typically used to isolate DC bias points between stages.
 
 # Example
 ```@example
-using CircuitTypes
+using CircuitSim
 # Default DC block (1 μF)
 DCB1 = DCBlock("DCB1")
 

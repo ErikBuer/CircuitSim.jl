@@ -1,4 +1,4 @@
-using CircuitTypes
+using CircuitSim
 
 # Check if qucsator_rf is installed
 println("Checking for qucsator_rf installation...")

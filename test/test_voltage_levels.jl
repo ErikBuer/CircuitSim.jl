@@ -1,4 +1,4 @@
-using CircuitTypes
+using CircuitSim
 
 # Create AC analysis circuit with voltage source and resistive load
 circ = Circuit()

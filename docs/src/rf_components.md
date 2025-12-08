@@ -1,6 +1,6 @@
 # RF Components Reference
 
-This document provides an overview of the RF components available in CircuitTypes.jl.
+This document provides an overview of the RF components available in CircuitSim.jl.
 
 ## Quality Factor Components
 
