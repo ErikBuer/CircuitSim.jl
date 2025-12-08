@@ -1,3 +1,5 @@
 # CircuitSim.jl
 
-Abstract types for working with (electrical) circuits.
+Julia package for running circuit simulation.
+
+Starting with qucsator 
