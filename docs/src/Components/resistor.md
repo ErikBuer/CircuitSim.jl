@@ -26,8 +26,8 @@ add_component!(circ, gnd)
 
 # Connections
 @connect circ port1.nplus res.n1
-@connect circ res.n2 gnd.n
-@connect circ port1.nminus gnd.n
+@connect circ res.n2 gnd
+@connect circ port1.nminus gnd
 ```
 
 ## S-Parameter Simulation

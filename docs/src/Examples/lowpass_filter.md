@@ -39,7 +39,7 @@ add_component!(circ, gnd);
 ```@example lpf
 # Shunt capacitor C1 from Port1 to ground
 @connect circ port1.nplus C1.n1
-@connect circ C1.n2 gnd.n
+@connect circ C1.n2 gnd
 
 # Series inductor from Port1 to Port2
 @connect circ port1.nplus L1.n1
@@ -47,11 +47,11 @@ add_component!(circ, gnd);
 
 # Shunt capacitor C2 from Port2 to ground  
 @connect circ L1.n2 C2.n1
-@connect circ C2.n2 gnd.n
+@connect circ C2.n2 gnd
 
 # Port ground connections
-@connect circ port1.nminus gnd.n
-@connect circ port2.nminus gnd.n
+@connect circ port1.nminus gnd
+@connect circ port2.nminus gnd
 ```
 
 ## S-Parameter Simulation

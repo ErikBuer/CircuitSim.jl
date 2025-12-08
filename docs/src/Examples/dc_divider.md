@@ -17,8 +17,8 @@ add_component!(circ, GND)
 
 @connect circ V.nplus R1.n1
 @connect circ R1.n2 R2.n1
-@connect circ R2.n2 GND.node
-@connect circ V.nminus GND.node
+@connect circ R2.n2 GND
+@connect circ V.nminus GND
 
 # Run DC analysis
 result = simulate_qucsator(circ, DCAnalysis())

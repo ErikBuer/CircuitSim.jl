@@ -22,17 +22,16 @@ add_component!(circ, GND)
 
 @connect circ V_in.nplus Amp.n1
 @connect circ Amp.n2 R_load.n1
-@connect circ R_load.n2 GND.node
-@connect circ V_in.nminus GND.node
+@connect circ R_load.n2 GND
+@connect circ V_in.nminus GND
 
 # Transient simulation
 tran = TransientAnalysis(10e-9, points=100)
 result = simulate_qucsator(circ, tran)
 
-# Extract voltages
-v_input = result.voltages["_net3"]   # Amp input
-v_output = result.voltages["_net1"]  # Amp output
-time_ns = result.time_s .* 1e9
+# Extract voltages using helper functions
+v_input = get_pin_voltage(result, Amp, :n1)
+v_output = get_pin_voltage(result, R_load, :n1)
 
 println("Input:  ", round(maximum(abs.(v_input))*1e3, digits=1), " mV peak")
 println("Output: ", round(maximum(abs.(v_output))*1e3, digits=1), " mV peak")

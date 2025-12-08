@@ -44,18 +44,25 @@ end
 Macro to connect using dot syntax: @connect circ a.pin b.pin
 """
 macro connect(circ, a_expr, b_expr)
-    # expect a_expr and b_expr to be of form :(. a field)
-    if !(a_expr.head === :(.)) || !(b_expr.head === :(.))
-        throw(ArgumentError("@connect usage: @connect circ a.pin b.pin"))
+    # Helper to parse expression - returns (object, pin_symbol)
+    function parse_pin_expr(expr)
+        if isa(expr, Symbol)
+            # Just a bare symbol (e.g., gnd) - default to :n pin
+            return (expr, :n)
+        elseif expr.head === :(.)
+            # Normal case: component.pin
+            obj = expr.args[1]
+            field = expr.args[2]
+            sym = field isa QuoteNode ? field.value : field
+            return (obj, sym)
+        else
+            # Fallback: treat as component with :n pin
+            return (expr, :n)
+        end
     end
-    a_obj = a_expr.args[1]
-    a_field = a_expr.args[2]
-    b_obj = b_expr.args[1]
-    b_field = b_expr.args[2]
 
-    # Extract the symbols from QuoteNode if needed
-    a_sym = a_field isa QuoteNode ? a_field.value : a_field
-    b_sym = b_field isa QuoteNode ? b_field.value : b_field
+    a_obj, a_sym = parse_pin_expr(a_expr)
+    b_obj, b_sym = parse_pin_expr(b_expr)
 
     return :(connect!($(esc(circ)), Pin($(esc(a_obj)), $(QuoteNode(a_sym))), Pin($(esc(b_obj)), $(QuoteNode(b_sym)))))
 end

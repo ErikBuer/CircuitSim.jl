@@ -31,19 +31,19 @@ add_component!(circ, v_out_probe)
 
 # Connections
 @connect circ v_source.nplus C1.n1
-@connect circ C1.n2 gnd.n
+@connect circ C1.n2 gnd
 @connect circ v_source.nplus L1.n1
 @connect circ L1.n2 C2.n1
 @connect circ C2.n1 r_load.n1
-@connect circ C2.n2 gnd.n
-@connect circ r_load.n2 gnd.n
-@connect circ v_source.nminus gnd.n
+@connect circ C2.n2 gnd
+@connect circ r_load.n2 gnd
+@connect circ v_source.nminus gnd
 
 # Connect probes
 @connect circ v_source.nplus v_in_probe.n1
-@connect circ gnd.n v_in_probe.n2
+@connect circ gnd v_in_probe.n2
 @connect circ r_load.n1 v_out_probe.n1
-@connect circ gnd.n v_out_probe.n2
+@connect circ gnd v_out_probe.n2
 
 # Run AC analysis
 ac_analysis = ACAnalysis(1e6, 1e9, 11, sweep_type=LOGARITHMIC)

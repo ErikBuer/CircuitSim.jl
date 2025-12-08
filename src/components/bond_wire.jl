@@ -49,16 +49,16 @@ mutable struct BondWire <: AbstractBondWire
 end
 
 function to_qucs_netlist(bw::BondWire)::String
-    parts = ["BONDWIRE:$(bw.name)"]
+    parts = ["BOND:$(bw.name)"]
     push!(parts, qucs_node(bw.n1))
     push!(parts, qucs_node(bw.n2))
-    push!(parts, "L=\"$(format_value(bw.l))\"")
     push!(parts, "D=\"$(format_value(bw.d))\"")
+    push!(parts, "L=\"$(format_value(bw.l))\"")
     push!(parts, "H=\"$(format_value(bw.h))\"")
+    push!(parts, "mur=\"1\"")
     push!(parts, "rho=\"$(bw.rho)\"")
     push!(parts, "Model=\"$(bw.model)\"")
-    push!(parts, "Subst=\"\"")
-    push!(parts, "mur=\"1\"")
+    push!(parts, "Subst=\"Sub1\"")
     return join(parts, " ")
 end
 
@@ -71,8 +71,12 @@ function to_spice_netlist(bw::BondWire)::String
     "L$(bw.name) $(bw.n1) $(bw.n2) $(l_nh)n  ; Bond wire approx"
 end
 
-function _get_node_number(bw::BondWire, terminal::Int)::Int
-    terminal == 1 && return bw.n1
-    terminal == 2 && return bw.n2
-    throw(ArgumentError("BondWire has only 2 terminals (1, 2), got $terminal"))
+function _get_node_number(bw::BondWire, pin::Symbol)::Int
+    if pin == :n1
+        return bw.n1
+    elseif pin == :n2
+        return bw.n2
+    else
+        error("Invalid pin $pin for BondWire. Use :n1 or :n2")
+    end
 end

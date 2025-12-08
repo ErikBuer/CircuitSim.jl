@@ -182,7 +182,14 @@ v_across_r1 = v_r1_input - v_r1_output
 function get_pin_voltage(result::Union{DCResult,ACResult,TransientResult}, component, pin::Symbol)
     node_num = _get_node_number(component, pin)
     if node_num == 0
-        error("Pin $pin of component $(component.name) is not connected")
+        # Node 0 is ground reference, voltage is 0
+        if result isa DCResult
+            return 0.0
+        elseif result isa ACResult
+            return zeros(ComplexF64, length(result.frequencies_Hz))
+        else  # TransientResult
+            return zeros(Float64, length(result.time_s))
+        end
     end
     node_name = "_net$node_num"
     return get_node_voltage(result, node_name)

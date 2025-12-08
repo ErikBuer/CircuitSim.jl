@@ -31,8 +31,8 @@ Connect the capacitor in series between the two ports.
 @connect circ cap_q.n2 port2.nplus
 
 # Ground connections
-@connect circ port1.nminus gnd.n
-@connect circ port2.nminus gnd.n
+@connect circ port1.nminus gnd
+@connect circ port2.nminus gnd
 ```
 
 ## S-Parameter Analysis

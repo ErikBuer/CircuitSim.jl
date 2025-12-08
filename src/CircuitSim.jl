@@ -65,7 +65,7 @@ export DCResult, ACResult, TransientResult, SParameterResult, MultiAnalysisResul
 export extract_dc_result, extract_ac_result, extract_transient_result, extract_sparameter_result
 
 # Parser exports - Analysis-specific convenience methods
-export get_frequency, get_time, get_sparameter, get_node_voltage, get_s_matrix_size
+export get_frequency, get_time, get_node_voltage, get_s_matrix_size
 export get_component_current, get_pin_current, get_pin_voltage, get_voltage_across, get_component_power
 
 # Utility functions

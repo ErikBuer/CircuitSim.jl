@@ -42,7 +42,7 @@ mutable struct BiasTee <: AbstractBiasTee
 end
 
 function to_qucs_netlist(comp::BiasTee)::String
-    parts = ["BiasTee:$(comp.name)"]
+    parts = ["BiasT:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n_rf))")
     push!(parts, "$(qucs_node(comp.n_dc))")
     push!(parts, "$(qucs_node(comp.n_out))")

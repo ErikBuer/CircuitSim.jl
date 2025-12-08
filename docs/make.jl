@@ -32,7 +32,10 @@ makedocs(
         ],
         "Components"=>[
             "Components/resistor.md",
+            "Components/capacitor.md",
             "Components/capacitor_q.md",
+            "Components/bond_wire.md",
+            "Components/bias_tee.md",
             "Components/attenuator.md",
             "Components/amplifier.md",
             "Components/voltage_probe.md",

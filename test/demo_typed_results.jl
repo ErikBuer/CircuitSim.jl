@@ -88,8 +88,8 @@ add_component!(c2, GND)
 
 @connect c2 V1.nplus R1.n1
 @connect c2 R1.n2 R2.n1
-@connect c2 R2.n2 GND.n
-@connect c2 V1.nminus GND.n
+@connect c2 R2.n2 GND
+@connect c2 V1.nminus GND
 
 println("\nRunning DC analysis...")
 dataset_dc = simulate_qucsator(c2, DCAnalysis())

@@ -18,8 +18,8 @@ add_component!(circ, GND)
 
 @connect circ V.nplus C1.n1
 @connect circ C1.n2 C2.n1
-@connect circ C2.n2 GND.node
-@connect circ V.nminus GND.node
+@connect circ C2.n2 GND
+@connect circ V.nminus GND
 
 # AC sweep from 1 MHz to 100 MHz
 result = simulate_qucsator(circ, ACAnalysis(1e6, 100e6, 10))
