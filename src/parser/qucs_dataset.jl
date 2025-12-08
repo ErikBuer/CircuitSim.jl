@@ -581,7 +581,19 @@ function extract_dc_result(dataset::QucsDataset)::DCResult
     voltages = Dict{String,Float64}()
     currents = Dict{String,Float64}()
 
+    # DC analysis outputs voltages and currents as independent variables
     # Extract all node voltages (format: "_netN.V" or "nodename.V")
+    for (name, vec) in dataset.independent_vars
+        if endswith(name, ".V")
+            node_name = replace(name, ".V" => "")
+            voltages[node_name] = real(vec.values[1])
+        elseif endswith(name, ".I")
+            comp_name = replace(name, ".I" => "")
+            currents[comp_name] = real(vec.values[1])
+        end
+    end
+
+    # Also check dependent_vars in case of different qucsator versions
     for (name, vec) in dataset.dependent_vars
         if endswith(name, ".V")
             node_name = replace(name, ".V" => "")
