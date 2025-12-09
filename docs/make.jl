@@ -21,7 +21,7 @@ DocMeta.setdocmeta!(CircuitSim, :DocTestSetup, :(using CircuitSim); recursive=tr
 makedocs(
     modules=[CircuitSim],
     format=Documenter.HTML(
-        size_threshold=500 * 1024,  # 500 KiB threshold (default is 200 KiB)
+        size_threshold=600 * 1024,  # 600 KiB threshold (increased for source examples)
     ),
     sitename="CircuitSim.jl",
     pages=Any[
@@ -29,6 +29,14 @@ makedocs(
         "Sources"=>[
             "Sources/file_voltage_source.md",
             "Sources/file_current_source.md",
+            "Sources/voltage_pulse_source.md",
+            "Sources/current_pulse_source.md",
+            "Sources/voltage_rectangular_source.md",
+            "Sources/current_rectangular_source.md",
+            "Sources/voltage_exponential_source.md",
+            "Sources/current_exponential_source.md",
+            "Sources/voltage_noise_source.md",
+            "Sources/current_noise_source.md",
         ],
         "Components"=>[
             "Components/resistor.md",

@@ -15,6 +15,10 @@ export DCVoltageSource, DCCurrentSource
 export ACVoltageSource, ACCurrentSource
 export ACPowerSource, Pac
 export FileVoltageSource, FileCurrentSource
+export VoltagePulseSource, CurrentPulseSource
+export VoltageRectangularSource, CurrentRectangularSource
+export VoltageExponentialSource, CurrentExponentialSource
+export VoltageNoiseSource, CurrentNoiseSource
 
 # Probes
 export VoltageProbe, CurrentProbe
@@ -123,6 +127,14 @@ include("sources/ac_current_source.jl")
 include("sources/ac_power_source.jl")
 include("sources/file_voltage_source.jl")
 include("sources/file_current_source.jl")
+include("sources/voltage_pulse_source.jl")
+include("sources/current_pulse_source.jl")
+include("sources/voltage_rectangular_source.jl")
+include("sources/current_rectangular_source.jl")
+include("sources/voltage_exponential_source.jl")
+include("sources/current_exponential_source.jl")
+include("sources/voltage_noise_source.jl")
+include("sources/current_noise_source.jl")
 
 # Probes
 include("probes/voltage_probe.jl")

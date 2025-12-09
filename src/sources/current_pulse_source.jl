@@ -1,0 +1,76 @@
+"""
+Pulsed current source for transient analysis.
+"""
+
+"""
+    CurrentPulseSource <: AbstractCurrentSource
+
+Current source with pulse waveform for transient analysis.
+
+# Fields
+- `name::String`: Component identifier
+- `n1::Int`: Positive terminal node number
+- `n2::Int`: Negative terminal node number
+- `i1::Real`: Initial current level (A)
+- `i2::Real`: Pulsed current level (A)
+- `t1::Real`: Start time of pulse (s)
+- `t2::Real`: End time of pulse (s)
+- `tr::Real`: Rise time (s, optional, default 1ns)
+- `tf::Real`: Fall time (s, optional, default 1ns)
+
+# Example
+```julia
+isrc = CurrentPulseSource("Ipulse1", i1=0.0, i2=10e-3, t1=1e-9, t2=10e-9)
+```
+
+# Qucs Format
+`Ipulse:Name Node+ Node- I1="i1" I2="i2" T1="t1" T2="t2" Tr="tr" Tf="tf"`
+"""
+mutable struct CurrentPulseSource <: AbstractCurrentPulseSource
+    name::String
+    n1::Int
+    n2::Int
+    i1::Real
+    i2::Real
+    t1::Real
+    t2::Real
+    tr::Real
+    tf::Real
+
+    function CurrentPulseSource(name::AbstractString;
+        i1::Real=0.0, i2::Real=1e-3, t1::Real=0.0, t2::Real=1e-3,
+        tr::Real=1e-9, tf::Real=1e-9)
+        t1 >= 0 || throw(ArgumentError("Start time must be non-negative"))
+        t2 > t1 || throw(ArgumentError("End time must be greater than start time"))
+        tr > 0 || throw(ArgumentError("Rise time must be positive"))
+        tf > 0 || throw(ArgumentError("Fall time must be positive"))
+        new(String(name), 0, 0, i1, i2, t1, t2, tr, tf)
+    end
+end
+
+function to_qucs_netlist(src::CurrentPulseSource)::String
+    parts = ["Ipulse:$(src.name)"]
+    push!(parts, qucs_node(src.n1))
+    push!(parts, qucs_node(src.n2))
+    push!(parts, "I1=\"$(format_value(src.i1))\"")
+    push!(parts, "I2=\"$(format_value(src.i2))\"")
+    push!(parts, "T1=\"$(format_value(src.t1))\"")
+    push!(parts, "T2=\"$(format_value(src.t2))\"")
+    push!(parts, "Tr=\"$(format_value(src.tr))\"")
+    push!(parts, "Tf=\"$(format_value(src.tf))\"")
+    return join(parts, " ")
+end
+
+function to_spice_netlist(src::CurrentPulseSource)::String
+    "I$(src.name) $(src.n1) $(src.n2) PULSE($(src.i1) $(src.i2) $(src.t1) $(src.tr) $(src.tf) $(src.t2-src.t1-src.tr))"
+end
+
+function _get_node_number(src::CurrentPulseSource, pin::Symbol)::Int
+    if pin == :nplus || pin == :n1
+        return src.n1
+    elseif pin == :nminus || pin == :n2
+        return src.n2
+    else
+        error("Invalid pin $pin for CurrentPulseSource. Use :nplus/:n1 or :nminus/:n2")
+    end
+end
