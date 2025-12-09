@@ -42,12 +42,15 @@ mutable struct MicrostripStep <: AbstractMicrostripStep
 end
 
 function to_qucs_netlist(ms::MicrostripStep)::String
+    # Qucsator expects: W1, W2, Subst, MSDispModel, MSModel (all required)
     parts = ["MSTEP:$(ms.name)"]
     push!(parts, qucs_node(ms.n1))
     push!(parts, qucs_node(ms.n2))
     push!(parts, "Subst=\"$(ms.substrate.name)\"")
     push!(parts, "W1=\"$(format_value(ms.w1))\"")
     push!(parts, "W2=\"$(format_value(ms.w2))\"")
+    push!(parts, "MSModel=\"Hammerstad\"")
+    push!(parts, "MSDispModel=\"Kirschning\"")
     return join(parts, " ")
 end
 

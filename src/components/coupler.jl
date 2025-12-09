@@ -54,15 +54,18 @@ mutable struct Coupler <: AbstractCoupler
 end
 
 function to_qucs_netlist(comp::Coupler)::String
+    # Qucsator expects: k (linear coupling factor), phi (phase in degrees), Z (impedance)
+    # Convert coupling from dB to linear: k = 10^(-coupling_dB/20)
+    k_linear = 10^(-comp.coupling / 20)
+
     parts = ["Coupler:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n1))")
     push!(parts, "$(qucs_node(comp.n2))")
     push!(parts, "$(qucs_node(comp.n3))")
     push!(parts, "$(qucs_node(comp.n4))")
-    push!(parts, "k=\"$(format_value(comp.coupling)) dB\"")
+    push!(parts, "k=\"$(format_value(k_linear))\"")
+    push!(parts, "phi=\"0\"")
     push!(parts, "Z=\"$(format_value(comp.z0))\"")
-    push!(parts, "Iso=\"$(format_value(comp.isolation)) dB\"")
-    push!(parts, "IL=\"$(format_value(comp.insertion_loss)) dB\"")
     return join(parts, " ")
 end
 

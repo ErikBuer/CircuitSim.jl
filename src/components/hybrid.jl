@@ -55,15 +55,14 @@ mutable struct Hybrid <: AbstractHybridCoupler
 end
 
 function to_qucs_netlist(comp::Hybrid)::String
+    # Qucsator expects: phi (phase in degrees, required), Zref (reference impedance, optional)
     parts = ["Hybrid:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n1))")
     push!(parts, "$(qucs_node(comp.n2))")
     push!(parts, "$(qucs_node(comp.n3))")
     push!(parts, "$(qucs_node(comp.n4))")
-    push!(parts, "Phi=\"$(format_value(comp.phase))\"")
-    push!(parts, "Z=\"$(format_value(comp.z0))\"")
-    push!(parts, "IL=\"$(format_value(comp.insertion_loss)) dB\"")
-    push!(parts, "Iso=\"$(format_value(comp.isolation)) dB\"")
+    push!(parts, "phi=\"$(format_value(comp.phase))\"")
+    push!(parts, "Zref=\"$(format_value(comp.z0))\"")
     return join(parts, " ")
 end
 

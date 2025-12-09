@@ -12,6 +12,7 @@ A planar spiral inductor on a substrate.
 - `n1::Int`: Node 1 (outer terminal)
 - `n2::Int`: Node 2 (inner terminal)
 - `substrate::Substrate`: Substrate definition reference
+- `geometry::String`: Inductor geometry ("Circular", "Square", "Hexagonal", "Octogonal")
 - `w::Real`: Track width (m)
 - `s::Real`: Track spacing (m)
 - `di::Real`: Inner diameter (m)
@@ -20,40 +21,45 @@ A planar spiral inductor on a substrate.
 # Example
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
-spiral = SpiralInductor("L1", sub, w=0.2e-3, s=0.15e-3, di=1e-3, turns=5.5)
+spiral = SpiralInductor("L1", sub, geometry="Circular", w=0.2e-3, s=0.15e-3, di=1e-3, turns=5.5)
 ```
 
 # Qucs Format
-`SPIRAL:Name Node1 Node2 Subst="SubstName" W="width" S="spacing" Di="innerDiam" N="turns"`
+`SPIRALIND:Name Node1 Node2 Subst="SubstName" Geometry="Circular" W="width" S="spacing" Di="innerDiam" N="turns"`
 """
 mutable struct SpiralInductor <: AbstractSpiralInductor
     name::String
     n1::Int
     n2::Int
     substrate::Substrate
+    geometry::String    # Inductor geometry
     w::Real         # Track width (m)
     s::Real         # Track spacing (m)
     di::Real        # Inner diameter (m)
     turns::Real     # Number of turns
 
     function SpiralInductor(name::AbstractString, substrate::Substrate;
+        geometry::AbstractString="Circular",
         w::Real=0.2e-3,
         s::Real=0.15e-3,
         di::Real=1e-3,
         turns::Real=5.0)
+        valid_geometries = ["Circular", "Square", "Hexagonal", "Octogonal"]
+        geometry in valid_geometries || throw(ArgumentError("Geometry must be one of: $(join(valid_geometries, ", "))"))
         w > 0 || throw(ArgumentError("Track width must be positive"))
         s > 0 || throw(ArgumentError("Track spacing must be positive"))
         di > 0 || throw(ArgumentError("Inner diameter must be positive"))
         turns > 0 || throw(ArgumentError("Number of turns must be positive"))
-        new(String(name), 0, 0, substrate, w, s, di, turns)
+        new(String(name), 0, 0, substrate, String(geometry), w, s, di, turns)
     end
 end
 
 function to_qucs_netlist(sp::SpiralInductor)::String
-    parts = ["SPIRAL:$(sp.name)"]
+    parts = ["SPIRALIND:$(sp.name)"]
     push!(parts, qucs_node(sp.n1))
     push!(parts, qucs_node(sp.n2))
     push!(parts, "Subst=\"$(sp.substrate.name)\"")
+    push!(parts, "Geometry=\"$(sp.geometry)\"")
     push!(parts, "W=\"$(format_value(sp.w))\"")
     push!(parts, "S=\"$(format_value(sp.s))\"")
     push!(parts, "Di=\"$(format_value(sp.di))\"")
@@ -70,8 +76,12 @@ function to_spice_netlist(sp::SpiralInductor)::String
     "L$(sp.name) $(sp.n1) $(sp.n2) $(l_approx)n  ; Spiral inductor approx"
 end
 
-function _get_node_number(sp::SpiralInductor, terminal::Int)::Int
-    terminal == 1 && return sp.n1
-    terminal == 2 && return sp.n2
-    throw(ArgumentError("SpiralInductor has only 2 terminals (1, 2), got $terminal"))
+function _get_node_number(sp::SpiralInductor, pin::Symbol)::Int
+    if pin == :n1
+        return sp.n1
+    elseif pin == :n2
+        return sp.n2
+    else
+        error("Invalid pin $pin for SpiralInductor. Use :n1 or :n2")
+    end
 end

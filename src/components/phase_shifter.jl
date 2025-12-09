@@ -41,14 +41,13 @@ mutable struct PhaseShifter <: AbstractPhaseShifter
 end
 
 function to_qucs_netlist(comp::PhaseShifter)::String
-    parts = ["PhaseShifter:$(comp.name)"]
+    # Qucsator expects: phi (phase in degrees, required), Zref (reference impedance, optional)
+    # Component name in qucsator is "PShift"
+    parts = ["PShift:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n1))")
     push!(parts, "$(qucs_node(comp.n2))")
-    push!(parts, "Phi=\"$(format_value(comp.phase))\"")
-    push!(parts, "Z=\"$(format_value(comp.z0))\"")
-    if comp.insertion_loss > 0
-        push!(parts, "L=\"$(format_value(comp.insertion_loss)) dB\"")
-    end
+    push!(parts, "phi=\"$(format_value(comp.phase))\"")
+    push!(parts, "Zref=\"$(format_value(comp.z0))\"")
     return join(parts, " ")
 end
 

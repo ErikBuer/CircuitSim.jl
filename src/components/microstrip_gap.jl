@@ -46,6 +46,7 @@ mutable struct MicrostripGap <: AbstractMicrostripGap
 end
 
 function to_qucs_netlist(mg::MicrostripGap)::String
+    # Qucsator expects: W1, W2, S, Subst, MSDispModel, MSModel (all required)
     parts = ["MGAP:$(mg.name)"]
     push!(parts, qucs_node(mg.n1))
     push!(parts, qucs_node(mg.n2))
@@ -53,6 +54,8 @@ function to_qucs_netlist(mg::MicrostripGap)::String
     push!(parts, "W1=\"$(format_value(mg.w1))\"")
     push!(parts, "W2=\"$(format_value(mg.w2))\"")
     push!(parts, "S=\"$(format_value(mg.s))\"")
+    push!(parts, "MSModel=\"Hammerstad\"")
+    push!(parts, "MSDispModel=\"Kirschning\"")
     return join(parts, " ")
 end
 
