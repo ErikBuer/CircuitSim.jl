@@ -1,8 +1,4 @@
 """
-Parameter sweep analysis.
-"""
-
-"""
     ParameterSweep(param, start, stop, points, inner_analysis; type=LINEAR, name="SW1")
 
 Parameter sweep analysis.
@@ -10,6 +6,7 @@ Parameter sweep analysis.
 Sweeps a component parameter and runs an inner analysis at each point.
 
 # Parameters
+
 - `param::String`: Parameter name to sweep (e.g., "R1.R" for resistor R1's resistance)
 - `start::Real`: Start value
 - `stop::Real`: Stop value  
@@ -19,6 +16,7 @@ Sweeps a component parameter and runs an inner analysis at each point.
 - `name::String`: Analysis name (default: "SW1")
 
 # Example
+
 ```julia
 # Sweep R1 from 1kΩ to 10kΩ and run DC analysis at each point
 dc = DCAnalysis()
