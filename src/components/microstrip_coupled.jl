@@ -60,7 +60,8 @@ function to_qucs_netlist(mc::MicrostripCoupled)::String
     push!(parts, "W=\"$(format_value(mc.w))\"")
     push!(parts, "L=\"$(format_value(mc.l))\"")
     push!(parts, "S=\"$(format_value(mc.s))\"")
-    push!(parts, "Model=\"$(mc.model)\"")
+    push!(parts, "Model=\"Kirschning\"")
+    push!(parts, "DispModel=\"Kirschning\"")
     return join(parts, " ")
 end
 

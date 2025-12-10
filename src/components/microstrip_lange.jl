@@ -63,6 +63,8 @@ function to_qucs_netlist(ml::MicrostripLange)::String
     push!(parts, "L=\"$(format_value(ml.l))\"")
     push!(parts, "S=\"$(format_value(ml.s))\"")
     push!(parts, "N=\"$(ml.nfingers)\"")
+    push!(parts, "Model=\"Kirschning\"")
+    push!(parts, "DispModel=\"Kirschning\"")
     return join(parts, " ")
 end
 

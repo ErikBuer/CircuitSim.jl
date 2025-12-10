@@ -30,8 +30,6 @@ add_component!(circ, gnd)
 @connect circ port1.nminus gnd
 @connect circ port2.nminus gnd
 
-assign_nodes!(circ)
-
 # S-parameter analysis to measure power transfer
 sp_analysis = SParameterAnalysis(1e9, 3e9, 11, z0=50.0)
 result = simulate_qucsator(circ, sp_analysis)

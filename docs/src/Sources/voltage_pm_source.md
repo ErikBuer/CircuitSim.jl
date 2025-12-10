@@ -31,8 +31,6 @@ add_component!(circ, GND)
 @connect circ vpm.nminus rload.nminus
 @connect circ rload.nminus GND
 
-assign_nodes!(circ)
-
 # PM sources require transient analysis with appropriate time resolution
 println("PM source configured: carrier=", vpm.f/1e6, " MHz, phase modulation=", vpm.f/1e3, " kHz")
 println("For simulation, use TransientAnalysis with sufficient points to capture phase variation")

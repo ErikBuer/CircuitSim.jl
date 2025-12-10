@@ -19,6 +19,10 @@ export VoltagePulseSource, CurrentPulseSource
 export VoltageRectangularSource, CurrentRectangularSource
 export VoltageExponentialSource, CurrentExponentialSource
 export VoltageNoiseSource, CurrentNoiseSource
+export CurrentControlledCurrentSource, CurrentControlledVoltageSource
+export VoltageControlledCurrentSource, VoltageControlledVoltageSource
+export VoltageAMSource, VoltagePMSource
+export CurrentCurrentNoiseSource, CurrentVoltageNoiseSource, VoltageVoltageNoiseSource
 
 # Probes
 export VoltageProbe, CurrentProbe, PowerProbe
@@ -43,6 +47,7 @@ export Coupler, Hybrid
 export OpAmp, Gyrator
 export TransmissionLine, CoaxialLine
 export IdealTransformer, MutualInductor
+export SPfile
 
 # Netlist generation
 export netlist_qucs, netlist_ngspice
@@ -139,6 +144,15 @@ include("sources/voltage_exponential_source.jl")
 include("sources/current_exponential_source.jl")
 include("sources/voltage_noise_source.jl")
 include("sources/current_noise_source.jl")
+include("sources/current_controlled_current_source.jl")
+include("sources/current_controlled_voltage_source.jl")
+include("sources/voltage_controlled_current_source.jl")
+include("sources/voltage_controlled_voltage_source.jl")
+include("sources/voltage_am_source.jl")
+include("sources/voltage_pm_source.jl")
+include("sources/current_current_noise_source.jl")
+include("sources/current_voltage_noise_source.jl")
+include("sources/voltage_voltage_noise_source.jl")
 
 # Probes
 include("probes/voltage_probe.jl")
@@ -184,5 +198,6 @@ include("components/transmission_line.jl")
 include("components/coaxial_line.jl")
 include("components/ideal_transformer.jl")
 include("components/mutual_inductor.jl")
+include("components/spfile.jl")
 
 end

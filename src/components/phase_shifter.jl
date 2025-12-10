@@ -7,6 +7,7 @@ A phase shifter introduces a specified phase shift to the signal while
 maintaining amplitude (ideally).
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Input terminal node number
 - `n2::Int`: Output terminal node number
@@ -15,6 +16,7 @@ maintaining amplitude (ideally).
 - `insertion_loss::Real`: Insertion loss in dB (default: 0 for ideal)
 
 # Example
+
 ```@example
 using CircuitSim
 # 90 degree phase shifter

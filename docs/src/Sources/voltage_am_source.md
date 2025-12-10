@@ -31,8 +31,6 @@ add_component!(circ, GND)
 @connect circ vam.nminus rload.nminus
 @connect circ rload.nminus GND
 
-assign_nodes!(circ)
-
 # AM sources require transient analysis with appropriate time resolution
 println("AM source configured: carrier=", vam.f/1e6, " MHz, modulation=", vam.f/1e3, " kHz")
 println("For simulation, use TransientAnalysis with sufficient points to capture modulation")

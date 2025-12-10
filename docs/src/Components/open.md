@@ -29,8 +29,6 @@ add_component!(circ, gnd)
 @connect circ r2.n2 gnd
 @connect circ vdc.nminus gnd
 
-assign_nodes!(circ)
-
 # DC analysis
 dc_analysis = DCAnalysis()
 result = simulate_qucsator(circ, dc_analysis)

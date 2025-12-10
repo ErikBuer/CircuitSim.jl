@@ -33,8 +33,6 @@ add_component!(circ, gnd)
 @connect circ mutual.n4 rload.n2
 @connect circ rload.n2 gnd
 
-assign_nodes!(circ)
-
 # AC analysis
 ac_analysis = ACAnalysis(1e6, 1e7, 11)
 result = simulate_qucsator(circ, ac_analysis)

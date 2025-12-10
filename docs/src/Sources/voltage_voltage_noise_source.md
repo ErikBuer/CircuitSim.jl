@@ -30,8 +30,6 @@ add_component!(circ, GND)
 @connect circ vnoise.v2minus GND
 @connect circ r2.nminus GND
 
-assign_nodes!(circ)
-
 # Noise analysis
 noise_analysis = NoiseAnalysis(1.0, 1e6, 100, "_net1", "VVN1")
 result = simulate_qucsator(circ, noise_analysis)

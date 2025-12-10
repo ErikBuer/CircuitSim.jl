@@ -39,8 +39,9 @@ function to_qucs_netlist(mo::MicrostripOpen)::String
     push!(parts, qucs_node(mo.n1))
     push!(parts, "Subst=\"$(mo.substrate.name)\"")
     push!(parts, "W=\"$(format_value(mo.w))\"")
-    push!(parts, "MSModel=\"Hammerstad\"")
     push!(parts, "MSDispModel=\"Kirschning\"")
+    push!(parts, "MSModel=\"Hammerstad\"")
+    push!(parts, "Model=\"Kirschning\"")
     return join(parts, " ")
 end
 

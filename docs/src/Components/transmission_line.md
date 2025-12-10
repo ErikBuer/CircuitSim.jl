@@ -26,8 +26,6 @@ add_component!(circ, gnd)
 @connect circ port1.nminus gnd
 @connect circ port2.nminus gnd
 
-assign_nodes!(circ)
-
 # S-parameter analysis
 sp_analysis = SParameterAnalysis(1e9, 5e9, 21, z0=50.0)
 result = simulate_qucsator(circ, sp_analysis)

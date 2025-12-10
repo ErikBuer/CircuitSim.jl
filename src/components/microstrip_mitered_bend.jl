@@ -37,7 +37,7 @@ mutable struct MicrostripMiteredBend <: AbstractMicrostripMiteredBend
 end
 
 function to_qucs_netlist(mb::MicrostripMiteredBend)::String
-    parts = ["MBEND:$(mb.name)"]
+    parts = ["MMBEND:$(mb.name)"]
     push!(parts, qucs_node(mb.n1))
     push!(parts, qucs_node(mb.n2))
     push!(parts, "Subst=\"$(mb.substrate.name)\"")

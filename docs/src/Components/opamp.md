@@ -34,8 +34,6 @@ add_component!(circ, gnd)
 @connect circ opamp.nout rload.n1   # Output to load
 @connect circ rload.n2 gnd
 
-assign_nodes!(circ)
-
 # Transient analysis
 tran_analysis = TransientAnalysis(2e-3, points=200)
 result = simulate_qucsator(circ, tran_analysis)

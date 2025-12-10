@@ -30,8 +30,6 @@ add_component!(circ, gnd)
 @connect circ gyrator.n4 cap.n2
 @connect circ cap.n2 gnd
 
-assign_nodes!(circ)
-
 # S-parameter analysis
 sp_analysis = SParameterAnalysis(1e9, 2e9, 11, z0=50.0)
 result = simulate_qucsator(circ, sp_analysis)
