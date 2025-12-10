@@ -7,6 +7,7 @@ A circulator routes signals in one direction: port 1→2, 2→3, 3→1.
 Commonly used for isolating transmitter and receiver sharing an antenna.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Port 1 node number
 - `n2::Int`: Port 2 node number
@@ -16,7 +17,8 @@ Commonly used for isolating transmitter and receiver sharing an antenna.
 - `z0::Real`: Reference impedance in Ohms (default: 50)
 
 # Example
-```@example
+
+```julia
 using CircuitSim
 # Standard circulator
 CIRC1 = Circulator("CIRC1")

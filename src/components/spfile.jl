@@ -7,6 +7,7 @@ Loads S-parameters from a Touchstone file (.s2p)
 and uses them as a black-box 2-port frequency-domain model.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Port 1 terminal
 - `n2::Int`: Port 2 terminal  
@@ -17,6 +18,7 @@ and uses them as a black-box 2-port frequency-domain model.
 - `during_dc::String`: DC behavior ("open", "short", or "unspecified")
 
 # Example
+
 ```julia
 # Load a 2-port S-parameter file
 amp = SPfile("AMP1", "amplifier.s2p")
@@ -28,10 +30,8 @@ filter_sp = SPfile("FILT1", "filter.s2p",
     temp=298.15)
 ```
 
-# Qucs Format
-`SPfile:Name Node1 Node2 File="filename" Data="rectangular" Interpolator="linear" Temp="293.15" duringDC="open"`
-
 # Notes
+
 - File path can be absolute or relative to netlist location
 - Supports Touchstone v1.0, v1.1, v2.0 formats (.s2p files)
 - Currently supports 2-port networks only

@@ -1,13 +1,10 @@
 """
-Microstrip T-junction component.
-"""
-
-"""
     MicrostripTee <: AbstractMicrostripTee
 
 A microstrip T-junction (3-port).
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (main line input)
 - `n2::Int`: Node 2 (main line output)
@@ -17,12 +14,14 @@ A microstrip T-junction (3-port).
 - `w2::Real`: Branch width (m)
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 tee = MicrostripTee("MTEE1", sub, w1=3.0e-3, w2=1.5e-3)
 ```
 
 # Qucs Format
+
 `MTEE:Name Node1 Node2 Node3 Subst="SubstName" W1="width1" W2="width2" W3="width3"`
 """
 mutable struct MicrostripTee <: AbstractMicrostripTee

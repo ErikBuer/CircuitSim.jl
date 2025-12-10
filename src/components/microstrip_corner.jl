@@ -8,6 +8,7 @@ Microstrip corner (90° bend) component.
 A 90° microstrip corner/bend.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (input)
 - `n2::Int`: Node 2 (output)
@@ -15,12 +16,14 @@ A 90° microstrip corner/bend.
 - `w::Real`: Line width (m)
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 corner = MicrostripCorner("MC1", sub, w=3.0e-3)
 ```
 
 # Qucs Format
+
 `MCORN:Name Node1 Node2 Subst="SubstName" W="width"`
 """
 mutable struct MicrostripCorner <: AbstractMicrostripCorner

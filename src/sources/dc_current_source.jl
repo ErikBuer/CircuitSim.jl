@@ -1,20 +1,18 @@
 """
-DC Current Source component.
-"""
-
-"""
     DCCurrentSource <: AbstractDCCurrentSource
 
 DC current source with two terminals.
 Current flows from nminus to nplus (into nplus).
 
 # Fields
+
 - `name::String`: Component identifier
 - `nplus::Int`: Positive terminal node number
 - `nminus::Int`: Negative terminal node number
 - `dc::Real`: DC current in Amperes
 
 # Example
+
 ```julia
 I1 = DCCurrentSource("I1", 0.001)  # 1mA DC source
 ```

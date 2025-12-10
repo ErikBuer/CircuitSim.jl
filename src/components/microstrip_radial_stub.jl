@@ -1,13 +1,10 @@
 """
-Microstrip radial stub component.
-"""
-
-"""
     MicrostripRadialStub <: AbstractMicrostripRadialStub
 
 A microstrip radial (butterfly) stub for wideband matching.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node (connection point)
 - `substrate::Substrate`: Substrate definition reference
@@ -16,12 +13,14 @@ A microstrip radial (butterfly) stub for wideband matching.
 - `alpha::Real`: Stub angle (degrees)
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 stub = MicrostripRadialStub("RS1", sub, ri=0.5e-3, ro=5.0e-3, alpha=60.0)
 ```
 
 # Qucs Format
+
 `MRSTUB:Name Node1 Subst="SubstName" Ri="inner" Ro="outer" Alpha="angle"`
 """
 mutable struct MicrostripRadialStub <: AbstractMicrostripRadialStub

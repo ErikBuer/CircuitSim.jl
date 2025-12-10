@@ -1,8 +1,4 @@
 """
-AC Current Source component.
-"""
-
-"""
     ACCurrentSource <: AbstractACCurrentSource
 
 AC current source with two terminals.
@@ -15,6 +11,7 @@ For AC analysis, provides a sinusoidal current source.
 - `freq`: Frequency in Hz (for transient analysis)
 
 # Fields
+
 - `name::String`: Component identifier
 - `nplus::Int`: Positive terminal node number
 - `nminus::Int`: Negative terminal node number
@@ -24,6 +21,7 @@ For AC analysis, provides a sinusoidal current source.
 - `freq::Real`: Frequency in Hz
 
 # Example
+
 ```julia
 # 1mA AC source at 1kHz
 I1 = ACCurrentSource("I1", 0.001, freq=1e3)

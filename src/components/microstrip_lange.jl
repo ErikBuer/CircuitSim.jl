@@ -1,13 +1,10 @@
 """
-Lange coupler (interdigitated microstrip coupler) component.
-"""
-
-"""
     MicrostripLange <: AbstractMicrostripLange
 
 A Lange coupler - an interdigitated microstrip directional coupler providing tight coupling.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (input)
 - `n2::Int`: Node 2 (through)
@@ -20,12 +17,14 @@ A Lange coupler - an interdigitated microstrip directional coupler providing tig
 - `n::Int`: Number of fingers
 
 # Example
+
 ```julia
 sub = Substrate("RO4003C", er=3.55, h=0.508e-3)
 lange = MicrostripLange("LC1", sub, w=0.15e-3, l=10e-3, s=0.1e-3, n=4)
 ```
 
 # Qucs Format
+
 `MLANGE:Name Node1 Node2 Node3 Node4 Subst="SubstName" W="width" L="length" S="spacing" N="fingers"`
 """
 mutable struct MicrostripLange <: AbstractMicrostripLange

@@ -1,25 +1,24 @@
 """
-Microstrip open-end component.
-"""
-
-"""
     MicrostripOpen <: AbstractMicrostripOpen
 
 A microstrip open-circuit termination with end-effect modeling.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (input)
 - `substrate::Substrate`: Substrate definition reference
 - `w::Real`: Line width (m)
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 open_end = MicrostripOpen("MO1", sub, w=3.0e-3)
 ```
 
 # Qucs Format
+
 `MOPEN:Name Node1 Subst="SubstName" W="width"`
 """
 mutable struct MicrostripOpen <: AbstractMicrostripOpen

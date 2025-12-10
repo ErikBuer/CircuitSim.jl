@@ -124,7 +124,6 @@ include("components/open.jl")
 include("io/file_loader.jl")
 
 # Sources
-include("sources/file_source_helpers.jl")
 include("sources/dc_voltage_source.jl")
 include("sources/dc_current_source.jl")
 include("sources/ac_voltage_source.jl")

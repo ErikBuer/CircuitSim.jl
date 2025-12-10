@@ -1,13 +1,10 @@
 """
-Microstrip gap (series capacitance) component.
-"""
-
-"""
     MicrostripGap <: AbstractMicrostripGap
 
 A microstrip series gap discontinuity providing capacitive coupling.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (input)
 - `n2::Int`: Node 2 (output)
@@ -17,12 +14,14 @@ A microstrip series gap discontinuity providing capacitive coupling.
 - `s::Real`: Gap spacing (m)
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 gap = MicrostripGap("MG1", sub, w1=3.0e-3, w2=3.0e-3, s=0.2e-3)
 ```
 
 # Qucs Format
+
 `MGAP:Name Node1 Node2 Subst="SubstName" W1="width1" W2="width2" S="spacing"`
 """
 mutable struct MicrostripGap <: AbstractMicrostripGap

@@ -1,13 +1,10 @@
 """
-Bond wire component.
-"""
-
-"""
     BondWire <: AbstractBondWire
 
 A bond wire connection for chip interconnects.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (input)
 - `n2::Int`: Node 2 (output)
@@ -17,11 +14,13 @@ A bond wire connection for chip interconnects.
 - `rho::Real`: Resistivity relative to copper
 
 # Example
+
 ```julia
 wire = BondWire("BW1", l=1e-3, d=25e-6, h=0.3e-3)
 ```
 
-# Qucs Format
+## Qucs Format
+
 `BONDWIRE:Name Node1 Node2 L="length" D="diameter" H="height" rho="resistivity"`
 """
 mutable struct BondWire <: AbstractBondWire

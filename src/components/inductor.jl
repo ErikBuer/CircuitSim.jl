@@ -4,12 +4,14 @@
 Ideal inductor with two terminals.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: First terminal node number (assigned during circuit analysis)
 - `n2::Int`: Second terminal node number (assigned during circuit analysis)
 - `value::Real`: Inductance in Henries
 
 # Example
+
 ```julia
 L1 = Inductor("L1", 10e-6)  # 10μH inductor
 ```

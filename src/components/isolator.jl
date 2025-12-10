@@ -8,6 +8,7 @@ blocking signals in the reverse direction. Commonly used to protect
 sources from reflections.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Input terminal node number
 - `n2::Int`: Output terminal node number
@@ -16,7 +17,8 @@ sources from reflections.
 - `z0::Real`: Reference impedance in Ohms (default: 50)
 
 # Example
-```@example
+
+```julia
 using CircuitSim
 # Standard isolator: 0.5 dB forward loss, 20 dB isolation
 ISO1 = Isolator("ISO1")

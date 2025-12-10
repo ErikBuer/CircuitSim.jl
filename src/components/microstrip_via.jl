@@ -1,13 +1,10 @@
 """
-Microstrip via/through-hole component.
-"""
-
-"""
     MicrostripVia <: AbstractMicrostripVia
 
 A microstrip via hole connecting to ground plane.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node (top connection)
 - `substrate::Substrate`: Substrate definition reference
@@ -15,12 +12,14 @@ A microstrip via hole connecting to ground plane.
 - `t::Real`: Metal thickness (m), uses substrate if 0
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 via = MicrostripVia("VIA1", sub, d=0.3e-3)
 ```
 
 # Qucs Format
+
 `MVIA:Name Node1 gnd Subst="SubstName" D="diameter"`
 """
 mutable struct MicrostripVia <: AbstractMicrostripVia

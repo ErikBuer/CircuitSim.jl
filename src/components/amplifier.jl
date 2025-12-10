@@ -6,6 +6,7 @@ RF/microwave amplifier with gain and noise figure.
 This is a simplified amplifier model suitable for system-level simulations.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Input terminal node number
 - `n2::Int`: Output terminal node number

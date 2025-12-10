@@ -5,7 +5,7 @@ AC small-signal frequency sweep analysis.
 
 Computes the small-signal AC response over a frequency range.
 
-# Parameters
+## Parameters
 
 - `start::Real`: Start frequency in Hz
 - `stop::Real`: Stop frequency in Hz
@@ -13,7 +13,7 @@ Computes the small-signal AC response over a frequency range.
 - `sweep_type::SweepType`: Type of frequency sweep (LINEAR or LOGARITHMIC, default: LOGARITHMIC)
 - `name::String`: Analysis name (default: "AC1")
 
-# Example
+## Example
 
 ```julia
 # Logarithmic sweep from 1Hz to 1MHz with 101 points

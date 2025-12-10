@@ -7,6 +7,7 @@ A directional coupler splits power with specified coupling factor.
 Ports: 1=input, 2=through, 3=coupled, 4=isolated
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Port 1 (input) node number
 - `n2::Int`: Port 2 (through) node number
@@ -18,7 +19,8 @@ Ports: 1=input, 2=through, 3=coupled, 4=isolated
 - `z0::Real`: Reference impedance in Ohms (default: 50)
 
 # Example
-```@example
+
+```julia
 using CircuitSim
 # 3 dB (50/50) directional coupler
 DC1 = Coupler("DC1", 3.0)

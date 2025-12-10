@@ -1,13 +1,10 @@
 """
-Spiral inductor component.
-"""
-
-"""
     SpiralInductor <: AbstractSpiralInductor
 
 A planar spiral inductor on a substrate.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (outer terminal)
 - `n2::Int`: Node 2 (inner terminal)
@@ -19,13 +16,11 @@ A planar spiral inductor on a substrate.
 - `turns::Real`: Number of turns
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 spiral = SpiralInductor("L1", sub, geometry="Circular", w=0.2e-3, s=0.15e-3, di=1e-3, turns=5.5)
 ```
-
-# Qucs Format
-`SPIRALIND:Name Node1 Node2 Subst="SubstName" Geometry="Circular" W="width" S="spacing" Di="innerDiam" N="turns"`
 """
 mutable struct SpiralInductor <: AbstractSpiralInductor
     name::String
