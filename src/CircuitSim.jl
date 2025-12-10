@@ -8,7 +8,7 @@ export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
 # Components - Basic
 export Resistor, Capacitor, Inductor
 export CapacitorQ, InductorQ
-export Ground
+export Ground, Short, Open
 
 # Sources
 export DCVoltageSource, DCCurrentSource
@@ -21,7 +21,7 @@ export VoltageExponentialSource, CurrentExponentialSource
 export VoltageNoiseSource, CurrentNoiseSource
 
 # Probes
-export VoltageProbe, CurrentProbe
+export VoltageProbe, CurrentProbe, PowerProbe
 
 # Components - Substrate
 export Substrate
@@ -40,6 +40,9 @@ export DCBlock, DCFeed, BiasTee
 export Amplifier, Isolator, Attenuator
 export Circulator, PhaseShifter
 export Coupler, Hybrid
+export OpAmp, Gyrator
+export TransmissionLine, CoaxialLine
+export IdealTransformer, MutualInductor
 
 # Netlist generation
 export netlist_qucs, netlist_ngspice
@@ -114,6 +117,8 @@ include("components/inductor.jl")
 include("components/capacitor_q.jl")
 include("components/inductor_q.jl")
 include("components/ground.jl")
+include("components/short.jl")
+include("components/open.jl")
 
 # File I/O utilities
 include("io/file_loader.jl")
@@ -139,6 +144,7 @@ include("sources/current_noise_source.jl")
 # Probes
 include("probes/voltage_probe.jl")
 include("probes/current_probe.jl")
+include("probes/power_probe.jl")
 
 # Substrate (needed by microstrip components)
 include("components/substrate.jl")
@@ -173,5 +179,11 @@ include("components/circulator.jl")
 include("components/phase_shifter.jl")
 include("components/coupler.jl")
 include("components/hybrid.jl")
+include("components/opamp.jl")
+include("components/gyrator.jl")
+include("components/transmission_line.jl")
+include("components/coaxial_line.jl")
+include("components/ideal_transformer.jl")
+include("components/mutual_inductor.jl")
 
 end
