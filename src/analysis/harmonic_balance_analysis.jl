@@ -1,19 +1,17 @@
 """
-Harmonic balance analysis for nonlinear steady-state simulation.
-"""
-
-"""
     HarmonicBalanceAnalysis(frequency; harmonics=5, name="HB1")
 
 Harmonic balance analysis for steady-state analysis of nonlinear circuits
 with periodic excitation.
 
 # Parameters
+
 - `frequency::Real`: Fundamental frequency in Hz
 - `harmonics::Int`: Number of harmonics to include (default: 5)
 - `name::String`: Analysis name (default: "HB1")
 
 # Example
+
 ```julia
 # Harmonic balance at 1GHz with 7 harmonics
 analysis = HarmonicBalanceAnalysis(1e9, harmonics=7)

@@ -1,8 +1,4 @@
 """
-Voltage noise source for noise analysis.
-"""
-
-"""
     VoltageNoiseSource <: AbstractVoltageSource
 
 Voltage noise source for noise analysis with frequency-dependent PSD.
@@ -22,9 +18,6 @@ Noise PSD formula: PSD(f) = u / (a + c * f^e)
 ```julia
 vsrc = VoltageNoiseSource("Vnoise1", u=1e-6, e=0)  # White noise
 ```
-
-# Qucs Format
-`Vnoise:Name Node+ Node- u="u" a="a" c="c" e="e"`
 """
 mutable struct VoltageNoiseSource <: AbstractVoltageNoiseSource
     name::String

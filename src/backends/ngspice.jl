@@ -1,10 +1,4 @@
 """
-ngspice backend for circuit simulation.
-
-This module provides the interface to the ngspice simulator.
-"""
-
-"""
     check_ngspice() -> (Bool, String, String)
 
 Check if ngspice is installed and available in PATH.

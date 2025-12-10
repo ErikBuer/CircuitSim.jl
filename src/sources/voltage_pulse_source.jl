@@ -1,13 +1,10 @@
 """
-Pulsed voltage source for transient analysis.
-"""
-
-"""
     VoltagePulseSource <: AbstractVoltageSource
 
 Voltage source with pulse waveform for transient analysis.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Positive terminal node number
 - `n2::Int`: Negative terminal node number
@@ -19,12 +16,10 @@ Voltage source with pulse waveform for transient analysis.
 - `tf::Real`: Fall time (s, optional, default 1ns)
 
 # Example
+
 ```julia
 vsrc = VoltagePulseSource("Vpulse1", u1=0.0, u2=5.0, t1=1e-9, t2=10e-9, tr=1e-10, tf=1e-10)
 ```
-
-# Qucs Format
-`Vpulse:Name Node+ Node- U1="u1" U2="u2" T1="t1" T2="t2" Tr="tr" Tf="tf"`
 """
 mutable struct VoltagePulseSource <: AbstractVoltagePulseSource
     name::String

@@ -4,12 +4,14 @@
 Ideal capacitor with two terminals.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: First terminal node number (assigned during circuit analysis)
 - `n2::Int`: Second terminal node number (assigned during circuit analysis)
 - `value::Real`: Capacitance in Farads
 
 # Example
+
 ```julia
 C1 = Capacitor("C1", 100e-9)  # 100nF capacitor
 ```

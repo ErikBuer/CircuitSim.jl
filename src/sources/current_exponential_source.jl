@@ -1,13 +1,10 @@
 """
-Exponential current source for transient analysis.
-"""
-
-"""
     CurrentExponentialSource <: AbstractCurrentSource
 
 Exponential rise/fall current source for transient analysis.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Positive terminal node number
 - `n2::Int`: Negative terminal node number
@@ -19,12 +16,10 @@ Exponential rise/fall current source for transient analysis.
 - `tf::Real`: Fall time constant (s, optional, default 1ns)
 
 # Example
+
 ```julia
 isrc = CurrentExponentialSource("Iexp1", i1=0.0, i2=10e-3, t1=1e-9, t2=10e-9)
 ```
-
-# Qucs Format
-`Iexp:Name Node+ Node- I1="i1" I2="i2" T1="t1" T2="t2" Tr="tr" Tf="tf"`
 """
 mutable struct CurrentExponentialSource <: AbstractSource
     name::String

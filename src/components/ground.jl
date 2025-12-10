@@ -8,10 +8,12 @@ Ground reference component.
 Ground reference node (single pin). Maps to node 0.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n::Int`: Terminal node number (always 0 for ground)
 
 # Example
+
 ```julia
 GND = Ground("GND")
 ```

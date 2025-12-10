@@ -1,13 +1,10 @@
 """
-Rectangular pulse current source for transient analysis.
-"""
-
-"""
     CurrentRectangularSource <: AbstractCurrentSource
 
 Periodic rectangular pulse current source for transient analysis.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Positive terminal node number
 - `n2::Int`: Negative terminal node number
@@ -19,12 +16,10 @@ Periodic rectangular pulse current source for transient analysis.
 - `td::Real`: Delay time (s, optional, default 0)
 
 # Example
+
 ```julia
 isrc = CurrentRectangularSource("Irect1", i=10e-3, th=1e-6, tl=1e-6)
 ```
-
-# Qucs Format
-`Irect:Name Node+ Node- I="i" TH="th" TL="tl" Tr="tr" Tf="tf" Td="td"`
 """
 mutable struct CurrentRectangularSource <: AbstractCurrentRectifiedSource
     name::String

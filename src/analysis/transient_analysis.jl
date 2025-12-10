@@ -1,8 +1,4 @@
 """
-Time-domain transient analysis.
-"""
-
-"""
     TransientAnalysis(stop; start=0.0, points=nothing, step=nothing, name="TR1")
 
 Time-domain transient analysis.
@@ -10,6 +6,7 @@ Time-domain transient analysis.
 Simulates the circuit behavior over time.
 
 # Parameters
+
 - `stop::Real`: Stop time in seconds
 - `start::Real`: Start time in seconds (default: 0.0)
 - `points::Int`: Number of time points (specify either points or step)
@@ -18,6 +15,7 @@ Simulates the circuit behavior over time.
 - `initial_dc::Bool`: Compute initial DC operating point (default: true)
 
 # Example
+
 ```julia
 # Simulate for 1ms with 1001 points
 analysis = TransientAnalysis(1e-3, points=1001)

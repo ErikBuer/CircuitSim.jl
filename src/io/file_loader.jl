@@ -33,15 +33,18 @@ end
 Load time-series data from CSV or Qucs Dataset file.
 
 # Arguments
+
 - `filepath`: Path to data file
 - `format`: Format hint (:auto, :csv, :qucs_dataset)
 
 # Returns
+
 - `FileData` struct with times, samples, and metadata
 
 # Supported Formats
 
 ## CSV Format
+
 Two columns: time, value (comma or semicolon separated)
 Optional header row with column names
 
@@ -54,6 +57,7 @@ time,voltage
 ```
 
 ## Qucs Dataset Format
+
 Native qucsator format with indep/dep blocks
 
 Example:

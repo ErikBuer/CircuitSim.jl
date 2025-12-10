@@ -7,6 +7,7 @@ A hybrid coupler is a specialized 4-port device that splits power equally
 between two ports with a specific phase relationship.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Port 1 (sum) node number
 - `n2::Int`: Port 2 (difference/isolated) node number
@@ -18,7 +19,8 @@ between two ports with a specific phase relationship.
 - `z0::Real`: Reference impedance in Ohms (default: 50)
 
 # Example
-```@example
+
+```julia
 using CircuitSim
 # 90 degree hybrid (quadrature hybrid)
 HYB1 = Hybrid("HYB1")

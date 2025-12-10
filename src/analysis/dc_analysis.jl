@@ -1,8 +1,4 @@
 """
-DC operating point analysis.
-"""
-
-"""
     DCAnalysis(; save_ops=true, temp=26.85, save_all=false)
 
 DC operating point analysis.
@@ -10,12 +6,14 @@ DC operating point analysis.
 Computes the DC operating point of the circuit.
 
 # Parameters
+
 - `save_ops::Bool`: Save operating points of nonlinear devices (default: true)
 - `temp::Real`: Simulation temperature in °C (default: 26.85)
 - `save_all::Bool`: Save all node voltages and branch currents (default: false)
 - `name::String`: Analysis name (default: "DC1")
 
 # Example
+
 ```julia
 analysis = DCAnalysis()
 result = simulate_qucsator(circuit, analysis)

@@ -1,13 +1,10 @@
 """
-Substrate definition for microstrip and other planar transmission line components.
-"""
-
-"""
     Substrate
 
 Defines the substrate properties for microstrip and planar components.
 
 # Fields
+
 - `name::String`: Substrate identifier
 - `er::Real`: Relative permittivity (dielectric constant)
 - `h::Real`: Substrate height/thickness in meters
@@ -17,6 +14,7 @@ Defines the substrate properties for microstrip and planar components.
 - `rough::Real`: Surface roughness in meters
 
 # Example
+
 ```julia
 # Standard FR4 substrate
 fr4 = Substrate("FR4", er=4.5, h=1.6e-3, t=35e-6, tand=0.02)

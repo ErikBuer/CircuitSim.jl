@@ -1,8 +1,4 @@
 """
-AC Voltage Source component.
-"""
-
-"""
     ACVoltageSource <: AbstractACVoltageSource
 
 AC voltage source with two terminals.
@@ -18,6 +14,7 @@ For transient analysis, all parameters define a sinusoid:
 V(t) = dc + ac_mag * sin(2π*freq*t + ac_phase)
 
 # Fields
+
 - `name::String`: Component identifier
 - `nplus::Int`: Positive terminal node number
 - `nminus::Int`: Negative terminal node number
@@ -27,6 +24,7 @@ V(t) = dc + ac_mag * sin(2π*freq*t + ac_phase)
 - `freq::Real`: Frequency in Hz
 
 # Example
+
 ```julia
 # 1V AC source at 1kHz
 V1 = ACVoltageSource("V1", 1.0, freq=1e3)

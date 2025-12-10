@@ -10,6 +10,7 @@ This component can operate in two modes:
 The data consists of time-voltage pairs that are interpolated during simulation.
 
 # Fields
+
 - `name::String`: Component identifier
 - `nplus::Int`: Positive terminal node number  
 - `nminus::Int`: Negative terminal node number
@@ -57,7 +58,8 @@ Example:
 ```
 
 # Example
-```@example
+
+```julia
 using CircuitSim
 
 # Vector mode - automatic file handling (CSV format)

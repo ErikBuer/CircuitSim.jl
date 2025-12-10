@@ -1,13 +1,10 @@
 """
-Microstrip transmission line component.
-"""
-
-"""
     MicrostripLine <: AbstractMicrostripLine
 
 A microstrip transmission line segment.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (input)
 - `n2::Int`: Node 2 (output)
@@ -18,12 +15,14 @@ A microstrip transmission line segment.
 - `temp::Real`: Temperature (K)
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 line = MicrostripLine("MS1", sub, w=3.0e-3, l=20e-3)
 ```
 
 # Qucs Format
+
 `MLIN:Name Node1 Node2 Subst="SubstName" W="width" L="length" Temp="temp"`
 """
 mutable struct MicrostripLine <: AbstractMicrostripLine
