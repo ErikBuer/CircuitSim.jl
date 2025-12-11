@@ -159,6 +159,7 @@ abstract type AbstractCoplanarStep <: AbstractCoplanarComponent end
 export AbstractOperationalAmplifier, AbstractDiode, AbstractJFET, AbstractBipolarJunctionTransistor,
     AbstractMOSFET, AbstractEquationDefinedDevice, AbstractDIAC, AbstractTRIAC, AbstractThyristor,
     AbstractTunnelDiode
+export AbstractTriac  # Alias for AbstractTRIAC
 abstract type AbstractOperationalAmplifier <: AbstractActiveComponent end
 abstract type AbstractDiode <: AbstractActiveComponent end
 abstract type AbstractJFET <: AbstractActiveComponent end
@@ -169,6 +170,9 @@ abstract type AbstractDIAC <: AbstractActiveComponent end
 abstract type AbstractTRIAC <: AbstractActiveComponent end
 abstract type AbstractThyristor <: AbstractActiveComponent end
 abstract type AbstractTunnelDiode <: AbstractActiveComponent end
+
+# Alias for lowercase consistency
+const AbstractTriac = AbstractTRIAC
 
 # Digital components
 export AbstractInverter, AbstractNORGate, AbstractORGate, AbstractNANDGate, AbstractANDGate,

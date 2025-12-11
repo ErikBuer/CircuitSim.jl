@@ -55,6 +55,8 @@ export TunnelDiode, RTD
 export JFET
 export DIAC
 export MOSFET
+export Thyristor, SCR
+export Triac
 
 # Netlist generation
 export netlist_qucs, netlist_ngspice
@@ -213,5 +215,7 @@ include("devices/tunnel_diode.jl")
 include("devices/jfet.jl")
 include("devices/diac.jl")
 include("devices/mosfet.jl")
+include("devices/thyristor.jl")
+include("devices/triac.jl")
 
 end
