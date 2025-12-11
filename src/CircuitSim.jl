@@ -57,6 +57,7 @@ export DIAC
 export MOSFET
 export Thyristor, SCR
 export Triac
+export BJT
 
 # Netlist generation
 export netlist_qucs, netlist_ngspice
@@ -217,5 +218,6 @@ include("devices/diac.jl")
 include("devices/mosfet.jl")
 include("devices/thyristor.jl")
 include("devices/triac.jl")
+include("devices/bjt.jl")
 
 end

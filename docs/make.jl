@@ -101,6 +101,7 @@ makedocs(
             "Devices/mosfet.md",
             "Devices/thyristor.md",
             "Devices/triac.md",
+            "Devices/bjt.md",
         ],
         "Examples"=>[
             "Examples/lowpass_filter.md",
