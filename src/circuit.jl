@@ -84,12 +84,12 @@ function assign_nodes!(c::Circuit)
     function is_node_field(fname::Symbol)::Bool
         s = string(fname)
         # Match standard patterns: n, n1-n99, nplus, nminus
-        # Plus semantic names: cathode, anode, gate, drain, source, collector, base, emitter
+        # Plus semantic names: cathode, anode, gate, drain, source, collector, base, emitter, input, output
         return s == "n" ||
                occursin(r"^n\d+$", s) ||
                s == "nplus" ||
                s == "nminus" ||
-               s in ("cathode", "anode", "gate", "drain", "source", "collector", "base", "emitter")
+               s in ("cathode", "anode", "gate", "drain", "source", "collector", "base", "emitter", "input", "output")
     end
 
     for comp in c.components

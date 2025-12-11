@@ -51,6 +51,8 @@ export SPfile
 
 # Devices - Nonlinear semiconductors
 export Diode, D
+export TunnelDiode, RTD
+export JFET
 
 # Netlist generation
 export netlist_qucs, netlist_ngspice
@@ -205,5 +207,7 @@ include("components/spfile.jl")
 
 # Nonlinear semiconductor devices
 include("devices/diode.jl")
+include("devices/tunnel_diode.jl")
+include("devices/jfet.jl")
 
 end

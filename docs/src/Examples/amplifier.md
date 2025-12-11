@@ -1,4 +1,4 @@
-# Amplifier
+# Amplifier S-Parameters
 
 ## Circuit Setup
 
