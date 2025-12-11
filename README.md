@@ -2,4 +2,6 @@
 
 Julia package for running circuit simulation.
 
-Starting with qucsator 
+Only qucsator is currently suported.
+
+The package expects qucsator to be preinstalled.
