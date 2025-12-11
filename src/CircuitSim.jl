@@ -53,6 +53,8 @@ export SPfile
 export Diode, D
 export TunnelDiode, RTD
 export JFET
+export DIAC
+export MOSFET
 
 # Netlist generation
 export netlist_qucs, netlist_ngspice
@@ -209,5 +211,7 @@ include("components/spfile.jl")
 include("devices/diode.jl")
 include("devices/tunnel_diode.jl")
 include("devices/jfet.jl")
+include("devices/diac.jl")
+include("devices/mosfet.jl")
 
 end

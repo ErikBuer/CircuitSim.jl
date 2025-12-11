@@ -97,6 +97,8 @@ makedocs(
             "Devices/diode.md",
             "Devices/tunnel_diode.md",
             "Devices/jfet.md",
+            "Devices/diac.md",
+            "Devices/mosfet.md",
         ],
         "Examples"=>[
             "Examples/lowpass_filter.md",
