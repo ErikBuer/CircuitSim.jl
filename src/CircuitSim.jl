@@ -58,6 +58,7 @@ export MOSFET
 export Thyristor, SCR
 export Triac
 export BJT
+export EquationDefinedDevice, EDD
 
 # Netlist generation
 export netlist_qucs, netlist_ngspice
@@ -219,5 +220,6 @@ include("devices/mosfet.jl")
 include("devices/thyristor.jl")
 include("devices/triac.jl")
 include("devices/bjt.jl")
+include("devices/equation_defined.jl")
 
 end

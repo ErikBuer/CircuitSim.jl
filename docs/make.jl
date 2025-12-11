@@ -102,6 +102,7 @@ makedocs(
             "Devices/thyristor.md",
             "Devices/triac.md",
             "Devices/bjt.md",
+            "Devices/equation_defined.md",
         ],
         "Examples"=>[
             "Examples/lowpass_filter.md",
