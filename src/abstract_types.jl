@@ -17,7 +17,6 @@ abstract type AbstractMicrostripComponent <: AbstractTransmissionLine end
 abstract type AbstractCoplanarComponent <: AbstractTransmissionLine end
 abstract type AbstractExternalInterface <: AbstractCircuitComponent end
 
-
 # Helper / simple
 export AbstractGround, AbstractOpenCircuit, AbstractShortCircuit, AbstractTee, AbstractCrossConnection, AbstractIdealTransformer
 abstract type AbstractGround <: AbstractPassiveComponent end

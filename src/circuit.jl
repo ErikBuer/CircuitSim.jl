@@ -80,14 +80,16 @@ function assign_nodes!(c::Circuit)
     c._node_map = Dict{UInt64,Int}()  # final mapping root -> node number
 
     # helper: treat any field whose value is an Int and whose name looks like a node field
-    # Node field names: n, n1, n2, n3, ..., nplus, nminus, etc.
+    # Node field names: n, n1, n2, n3, ..., nplus, nminus, cathode, anode, gate, drain, etc.
     function is_node_field(fname::Symbol)::Bool
         s = string(fname)
-        # Match: n, n1, n2, ..., nplus, nminus
+        # Match standard patterns: n, n1-n99, nplus, nminus
+        # Plus semantic names: cathode, anode, gate, drain, source, collector, base, emitter
         return s == "n" ||
                occursin(r"^n\d+$", s) ||
                s == "nplus" ||
-               s == "nminus"
+               s == "nminus" ||
+               s in ("cathode", "anode", "gate", "drain", "source", "collector", "base", "emitter")
     end
 
     for comp in c.components

@@ -49,6 +49,9 @@ export TransmissionLine, CoaxialLine
 export IdealTransformer, MutualInductor
 export SPfile
 
+# Devices - Nonlinear semiconductors
+export Diode, D
+
 # Netlist generation
 export netlist_qucs, netlist_ngspice
 export to_qucs_netlist, to_spice_netlist
@@ -199,5 +202,8 @@ include("components/coaxial_line.jl")
 include("components/ideal_transformer.jl")
 include("components/mutual_inductor.jl")
 include("components/spfile.jl")
+
+# Nonlinear semiconductor devices
+include("devices/diode.jl")
 
 end

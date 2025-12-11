@@ -93,6 +93,9 @@ makedocs(
             "Components/current_probe.md",
             "Components/power_probe.md",
         ],
+        "Devices"=>[
+            "Devices/diode.md",
+        ],
         "Examples"=>[
             "Examples/lowpass_filter.md",
             "Examples/dc_divider.md",
