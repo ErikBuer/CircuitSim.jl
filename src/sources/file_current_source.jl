@@ -60,7 +60,7 @@ Example:
 ```julia
 using CircuitSim
 
-# Vector mode - automatic file handling (CSV format)
+# Vector mode - creates a temporary csv file and passes to qucsator.
 time = [0.0, 1e-9, 2e-9, 3e-9, 4e-9]
 current = [0.0, 0.001, 0.001, 0.0, 0.0]
 I1 = FileCurrentSource("I1", time, current)
@@ -120,7 +120,7 @@ end
 
 function to_qucs_netlist(comp::FileCurrentSource)::String
     actual_file = if comp.file !== nothing
-        basename(comp.file)
+        comp.file
     else
         # Choose file extension based on format
         ext = comp.format == :csv ? ".csv" : ".dat"
