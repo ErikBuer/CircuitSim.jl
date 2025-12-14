@@ -29,7 +29,7 @@ const Pac = ACPowerSource
 function to_qucs_netlist(ps::ACPowerSource)::String
     # Generates Qucsator "Pac" component
     # Note: f parameter required by qucsator but overridden during sweep analysis
-    return "Pac:$(ps.name) $(qucs_node(ps.nplus)) $(qucs_node(ps.nminus)) Num=\"$(ps.port_num)\" Z=\"$(ps.impedance)\" P=\"$(ps.power_dbm) dBm\" f=\"$(ps.frequency) Hz\""
+    return "Pac:$(ps.name) $(qucs_node(ps.nplus)) $(qucs_node(ps.nminus)) Num=\"$(ps.port_num)\" Z=\"$(ps.impedance)Ohm\" P=\"$(ps.power_dbm)dBm\" f=\"$(ps.frequency)Hz\""
 end
 
 function to_spice_netlist(ps::ACPowerSource)::String
