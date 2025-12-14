@@ -1,13 +1,10 @@
 """
-Microstrip mitered bend component.
-"""
-
-"""
     MicrostripMiteredBend <: AbstractMicrostripMiteredBend
 
 A mitered microstrip 90° bend with corner cut for improved performance.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (input)
 - `n2::Int`: Node 2 (output)
@@ -15,12 +12,14 @@ A mitered microstrip 90° bend with corner cut for improved performance.
 - `w::Real`: Line width (m)
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 bend = MicrostripMiteredBend("MB1", sub, w=3.0e-3)
 ```
 
 # Qucs Format
+
 `MBEND:Name Node1 Node2 Subst="SubstName" W="width"`
 """
 mutable struct MicrostripMiteredBend <: AbstractMicrostripMiteredBend
@@ -38,7 +37,7 @@ mutable struct MicrostripMiteredBend <: AbstractMicrostripMiteredBend
 end
 
 function to_qucs_netlist(mb::MicrostripMiteredBend)::String
-    parts = ["MBEND:$(mb.name)"]
+    parts = ["MMBEND:$(mb.name)"]
     push!(parts, qucs_node(mb.n1))
     push!(parts, qucs_node(mb.n2))
     push!(parts, "Subst=\"$(mb.substrate.name)\"")

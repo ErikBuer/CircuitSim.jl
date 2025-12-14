@@ -3,23 +3,43 @@
 
 S-parameter file (Touchstone format) component.
 
-Loads S-parameters from a Touchstone file (.s2p) 
-and uses them as a black-box 2-port frequency-domain model.
+Loads S-parameters from a Touchstone file and uses them as a 
+black-box frequency-domain model. The number of ports is automatically 
+detected from the file extension.
+
+# Port Structure
+
+For an N-port S-parameter file, the component has N+1 nodes:
+- `n1`, `n2`, ..., `nN`: Port terminal nodes
+- `ref`: Ground reference node (always the last node)
 
 # Fields
+
 - `name::String`: Component identifier
-- `n1::Int`: Port 1 terminal
-- `n2::Int`: Port 2 terminal  
+- `nodes::Vector{Int}`: Port terminal nodes (N+1 total: N ports + ground)
 - `file::String`: Path to Touchstone file
+- `num_ports::Int`: Number of ports
 - `data_format::String`: Data format ("rectangular" or "polar")
 - `interpolator::String`: Interpolation method ("linear" or "cubic")
 - `temp::Real`: Temperature in Kelvin (default 293.15K = 20°C)
 - `during_dc::String`: DC behavior ("open", "short", or "unspecified")
 
 # Example
+
 ```julia
-# Load a 2-port S-parameter file
+# Load a 1-port S-parameter file (antenna)
+antenna = SPfile("ANT1", "antenna.s1p")
+@connect circ source.nplus antenna.n1
+@connect circ antenna.ref ground
+
+# Load a 2-port S-parameter file (amplifier)
 amp = SPfile("AMP1", "amplifier.s2p")
+@connect circ input.nplus amp.n1
+@connect circ output.nplus amp.n2
+@connect circ amp.ref ground
+
+# Manually specify port count if filename doesn't follow .sNp convention
+custom = SPfile("DEV", "data.txt", num_ports=3)
 
 # Custom options
 filter_sp = SPfile("FILT1", "filter.s2p", 
@@ -28,25 +48,26 @@ filter_sp = SPfile("FILT1", "filter.s2p",
     temp=298.15)
 ```
 
-# Qucs Format
-`SPfile:Name Node1 Node2 File="filename" Data="rectangular" Interpolator="linear" Temp="293.15" duringDC="open"`
-
 # Notes
+
 - File path can be absolute or relative to netlist location
-- Supports Touchstone v1.0, v1.1, v2.0 formats (.s2p files)
-- Currently supports 2-port networks only
+- Supports Touchstone v1.0, v1.1, v2.0 formats
+- Number of ports detected from .sNp filename (e.g., .s1p = 1-port, .s2p = 2-port)
+- Can be overridden with `num_ports` parameter
+- Always connect the `ref` node to circuit ground
 """
 mutable struct SPfile <: AbstractSParameterFile
     name::String
-    n1::Int
-    n2::Int
+    nodes::Vector{Int}
     file::String
+    num_ports::Int
     data_format::String
     interpolator::String
     temp::Real
     during_dc::String
 
     function SPfile(name::AbstractString, file::AbstractString;
+        num_ports::Union{Int,Nothing}=nothing,
         data_format::String="rectangular",
         interpolator::String="linear",
         temp::Real=293.15,
@@ -56,18 +77,51 @@ mutable struct SPfile <: AbstractSParameterFile
         interpolator in ["linear", "cubic"] || throw(ArgumentError("interpolator must be 'linear' or 'cubic'"))
         during_dc in ["open", "short", "unspecified"] || throw(ArgumentError("during_dc must be 'open', 'short', or 'unspecified'"))
 
-        new(String(name), 0, 0, file, data_format, interpolator, temp, during_dc)
+        # Detect number of ports from file extension or use provided value
+        detected_ports = if num_ports !== nothing
+            num_ports
+        else
+            detect_touchstone_ports(file)
+        end
+
+        # Initialize nodes array with zeros (will be assigned by @connect)
+        # SPfile needs N+1 nodes: N port nodes + 1 ground reference node
+        nodes = zeros(Int, detected_ports + 1)
+
+        new(String(name), nodes, file, detected_ports, data_format, interpolator, temp, during_dc)
+    end
+end
+
+# TODO dont limit to 4 ports - make dynamic
+function Base.setproperty!(spf::SPfile, sym::Symbol, val)
+    if sym === :n1 && Base.getfield(spf, :num_ports) >= 1
+        Base.getfield(spf, :nodes)[1] = val
+    elseif sym === :n2 && Base.getfield(spf, :num_ports) >= 2
+        Base.getfield(spf, :nodes)[2] = val
+    elseif sym === :n3 && Base.getfield(spf, :num_ports) >= 3
+        Base.getfield(spf, :nodes)[3] = val
+    elseif sym === :n4 && Base.getfield(spf, :num_ports) >= 4
+        Base.getfield(spf, :nodes)[4] = val
+    elseif sym === :ref
+        # Ground reference is always the last node (N+1)
+        Base.getfield(spf, :nodes)[end] = val
+    else
+        Base.setfield!(spf, sym, val)
     end
 end
 
 function to_qucs_netlist(spf::SPfile)::String
+    # Build node list: N port nodes followed by ground reference node
     parts = ["SPfile:$(spf.name)"]
-    push!(parts, qucs_node(spf.n1))
-    push!(parts, qucs_node(spf.n2))
+
+    # Add all N+1 nodes (N ports + 1 ground reference)
+    for i in 1:length(spf.nodes)
+        push!(parts, qucs_node(spf.nodes[i]))
+    end
+
     push!(parts, "File=\"$(spf.file)\"")
     push!(parts, "Data=\"$(spf.data_format)\"")
     push!(parts, "Interpolator=\"$(spf.interpolator)\"")
-    push!(parts, "Temp=\"$(spf.temp)\"")
     push!(parts, "duringDC=\"$(spf.during_dc)\"")
     return join(parts, " ")
 end
@@ -76,8 +130,62 @@ function to_spice_netlist(spf::SPfile)::String
     "* S-parameter file $(spf.name) from $(spf.file)"
 end
 
-function _get_node_number(spf::SPfile, terminal::Int)::Int
-    terminal == 1 && return spf.n1
-    terminal == 2 && return spf.n2
-    throw(ArgumentError("SPfile $(spf.name) is 2-port, terminal must be 1 or 2, got $terminal"))
+# TODO dont limit to 4 ports - make dynamic
+function _get_node_number(spf::SPfile, pin::Symbol)::Int
+    if pin === :n1 && spf.num_ports >= 1
+        return spf.nodes[1]
+    elseif pin === :n2 && spf.num_ports >= 2
+        return spf.nodes[2]
+    elseif pin === :n3 && spf.num_ports >= 3
+        return spf.nodes[3]
+    elseif pin === :n4 && spf.num_ports >= 4
+        return spf.nodes[4]
+    elseif pin === :ref
+        return spf.nodes[end]
+    else
+        error("Invalid pin $pin for SPfile $(spf.name). Valid pins: n1" *
+              (spf.num_ports >= 2 ? ", n2" : "") *
+              (spf.num_ports >= 3 ? ", n3" : "") *
+              (spf.num_ports >= 4 ? ", n4" : "") *
+              ", ref")
+    end
 end
+
+
+function num_pins(spf::SPfile)
+    # SPfile has N+1 pins: N port pins + 1 ground reference
+    return spf.num_ports + 1
+end
+
+# Register SPfile pins in union-find
+function _register_pins_in_uf!(uf::UnionFind, comp::SPfile)
+    for i in 1:comp.num_ports
+        p = Pin(comp, Symbol("n$i"))
+        uf_find(uf, pinid(p))
+    end
+    p = Pin(comp, :ref)
+    uf_find(uf, pinid(p))
+end
+
+# Collect roots from SPfile pins
+function _collect_roots!(rootset::Dict{UInt64,Int}, uf::UnionFind, comp::SPfile)
+    for i in 1:comp.num_ports
+        root = uf_find(uf, pinid(Pin(comp, Symbol("n$i"))))
+        rootset[root] = 1
+    end
+    root = uf_find(uf, pinid(Pin(comp, :ref)))
+    rootset[root] = 1
+end
+
+# Write back node numbers to SPfile
+function _write_node_numbers!(comp::SPfile, uf::UnionFind, node_map::Dict{UInt64,Int})
+    for i in 1:comp.num_ports
+        root = uf_find(uf, pinid(Pin(comp, Symbol("n$i"))))
+        node = get(node_map, root, 0)
+        setproperty!(comp, Symbol("n$i"), node)
+    end
+    root = uf_find(uf, pinid(Pin(comp, :ref)))
+    node = get(node_map, root, 0)
+    setproperty!(comp, :ref, node)
+end
+

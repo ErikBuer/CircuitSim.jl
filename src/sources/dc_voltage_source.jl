@@ -1,19 +1,17 @@
 """
-DC Voltage Source component.
-"""
-
-"""
     DCVoltageSource <: AbstractDCVoltageSource
 
 DC voltage source with two terminals.
 
 # Fields
+
 - `name::String`: Component identifier
 - `nplus::Int`: Positive terminal node number
 - `nminus::Int`: Negative terminal node number
 - `dc::Real`: DC voltage in Volts
 
 # Example
+
 ```julia
 V1 = DCVoltageSource("V1", 12.0)  # 12V DC source
 ```

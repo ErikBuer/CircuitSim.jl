@@ -20,17 +20,17 @@ add_component!(circ, Amp)
 add_component!(circ, R_load)
 add_component!(circ, GND)
 
-@connect circ I_in.nplus Amp.n1
-@connect circ Amp.n2 R_load.n1
-@connect circ R_load.n2 GND
-@connect circ I_in.nminus GND
+@connect circ I_in.nplus Amp.input
+@connect circ Amp.output R_load.n1
+@connect circ R_load.n2 GND.n
+@connect circ I_in.nminus GND.n
 
 # Transient simulation
 tran = TransientAnalysis(10e-9, points=100)
 result = simulate_qucsator(circ, tran)
 
 # Extract voltages using helper functions
-v_input = get_pin_voltage(result, Amp, :n1)
+v_input = get_pin_voltage(result, Amp, :input)
 v_output = get_pin_voltage(result, R_load, :n1)
 
 println("Input:  ", round(maximum(abs.(v_input))*1e3, digits=1), " mV peak")

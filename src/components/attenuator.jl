@@ -7,6 +7,7 @@ An attenuator reduces signal power by a specified amount while maintaining
 impedance matching.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Input terminal node number
 - `n2::Int`: Output terminal node number

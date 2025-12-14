@@ -6,9 +6,10 @@ RF/microwave amplifier with gain and noise figure.
 This is a simplified amplifier model suitable for system-level simulations.
 
 # Fields
+
 - `name::String`: Component identifier
-- `n1::Int`: Input terminal node number
-- `n2::Int`: Output terminal node number
+- `input::Int`: Input terminal node number
+- `output::Int`: Output terminal node number
 - `gain::Real`: Linear voltage gain. For 20 dB gain, use gain=10.0
 - `nf::Real`: Noise figure (linear). For 3 dB NF, use nf=2.0. Default: 1.0 (noiseless)
 - `z_in::Real`: Input impedance in Ohms (default: 50)
@@ -18,8 +19,8 @@ This is a simplified amplifier model suitable for system-level simulations.
 """
 mutable struct Amplifier <: AbstractPowerAmplifier
     name::String
-    n1::Int
-    n2::Int
+    input::Int
+    output::Int
     gain::Real
     nf::Real
     z_in::Real
@@ -39,8 +40,8 @@ end
 function to_qucs_netlist(comp::Amplifier)::String
     # Qucs amplifier model - G and NF are linear values, NOT dB
     parts = ["Amp:$(comp.name)"]
-    push!(parts, "$(qucs_node(comp.n1))")
-    push!(parts, "$(qucs_node(comp.n2))")
+    push!(parts, "$(qucs_node(comp.input))")
+    push!(parts, "$(qucs_node(comp.output))")
     push!(parts, "G=\"$(format_value(comp.gain))\"")
     if comp.nf > 1
         push!(parts, "NF=\"$(format_value(comp.nf))\"")
@@ -57,18 +58,18 @@ function to_spice_netlist(comp::Amplifier)::String
 
     lines = String[]
     push!(lines, "* Amplifier $(comp.name): Gain=$(comp.gain) (linear), NF=$(comp.nf) (linear)")
-    push!(lines, "R$(comp.name)_in $(comp.n1) 0 $(comp.z_in)")
-    push!(lines, "E$(comp.name) $(comp.n1)_int 0 $(comp.n1) 0 $(gv)")
-    push!(lines, "R$(comp.name)_out $(comp.n1)_int $(comp.n2) $(comp.z_out)")
+    push!(lines, "R$(comp.name)_in $(comp.input) 0 $(comp.z_in)")
+    push!(lines, "E$(comp.name) $(comp.input)_int 0 $(comp.input) 0 $(gv)")
+    push!(lines, "R$(comp.name)_out $(comp.input)_int $(comp.output) $(comp.z_out)")
     return join(lines, "\n")
 end
 
 function _get_node_number(component::Amplifier, pin::Symbol)::Int
-    if pin == :n1 || pin == :input
-        return component.n1
-    elseif pin == :n2 || pin == :output
-        return component.n2
+    if pin == :input
+        return component.input
+    elseif pin == :output
+        return component.output
     else
-        error("Invalid pin $pin for Amplifier. Use :n1/:input or :n2/:output")
+        error("Invalid pin $pin for Amplifier. Use :input or :output")
     end
 end

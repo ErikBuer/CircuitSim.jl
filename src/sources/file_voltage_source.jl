@@ -10,6 +10,7 @@ This component can operate in two modes:
 The data consists of time-voltage pairs that are interpolated during simulation.
 
 # Fields
+
 - `name::String`: Component identifier
 - `nplus::Int`: Positive terminal node number  
 - `nminus::Int`: Negative terminal node number
@@ -57,10 +58,11 @@ Example:
 ```
 
 # Example
-```@example
+
+```julia
 using CircuitSim
 
-# Vector mode - automatic file handling (CSV format)
+# Vector mode - creates a temporary csv file and passes to qucsator.
 time = [0.0, 1e-9, 2e-9, 3e-9]
 voltage = [0.0, 1.0, 1.0, 0.0]
 V1 = FileVoltageSource("V1", time, voltage)
@@ -120,7 +122,7 @@ end
 
 function to_qucs_netlist(comp::FileVoltageSource)::String
     actual_file = if comp.file !== nothing
-        basename(comp.file)
+        comp.file
     else
         # Choose file extension based on format
         ext = comp.format == :csv ? ".csv" : ".dat"

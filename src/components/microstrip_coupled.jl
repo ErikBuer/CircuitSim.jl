@@ -1,13 +1,10 @@
 """
-Microstrip coupled lines component.
-"""
-
-"""
     MicrostripCoupled <: AbstractMicrostripCoupled
 
 A pair of microstrip coupled transmission lines (4-port).
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (line 1 input)
 - `n2::Int`: Node 2 (line 1 output)
@@ -19,12 +16,14 @@ A pair of microstrip coupled transmission lines (4-port).
 - `s::Real`: Line spacing (m)
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 coupled = MicrostripCoupled("MCPL1", sub, w=1.0e-3, l=20e-3, s=0.2e-3)
 ```
 
 # Qucs Format
+
 `MCOUPLED:Name Node1 Node2 Node3 Node4 Subst="SubstName" W="width" L="length" S="spacing"`
 """
 mutable struct MicrostripCoupled <: AbstractMicrostripCoupled
@@ -61,7 +60,8 @@ function to_qucs_netlist(mc::MicrostripCoupled)::String
     push!(parts, "W=\"$(format_value(mc.w))\"")
     push!(parts, "L=\"$(format_value(mc.l))\"")
     push!(parts, "S=\"$(format_value(mc.s))\"")
-    push!(parts, "Model=\"$(mc.model)\"")
+    push!(parts, "Model=\"Kirschning\"")
+    push!(parts, "DispModel=\"Kirschning\"")
     return join(parts, " ")
 end
 

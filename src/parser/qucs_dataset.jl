@@ -1,18 +1,4 @@
 """
-Parser for Qucs dataset output format.
-
-Format: 
-```
-<Qucs Dataset VERSION>
-<indep name size> ... values ... </indep>
-<dep name dep1 dep2 ...> ... values ... </dep>
-```
-
-Inspired by qucs-s data structures for typed results.
-"""
-
-
-"""
     SimulationStatus
 
 Result status from a simulation run.
@@ -36,6 +22,7 @@ end
 DC operating point results.
 
 # Fields
+
 - `voltages::Dict{String,Float64}`: Node voltages (node_name => voltage)
 - `currents::Dict{String,Float64}`: Branch currents (component_name => current)
 """
@@ -50,6 +37,7 @@ end
 AC analysis results (frequency sweep).
 
 # Fields
+
 - `frequencies_Hz::Vector{Float64}`: Frequency points
 - `voltages::Dict{String,Vector{ComplexF64}}`: Node voltages vs frequency
 - `currents::Dict{String,Vector{ComplexF64}}`: Branch currents vs frequency
@@ -66,6 +54,7 @@ end
 Transient analysis results (time domain).
 
 # Fields
+
 - `time_s::Vector{Float64}`: Time points
 - `voltages::Dict{String,Vector{Float64}}`: Node voltages vs time
 - `currents::Dict{String,Vector{Float64}}`: Branch currents vs time
@@ -82,6 +71,7 @@ end
 S-parameter analysis results.
 
 # Fields
+
 - `frequencies_Hz::Vector{Float64}`: Frequency points
 - `num_ports::Int`: Number of ports
 - `s_matrix::Dict{Tuple{Int,Int},Vector{ComplexF64}}`: S[i,j] vs frequency
@@ -108,6 +98,7 @@ end
 Represents a data vector from simulation output.
 
 # Fields
+
 - `name::String`: Vector name
 - `values::Vector{ComplexF64}`: Data values
 - `dependencies::Vector{String}`: Names of independent variables this depends on
@@ -126,6 +117,7 @@ end
 Parsed simulation result containing all vectors and metadata.
 
 # Fields
+
 - `status::SimulationStatus`: Status of the simulation
 - `version::String`: Qucs dataset version
 - `independent_vars::Dict{String,DataVector}`: Independent variables (e.g., frequency, time)
@@ -135,6 +127,7 @@ Parsed simulation result containing all vectors and metadata.
 - `raw_output::String`: Raw simulator output
 
 # Typed Result Extraction
+
 Use `extract_dc_result()`, `extract_ac_result()`, `extract_transient_result()`, 
 or `extract_sparameter_result()` to get typed data structures.
 """
@@ -429,9 +422,11 @@ Get the frequency vector for S-parameter, AC, or other frequency-domain analyses
 Looks for 'frequency', 'acfrequency', or 'hbfrequency' (for HB analysis, returns unique frequencies).
 
 # Returns
+
 - Vector of frequency values in Hz
 
 # Throws
+
 - ErrorException if no frequency vector found
 """
 function get_frequency(dataset::QucsDataset)::Vector{Float64}
@@ -457,9 +452,11 @@ end
 Get the time vector for transient analyses.
 
 # Returns
+
 - Vector of time values in seconds
 
 # Throws
+
 - ErrorException if no time vector found
 """
 function get_time(dataset::QucsDataset)::Vector{Float64}
@@ -476,14 +473,17 @@ end
 Get S-parameter S[i,j] from dataset.
 
 # Arguments
+
 - `dataset::QucsDataset`: The simulation results
 - `i::Int`: Output port number (1-indexed)
 - `j::Int`: Input port number (1-indexed)
 
 # Returns
+
 - Vector of complex S-parameter values
 
 # Example
+
 ```julia
 s21 = get_sparameter(result, 2, 1)  # Forward transmission
 s11 = get_sparameter(result, 1, 1)  # Input reflection
@@ -504,13 +504,16 @@ end
 Get voltage at a named node.
 
 # Arguments
+
 - `dataset::QucsDataset`: The simulation results  
 - `node_name::String`: Node name (e.g., "net1", "vout")
 
 # Returns
+
 - Vector of complex voltage values
 
 # Example
+
 ```julia
 v_out = get_node_voltage(result, "net5")
 ```
@@ -534,9 +537,11 @@ end
 Determine the size of the S-parameter matrix (number of ports).
 
 # Returns
+
 - Number of ports in the S-parameter matrix
 
 # Example
+
 ```julia
 n_ports = get_s_matrix_size(result)  # Returns 2 for a 2-port network
 ```
@@ -568,9 +573,11 @@ end
 Extract DC operating point results from dataset.
 
 # Returns
+
 - `DCResult` with voltages and currents dictionaries
 
 # Example
+
 ```julia
 dc_data = extract_dc_result(dataset)
 v_out = dc_data.voltages["_net1"]
@@ -613,9 +620,11 @@ end
 Extract AC analysis results from dataset.
 
 # Returns
+
 - `ACResult` with frequency sweep data
 
 # Example
+
 ```julia
 ac_data = extract_ac_result(dataset)
 freqs = ac_data.frequencies_Hz
@@ -648,9 +657,11 @@ end
 Extract transient analysis results from dataset.
 
 # Returns
+
 - `TransientResult` with time domain data
 
 # Example
+
 ```julia
 tran_data = extract_transient_result(dataset)
 times = tran_data.time_s
@@ -683,13 +694,16 @@ end
 Extract S-parameter analysis results from dataset.
 
 # Arguments
+
 - `dataset::QucsDataset`: Parsed simulation output
 - `z0::Real=50.0`: Reference impedance in Ohms
 
 # Returns
+
 - `SParameterResult` with S-parameter matrix data and noise parameters (if noise analysis was enabled)
 
 # Example
+
 ```julia
 sp_data = extract_sparameter_result(dataset)
 freqs = sp_data.frequencies_Hz
@@ -738,6 +752,7 @@ Results from multiple analyses run simultaneously.
 Contains the raw QucsDataset plus typed results for each analysis type found.
 
 # Fields
+
 - `dataset::QucsDataset`: Raw parsed dataset with all vectors
 - `dc::Union{Nothing,DCResult}`: DC analysis results (if DC analysis was run)
 - `ac::Union{Nothing,ACResult}`: AC analysis results (if AC analysis was run)
@@ -745,6 +760,7 @@ Contains the raw QucsDataset plus typed results for each analysis type found.
 - `sparameter::Union{Nothing,SParameterResult}`: S-parameter results (if S-parameter analysis was run)
 
 # Example
+
 ```julia
 # Run DC + S-parameter analysis together
 results = simulate_qucsator(circ, [DCAnalysis(), SParameterAnalysis(1e9, 10e9, 101)])
@@ -774,10 +790,12 @@ end
 Create a MultiAnalysisResult by extracting typed results for each analysis type.
 
 # Arguments
+
 - `dataset::QucsDataset`: Parsed simulation output
 - `analyses::Vector{<:AbstractAnalysis}`: List of analyses that were run
 
 # Returns
+
 - `MultiAnalysisResult` with typed results for each analysis found
 """
 function MultiAnalysisResult(dataset::QucsDataset, analyses::Vector{<:AbstractAnalysis})

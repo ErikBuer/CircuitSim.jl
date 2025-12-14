@@ -1,8 +1,4 @@
 """
-Current noise source for noise analysis.
-"""
-
-"""
     CurrentNoiseSource <: AbstractCurrentSource
 
 Current noise source for noise analysis with frequency-dependent PSD.
@@ -22,9 +18,6 @@ Noise PSD formula: PSD(f) = i / (a + c * f^e)
 ```julia
 isrc = CurrentNoiseSource("Inoise1", i=1e-12, e=0)  # White noise
 ```
-
-# Qucs Format
-`Inoise:Name Node+ Node- i="i" a="a" c="c" e="e"`
 """
 mutable struct CurrentNoiseSource <: AbstractCurrentNoiseSource
     name::String

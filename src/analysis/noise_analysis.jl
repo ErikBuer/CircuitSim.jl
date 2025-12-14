@@ -1,8 +1,4 @@
 """
-Noise analysis over a frequency range.
-"""
-
-"""
     NoiseAnalysis(start, stop, points, output_node, source; type=LOGARITHMIC, name="Noise1")
 
 Noise analysis over a frequency range.
@@ -10,6 +6,7 @@ Noise analysis over a frequency range.
 Computes noise contributions from all noise sources in the circuit.
 
 # Parameters
+
 - `start::Real`: Start frequency in Hz
 - `stop::Real`: Stop frequency in Hz
 - `points::Int`: Number of frequency points
@@ -19,6 +16,7 @@ Computes noise contributions from all noise sources in the circuit.
 - `name::String`: Analysis name (default: "Noise1")
 
 # Example
+
 ```julia
 # Noise analysis from 10Hz to 100kHz
 analysis = NoiseAnalysis(10.0, 100e3, 101, "_net1", "V1")

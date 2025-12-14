@@ -1,13 +1,10 @@
 """
-Microstrip step (width discontinuity) component.
-"""
-
-"""
     MicrostripStep <: AbstractMicrostripStep
 
 A microstrip width step/discontinuity.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (input, wider/narrower side)
 - `n2::Int`: Node 2 (output, other side)
@@ -16,12 +13,14 @@ A microstrip width step/discontinuity.
 - `w2::Real`: Width at port 2 (m)
 
 # Example
+
 ```julia
 sub = Substrate("FR4", er=4.5, h=1.6e-3)
 step = MicrostripStep("MSTEP1", sub, w1=3.0e-3, w2=1.5e-3)
 ```
 
 # Qucs Format
+
 `MSTEP:Name Node1 Node2 Subst="SubstName" W1="width1" W2="width2"`
 """
 mutable struct MicrostripStep <: AbstractMicrostripStep

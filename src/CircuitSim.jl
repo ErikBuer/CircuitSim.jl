@@ -8,7 +8,7 @@ export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
 # Components - Basic
 export Resistor, Capacitor, Inductor
 export CapacitorQ, InductorQ
-export Ground
+export Ground, Short, Open
 
 # Sources
 export DCVoltageSource, DCCurrentSource
@@ -19,9 +19,13 @@ export VoltagePulseSource, CurrentPulseSource
 export VoltageRectangularSource, CurrentRectangularSource
 export VoltageExponentialSource, CurrentExponentialSource
 export VoltageNoiseSource, CurrentNoiseSource
+export CurrentControlledCurrentSource, CurrentControlledVoltageSource
+export VoltageControlledCurrentSource, VoltageControlledVoltageSource
+export VoltageAMSource, VoltagePMSource
+export CurrentCurrentNoiseSource, CurrentVoltageNoiseSource, VoltageVoltageNoiseSource
 
 # Probes
-export VoltageProbe, CurrentProbe
+export VoltageProbe, CurrentProbe, PowerProbe
 
 # Components - Substrate
 export Substrate
@@ -40,6 +44,21 @@ export DCBlock, DCFeed, BiasTee
 export Amplifier, Isolator, Attenuator
 export Circulator, PhaseShifter
 export Coupler, Hybrid
+export OpAmp, Gyrator
+export TransmissionLine, CoaxialLine
+export IdealTransformer, MutualInductor
+export SPfile
+
+# Devices - Nonlinear semiconductors
+export Diode, D
+export TunnelDiode, RTD
+export JFET
+export DIAC
+export MOSFET
+export Thyristor, SCR
+export Triac
+export BJT
+export EquationDefinedDevice, EDD
 
 # Netlist generation
 export netlist_qucs, netlist_ngspice
@@ -73,7 +92,7 @@ export get_frequency, get_time, get_node_voltage, get_s_matrix_size
 export get_component_current, get_pin_current, get_pin_voltage, get_voltage_across, get_component_power
 
 # Utility functions
-export s2z, s2z_series
+export s2z, s2z_series, detect_touchstone_ports
 
 
 # Abstract Types (must be loaded first)
@@ -97,6 +116,8 @@ include("analysis/noise_analysis.jl")
 
 include("pin.jl")
 include("union_find.jl")
+
+include("circuit_component.jl")  # Default implementations for AbstractCircuitComponent
 include("circuit.jl")
 
 # Parser (must be loaded before backends that use QucsDataset)
@@ -114,12 +135,13 @@ include("components/inductor.jl")
 include("components/capacitor_q.jl")
 include("components/inductor_q.jl")
 include("components/ground.jl")
+include("components/short.jl")
+include("components/open.jl")
 
 # File I/O utilities
 include("io/file_loader.jl")
 
 # Sources
-include("sources/file_source_helpers.jl")
 include("sources/dc_voltage_source.jl")
 include("sources/dc_current_source.jl")
 include("sources/ac_voltage_source.jl")
@@ -135,10 +157,20 @@ include("sources/voltage_exponential_source.jl")
 include("sources/current_exponential_source.jl")
 include("sources/voltage_noise_source.jl")
 include("sources/current_noise_source.jl")
+include("sources/current_controlled_current_source.jl")
+include("sources/current_controlled_voltage_source.jl")
+include("sources/voltage_controlled_current_source.jl")
+include("sources/voltage_controlled_voltage_source.jl")
+include("sources/voltage_am_source.jl")
+include("sources/voltage_pm_source.jl")
+include("sources/current_current_noise_source.jl")
+include("sources/current_voltage_noise_source.jl")
+include("sources/voltage_voltage_noise_source.jl")
 
 # Probes
 include("probes/voltage_probe.jl")
 include("probes/current_probe.jl")
+include("probes/power_probe.jl")
 
 # Substrate (needed by microstrip components)
 include("components/substrate.jl")
@@ -173,5 +205,23 @@ include("components/circulator.jl")
 include("components/phase_shifter.jl")
 include("components/coupler.jl")
 include("components/hybrid.jl")
+include("components/opamp.jl")
+include("components/gyrator.jl")
+include("components/transmission_line.jl")
+include("components/coaxial_line.jl")
+include("components/ideal_transformer.jl")
+include("components/mutual_inductor.jl")
+include("components/spfile.jl")
+
+# Nonlinear semiconductor devices
+include("devices/diode.jl")
+include("devices/tunnel_diode.jl")
+include("devices/jfet.jl")
+include("devices/diac.jl")
+include("devices/mosfet.jl")
+include("devices/thyristor.jl")
+include("devices/triac.jl")
+include("devices/bjt.jl")
+include("devices/equation_defined.jl")
 
 end

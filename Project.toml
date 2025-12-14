@@ -4,20 +4,15 @@ version = "0.0.1"
 authors = ["Erik Buer <buer94@gmail.com>"]
 
 [deps]
-CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
-Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
-TouchstoneParser = "b369b07b-dee1-4342-88e3-29a776361291"
 
 [compat]
-CairoMakie = "0.15.7"
-TouchstoneParser = "1.0.1"
-julia = "1.6"
+julia = "^1.6"
 
 [extras]
-CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "Documenter", "CairoMakie"]
+test = ["Test", "Documenter", "GLMakie"]

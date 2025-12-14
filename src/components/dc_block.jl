@@ -7,13 +7,15 @@ This is essentially a large capacitor that passes AC signals while blocking DC.
 Typically used to isolate DC bias points between stages.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: First terminal node number
 - `n2::Int`: Second terminal node number
 - `value::Real`: Capacitance in Farads (default: 1 μF for near-ideal blocking)
 
 # Example
-```@example
+
+```julia
 using CircuitSim
 # Default DC block (1 μF)
 DCB1 = DCBlock("DCB1")

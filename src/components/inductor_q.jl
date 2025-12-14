@@ -1,9 +1,10 @@
 """
-    InductorQ <: AbstractInductorWithQualityFactor
+    InductorQ <: AbstractInductor
 
 Inductor with quality factor for RF simulations.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: First terminal node number
 - `n2::Int`: Second terminal node number
@@ -12,13 +13,14 @@ Inductor with quality factor for RF simulations.
 - `freq::Real`: Frequency in Hz where Q is specified (default: 1 GHz)
 
 # Example
-```@example
+
+```julia
 using CircuitSim
 L1 = InductorQ("L1", 10e-9, 30.0)  # 10nH inductor with Q=30
 L2 = InductorQ("L2", 100e-9, 50.0, freq=2.4e9)  # 100nH, Q=50 at 2.4 GHz
 ```
 """
-mutable struct InductorQ <: AbstractInductorWithQualityFactor
+mutable struct InductorQ <: AbstractInductor
     name::String
     n1::Int
     n2::Int

@@ -1,10 +1,4 @@
 """
-Qucsator RF backend for circuit simulation.
-
-This module provides the interface to the qucsator_rf simulator.
-"""
-
-"""
     check_qucsator() -> (Bool, String, String)
 
 Check if qucsator_rf is installed and available in PATH.

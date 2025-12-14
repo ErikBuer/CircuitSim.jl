@@ -1,8 +1,4 @@
 """
-S-parameter frequency sweep analysis.
-"""
-
-"""
     SParameterAnalysis(start, stop, points; type=LOGARITHMIC, name="SP1", z0=50.0, noise=false, noise_input_port=1, noise_output_port=2)
 
 S-parameter frequency sweep analysis.
@@ -10,6 +6,7 @@ S-parameter frequency sweep analysis.
 Computes S-parameters over a frequency range. Optionally compute noise parameters.
 
 # Parameters
+
 - `start::Real`: Start frequency in Hz
 - `stop::Real`: Stop frequency in Hz
 - `points::Int`: Number of frequency points
@@ -21,6 +18,7 @@ Computes S-parameters over a frequency range. Optionally compute noise parameter
 - `name::String`: Analysis name (default: "SP1")
 
 # Example
+
 ```julia
 # S-parameter analysis from 1MHz to 1GHz
 analysis = SParameterAnalysis(1e6, 1e9, 201)

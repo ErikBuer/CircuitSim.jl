@@ -4,7 +4,7 @@ This example demonstrates the `CapacitorQ` component, which models a capacitor w
 
 ```@example capq
 using CircuitSim
-using CairoMakie
+using GLMakie
 
 # Create circuit for S-parameter analysis
 circ = Circuit()

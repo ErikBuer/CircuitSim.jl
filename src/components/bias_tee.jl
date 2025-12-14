@@ -9,6 +9,7 @@ A bias tee has three ports:
 - Combined port: Both DC and RF
 
 # Fields
+
 - `name::String`: Component identifier
 - `n_rf::Int`: RF input port node number
 - `n_dc::Int`: DC input port node number
@@ -17,7 +18,8 @@ A bias tee has three ports:
 - `l_choke::Real`: RF choke inductance (default: 1 mH)
 
 # Example
-```@example
+
+```julia
 using CircuitSim
 # Standard bias tee
 BT1 = BiasTee("BT1")

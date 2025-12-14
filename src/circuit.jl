@@ -79,39 +79,13 @@ function assign_nodes!(c::Circuit)
     rootset = Dict{UInt64,Int}() # root-pinid => temporary index
     c._node_map = Dict{UInt64,Int}()  # final mapping root -> node number
 
-    # helper: treat any field whose value is an Int and whose name looks like a node field
-    # Node field names: n, n1, n2, n3, ..., nplus, nminus, etc.
-    function is_node_field(fname::Symbol)::Bool
-        s = string(fname)
-        # Match: n, n1, n2, ..., nplus, nminus
-        return s == "n" ||
-               occursin(r"^n\d+$", s) ||
-               s == "nplus" ||
-               s == "nminus"
-    end
-
     for comp in c.components
-        for fld in fieldnames(typeof(comp))
-            # filter to fields that are Int AND have node-like names
-            if getfield(comp, fld) isa Int && is_node_field(fld)
-                p = Pin(comp, fld)
-                # If the pin currently has value 0 and is connected to nothing, leave as 0 (unconnected)
-                pid = pinid(p)
-                # ensure it's present in union-find so uf_find works
-                uf_find(c.uf, pid)
-            end
-        end
+        _register_pins_in_uf!(c.uf, comp)
     end
 
     # collect roots
     for comp in c.components
-        for fld in fieldnames(typeof(comp))
-            if getfield(comp, fld) isa Int && is_node_field(fld)
-                root = uf_find(c.uf, pinid(Pin(comp, fld)))
-                # we still register the root even if it's isolated (it will be its own root)
-                rootset[root] = 1
-            end
-        end
+        _collect_roots!(rootset, c.uf, comp)
     end
 
     # If there is a Ground in components, any root belonging to a Ground pin gets node 0
@@ -137,14 +111,7 @@ function assign_nodes!(c::Circuit)
 
     # write back numeric node numbers into component fields
     for comp in c.components
-        for fld in fieldnames(typeof(comp))
-            if getfield(comp, fld) isa Int && is_node_field(fld)
-                root = uf_find(c.uf, pinid(Pin(comp, fld)))
-                # If the pin wasn't part of any union-find root mapping (shouldn't happen), set to 0
-                node = get(c._node_map, root, 0)
-                setfield!(comp, fld, node)
-            end
-        end
+        _write_node_numbers!(comp, c.uf, c._node_map)
     end
 
     return nothing

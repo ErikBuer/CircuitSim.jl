@@ -7,13 +7,15 @@ This component passes DC current while presenting high impedance to RF signals.
 Typically implemented as a large inductor.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: First terminal node number
 - `n2::Int`: Second terminal node number
 - `value::Real`: Inductance in Henries (default: 1 mH for good RF blocking)
 
 # Example
-```@example
+
+```julia
 using CircuitSim
 # Default DC feed (1 mH)
 DCF1 = DCFeed("DCF1")

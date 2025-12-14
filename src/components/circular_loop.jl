@@ -1,13 +1,10 @@
 """
-Circular loop inductor component.
-"""
-
-"""
     CircularLoop <: AbstractCircularLoop
 
 A single-turn circular loop inductor.
 
 # Fields
+
 - `name::String`: Component identifier
 - `n1::Int`: Node 1
 - `n2::Int`: Node 2
@@ -15,11 +12,13 @@ A single-turn circular loop inductor.
 - `w::Real`: Wire/trace width (m)
 
 # Example
+
 ```julia
 loop = CircularLoop("CL1", r=5e-3, w=0.5e-3)
 ```
 
 # Qucs Format
+
 Approximated using standard inductor with calculated value
 """
 mutable struct CircularLoop <: AbstractCircularLoop
