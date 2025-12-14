@@ -1,3 +1,4 @@
+"""
 using Test
 using Documenter
 using CircuitSim
@@ -6,3 +7,4 @@ using CircuitSim
 
 DocMeta.setdocmeta!(CircuitSim, :DocTestSetup, :(using CircuitSim); recursive=true)
 Documenter.doctest(CircuitSim)
+"""
