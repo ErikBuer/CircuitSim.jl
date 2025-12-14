@@ -113,15 +113,13 @@ end
 """
     prepare_external_files!(comp::SPfile, netlist_dir::String)
 
-Create symlink for S-parameter file in the netlist directory.
+Copy S-parameter file to the netlist directory.
 Called by the backend before running qucsator.
 """
 function prepare_external_files!(spf::SPfile, netlist_dir::String)
     src_file = abspath(spf.file)
-    link_name = joinpath(netlist_dir, "$(spf.name).s$(spf.num_ports)p")
-    if !ispath(link_name)
-        symlink(src_file, link_name)
-    end
+    dest_file = joinpath(netlist_dir, "$(spf.name).s$(spf.num_ports)p")
+    cp(src_file, dest_file, force=true)
     return nothing
 end
 
