@@ -92,7 +92,7 @@ export get_frequency, get_time, get_node_voltage, get_s_matrix_size
 export get_component_current, get_pin_current, get_pin_voltage, get_voltage_across, get_component_power
 
 # Utility functions
-export s2z, s2z_series
+export s2z, s2z_series, detect_touchstone_ports
 
 
 # Abstract Types (must be loaded first)

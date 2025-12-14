@@ -129,3 +129,37 @@ function s2z_series(S::AbstractMatrix, z0=50.0)::ComplexF64
     return B
 end
 
+
+"""
+    detect_touchstone_ports(filepath::String) -> Int
+
+Detect the number of ports from Touchstone file extension using regex.
+
+Matches filenames ending in .sNp where N is 1 or more digits (e.g., .s1p, .s2p, .s12p).
+
+Throws an error if pattern doesn't match.
+
+# Examples
+
+```jldoctest
+julia> detect_touchstone_ports("antenna.s1p")
+1
+
+julia> detect_touchstone_ports("amplifier.s2p")
+2
+
+julia> detect_touchstone_ports("complex_device.txt")
+ERROR: ArgumentError: Could not detect number of ports from filename 'complex_device.txt'. Expected Touchstone format: .sNp (e.g., .s1p, .s2p). Provide num_ports parameter as override.
+```
+"""
+function detect_touchstone_ports(filepath::String)::Int
+    # Use regex to extract port number from filename
+    # Matches .sNp where N is 1 or more digits
+    m = match(r"\.s(\d+)p$"i, filepath)
+
+    if m !== nothing
+        return parse(Int, m.captures[1])
+    end
+
+    throw(ArgumentError("Could not detect number of ports from filename '$filepath'. Expected Touchstone format: .sNp (e.g., .s1p, .s2p). Provide num_ports parameter as override."))
+end
