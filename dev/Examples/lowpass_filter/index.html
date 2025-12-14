@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>LC Lowpass Filter · CircuitSim.jl</title><meta name="title" content="LC Lowpass Filter · CircuitSim.jl"/><meta property="og:title" content="LC Lowpass Filter · CircuitSim.jl"/><meta property="twitter:title" content="LC Lowpass Filter · CircuitSim.jl"/><meta name="description" content="Documentation for CircuitSim.jl."/><meta property="og:description" content="Documentation for CircuitSim.jl."/><meta property="twitter:description" content="Documentation for CircuitSim.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">CircuitSim.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">CircuitSim.jl</a></li><li><span class="tocitem">Sources</span><ul><li><a class="tocitem" href="../../Sources/file_voltage_source/">File Based Voltage Source</a></li><li><a class="tocitem" href="../../Sources/file_current_source/">File Based Current Source</a></li><li><a class="tocitem" href="../../Sources/voltage_pulse_source/">Voltage Pulse Source</a></li><li><a class="tocitem" href="../../Sources/current_pulse_source/">Current Pulse Source</a></li><li><a class="tocitem" href="../../Sources/voltage_rectangular_source/">Voltage Rectangular Source</a></li><li><a class="tocitem" href="../../Sources/current_rectangular_source/">Current Rectangular Source</a></li><li><a class="tocitem" href="../../Sources/voltage_exponential_source/">Voltage Exponential Source</a></li><li><a class="tocitem" href="../../Sources/current_exponential_source/">Current Exponential Source</a></li><li><a class="tocitem" href="../../Sources/voltage_noise_source/">Voltage Noise Source</a></li><li><a class="tocitem" href="../../Sources/current_noise_source/">Current Noise Source</a></li><li><a class="tocitem" href="../../Sources/current_controlled_current_source/">Current-Controlled Current Source</a></li><li><a class="tocitem" href="../../Sources/current_controlled_voltage_source/">Current-Controlled Voltage Source</a></li><li><a class="tocitem" href="../../Sources/voltage_controlled_current_source/">Voltage-Controlled Current Source</a></li><li><a class="tocitem" href="../../Sources/voltage_controlled_voltage_source/">Voltage-Controlled Voltage Source</a></li><li><a class="tocitem" href="../../Sources/voltage_am_source/">Amplitude Modulated Voltage Source</a></li><li><a class="tocitem" href="../../Sources/voltage_pm_source/">Phase Modulated Voltage Source</a></li><li><a class="tocitem" href="../../Sources/current_current_noise_source/">Correlated Current-Current Noise Source</a></li><li><a class="tocitem" href="../../Sources/current_voltage_noise_source/">Correlated Current-Voltage Noise Source</a></li><li><a class="tocitem" href="../../Sources/voltage_voltage_noise_source/">Correlated Voltage-Voltage Noise Source</a></li></ul></li><li><span class="tocitem">Components</span><ul><li><a class="tocitem" href="../../Components/resistor/">Resistor</a></li><li><a class="tocitem" href="../../Components/capacitor/">Capacitor</a></li><li><a class="tocitem" href="../../Components/capacitor_q/">Capacitor with Quality Factor</a></li><li><a class="tocitem" href="../../Components/inductor/">Inductor</a></li><li><a class="tocitem" href="../../Components/inductor_q/">Inductor with Quality Factor</a></li><li><a class="tocitem" href="../../Components/ground/">Ground</a></li><li><a class="tocitem" href="../../Components/short/">Short Circuit</a></li><li><a class="tocitem" href="../../Components/open/">Open Circuit</a></li><li><a class="tocitem" href="../../Components/substrate/">Substrate</a></li><li><a class="tocitem" href="../../Components/bond_wire/">Bond Wire</a></li><li><a class="tocitem" href="../../Components/bias_tee/">Bias Tee</a></li><li><a class="tocitem" href="../../Components/dc_block/">DC Block</a></li><li><a class="tocitem" href="../../Components/dc_feed/">DC Feed</a></li><li><a class="tocitem" href="../../Components/attenuator/">Attenuator</a></li><li><a class="tocitem" href="../../Components/amplifier/">Amplifier</a></li><li><a class="tocitem" href="../../Components/opamp/">Operational Amplifier</a></li><li><a class="tocitem" href="../../Components/phase_shifter/">Phase Shifter</a></li><li><a class="tocitem" href="../../Components/circulator/">Circulator</a></li><li><a class="tocitem" href="../../Components/isolator/">Isolator</a></li><li><a class="tocitem" href="../../Components/coupler/">Coupler</a></li><li><a class="tocitem" href="../../Components/hybrid/">Hybrid (180° or 90°)</a></li><li><a class="tocitem" href="../../Components/gyrator/">Gyrator</a></li><li><a class="tocitem" href="../../Components/spiral_inductor/">Spiral Inductor</a></li><li><a class="tocitem" href="../../Components/circular_loop/">Circular Loop Inductor</a></li><li><a class="tocitem" href="../../Components/transmission_line/">Transmission Line</a></li><li><a class="tocitem" href="../../Components/coaxial_line/">Coaxial Line</a></li><li><a class="tocitem" href="../../Components/ideal_transformer/">Ideal Transformer</a></li><li><a class="tocitem" href="../../Components/mutual_inductor/">Mutual Inductor</a></li><li><a class="tocitem" href="../../Components/spfile/">S-Parameter File</a></li><li><a class="tocitem" href="../../Components/microstrip_line/">Microstrip Line</a></li><li><a class="tocitem" href="../../Components/microstrip_gap/">Microstrip Gap</a></li><li><a class="tocitem" href="../../Components/microstrip_step/">Microstrip Step</a></li><li><a class="tocitem" href="../../Components/microstrip_corner/">Microstrip Corner</a></li><li><a class="tocitem" href="../../Components/microstrip_coupled/">Microstrip Coupled Lines</a></li><li><a class="tocitem" href="../../Components/microstrip_cross/">Microstrip Cross Junction</a></li><li><a class="tocitem" href="../../Components/microstrip_tee/">Microstrip Tee Junction</a></li><li><a class="tocitem" href="../../Components/microstrip_open/">Microstrip Open End</a></li><li><a class="tocitem" href="../../Components/microstrip_via/">Microstrip Via</a></li><li><a class="tocitem" href="../../Components/microstrip_radial_stub/">Microstrip Radial Stub</a></li><li><a class="tocitem" href="../../Components/microstrip_mitered_bend/">Microstrip Mitered Bend</a></li><li><a class="tocitem" href="../../Components/microstrip_lange/">Microstrip Lange Coupler</a></li><li><a class="tocitem" href="../../Components/voltage_probe/">Voltage Probe</a></li><li><a class="tocitem" href="../../Components/current_probe/">Current Probe</a></li><li><a class="tocitem" href="../../Components/power_probe/">Power Probe</a></li></ul></li><li><span class="tocitem">Devices</span><ul><li><a class="tocitem" href="../../Devices/diode/">Diode</a></li><li><a class="tocitem" href="../../Devices/tunnel_diode/">Tunnel Diode</a></li><li><a class="tocitem" href="../../Devices/jfet/">JFET</a></li><li><a class="tocitem" href="../../Devices/diac/">DIAC</a></li><li><a class="tocitem" href="../../Devices/mosfet/">MOSFET</a></li><li><a class="tocitem" href="../../Devices/thyristor/">Thyristor (SCR)</a></li><li><a class="tocitem" href="../../Devices/triac/">Triac</a></li><li><a class="tocitem" href="../../Devices/bjt/">BJT (Bipolar Junction Transistor)</a></li><li><a class="tocitem" href="../../Devices/equation_defined/">Equation Defined Device (EDD)</a></li></ul></li><li><span class="tocitem">Examples</span><ul><li class="is-active"><a class="tocitem" href>LC Lowpass Filter</a><ul class="internal"><li><a class="tocitem" href="#Circuit-Design"><span>Circuit Design</span></a></li><li><a class="tocitem" href="#Connecting-Components"><span>Connecting Components</span></a></li><li><a class="tocitem" href="#S-Parameter-Simulation"><span>S-Parameter Simulation</span></a></li><li><a class="tocitem" href="#Plotting-Results"><span>Plotting Results</span></a></li><li><a class="tocitem" href="#AC-Analysis"><span>AC Analysis</span></a></li></ul></li><li><a class="tocitem" href="../dc_divider/">DC Analysis - Resistor Divider</a></li><li><a class="tocitem" href="../ac_divider/">AC Analysis - Capacitor Divider</a></li><li><a class="tocitem" href="../pin_current/">Pin Current Example</a></li></ul></li><li><a class="tocitem" href="../../api_reference/">API Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>LC Lowpass Filter</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>LC Lowpass Filter</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/ErikBuer/CircuitSim.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/ErikBuer/CircuitSim.jl/blob/master/docs/src/Examples/lowpass_filter.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="LC-Lowpass-Filter"><a class="docs-heading-anchor" href="#LC-Lowpass-Filter">LC Lowpass Filter</a><a id="LC-Lowpass-Filter-1"></a><a class="docs-heading-anchor-permalink" href="#LC-Lowpass-Filter" title="Permalink"></a></h1><p>This example demonstrates designing a simple LC lowpass filter,  simulating its S-parameters using Qucsator, and plotting the results with GLMakie.</p><h2 id="Circuit-Design"><a class="docs-heading-anchor" href="#Circuit-Design">Circuit Design</a><a id="Circuit-Design-1"></a><a class="docs-heading-anchor-permalink" href="#Circuit-Design" title="Permalink"></a></h2><p>A Pi-type lowpass filter uses shunt capacitors to ground and a series inductor. This creates a 3rd-order filter with a well-defined cutoff frequency.</p><pre><code class="language-julia hljs">using CircuitSim
+using GLMakie
+
+# Create circuit
+circ = Circuit()
+
+# Ports
+port1 = ACPowerSource(&quot;P1&quot;, 1, impedance=50.0)
+port2 = ACPowerSource(&quot;P2&quot;, 2, impedance=50.0)
+add_component!(circ, port1)
+add_component!(circ, port2)
+
+# Components
+L1 = Inductor(&quot;L1&quot;, 80e-9)    # 80 nH
+C1 = Capacitor(&quot;C1&quot;, 32e-12)  # 32 pF
+C2 = Capacitor(&quot;C2&quot;, 32e-12)  # 32 pF
+add_component!(circ, L1)
+add_component!(circ, C1)
+add_component!(circ, C2)
+
+# Ground
+gnd = Ground(&quot;GND&quot;)
+add_component!(circ, gnd);</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Ground(&quot;GND&quot;, 0)</code></pre><h2 id="Connecting-Components"><a class="docs-heading-anchor" href="#Connecting-Components">Connecting Components</a><a id="Connecting-Components-1"></a><a class="docs-heading-anchor-permalink" href="#Connecting-Components" title="Permalink"></a></h2><pre><code class="language-julia hljs"># Shunt capacitor C1 from Port1 to ground
+@connect circ port1.nplus C1.n1
+@connect circ C1.n2 gnd
+
+# Series inductor from Port1 to Port2
+@connect circ port1.nplus L1.n1
+@connect circ L1.n2 port2.nplus
+
+# Shunt capacitor C2 from Port2 to ground
+@connect circ L1.n2 C2.n1
+@connect circ C2.n2 gnd
+
+# Port ground connections
+@connect circ port1.nminus gnd
+@connect circ port2.nminus gnd</code></pre><h2 id="S-Parameter-Simulation"><a class="docs-heading-anchor" href="#S-Parameter-Simulation">S-Parameter Simulation</a><a id="S-Parameter-Simulation-1"></a><a class="docs-heading-anchor-permalink" href="#S-Parameter-Simulation" title="Permalink"></a></h2><p>Simulate S-parameters from 1 MHz to 1 GHz.</p><pre><code class="language-julia hljs"># Define S-parameter analysis
+sparam = SParameterAnalysis(1e6, 1e9, 201,
+    sweep_type=LINEAR,
+    z0=50.0
+)
+
+# Run simulation - returns typed SParameterResult directly
+sp_result = simulate_qucsator(circ, sparam)
+
+println(&quot;S-parameter simulation completed:&quot;)
+println(&quot;  Number of ports: &quot;, sp_result.num_ports)
+println(&quot;  Frequency points: &quot;, length(sp_result.frequencies_Hz))
+println(&quot;  Reference impedance: &quot;, sp_result.z0_Ohm, &quot; Ω&quot;)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">S-parameter simulation completed:
+  Number of ports: 2
+  Frequency points: 201
+  Reference impedance: 50.0 Ω</code></pre><h2 id="Plotting-Results"><a class="docs-heading-anchor" href="#Plotting-Results">Plotting Results</a><a id="Plotting-Results-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting-Results" title="Permalink"></a></h2><p>Extract S-parameters from the typed result structure.</p><pre><code class="language-julia hljs"># Get frequency vector in MHz
+freq_mhz = sp_result.frequencies_Hz ./ 1e6
+
+# Extract S-parameters from typed result
+s11_complex = sp_result.s_matrix[(1,1)]
+s21_complex = sp_result.s_matrix[(2,1)]
+
+# Convert to dB
+s11_db = 20 .* log10.(abs.(s11_complex))
+s21_db = 20 .* log10.(abs.(s21_complex))</code></pre><h3 id="S-Parameter-Magnitude"><a class="docs-heading-anchor" href="#S-Parameter-Magnitude">S-Parameter Magnitude</a><a id="S-Parameter-Magnitude-1"></a><a class="docs-heading-anchor-permalink" href="#S-Parameter-Magnitude" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig = Figure(size=(900, 600), fontsize=14)
+
+ax1 = Axis(fig[1, 1],
+    xlabel = &quot;Frequency [MHz]&quot;,
+    ylabel = &quot;Magnitude [dB]&quot;,
+    title = &quot;LC Lowpass Filter (L=80nH, C=32pF)&quot;,
+)
+
+lines!(ax1, freq_mhz, s21_db, label=&quot;S₂₁ (Insertion Loss)&quot;, linewidth=2)
+lines!(ax1, freq_mhz, s11_db, label=&quot;S₁₁ (Return Loss)&quot;, linewidth=2)
+
+ylims!(ax1, -50, 5)
+xlims!(ax1, 0, 1000)
+axislegend(ax1, position=:lb)
+
+fig</code></pre><img src="e8f6b6ed.png" alt="Example block output"/><h2 id="AC-Analysis"><a class="docs-heading-anchor" href="#AC-Analysis">AC Analysis</a><a id="AC-Analysis-1"></a><a class="docs-heading-anchor-permalink" href="#AC-Analysis" title="Permalink"></a></h2><p>For AC voltage analysis, we use an AC voltage source at the input and a resistive load at the output. We add voltage probes to measure at both nodes.</p><pre><code class="language-julia hljs"># Create a new circuit for AC analysis (can&#39;t mix ACPowerSource with ACVoltageSource)
+circ_ac = Circuit()
+
+# AC voltage source at input
+v_source = ACVoltageSource(&quot;Vin&quot;, 1.0)  # 1V AC source
+add_component!(circ_ac, v_source)
+
+# Output load resistor
+r_load = Resistor(&quot;Rload&quot;, 50.0)  # 50Ω load
+add_component!(circ_ac, r_load)
+
+# Same filter components
+L1_ac = Inductor(&quot;L1&quot;, 80e-9)
+C1_ac = Capacitor(&quot;C1&quot;, 32e-12)
+C2_ac = Capacitor(&quot;C2&quot;, 32e-12)
+add_component!(circ_ac, L1_ac)
+add_component!(circ_ac, C1_ac)
+add_component!(circ_ac, C2_ac)
+
+# Ground
+gnd_ac = Ground(&quot;GND&quot;)
+add_component!(circ_ac, gnd_ac)
+
+# Voltage probes
+v_in_probe = VoltageProbe(&quot;Vin_probe&quot;)
+v_out_probe = VoltageProbe(&quot;Vout_probe&quot;)
+add_component!(circ_ac, v_in_probe)
+add_component!(circ_ac, v_out_probe)
+
+# Connect filter: Vsource -&gt; C1||L1 -&gt; C2||Rload
+@connect circ_ac v_source.nplus C1_ac.n1
+@connect circ_ac C1_ac.n2 gnd_ac.n
+@connect circ_ac v_source.nplus L1_ac.n1
+@connect circ_ac L1_ac.n2 C2_ac.n1
+@connect circ_ac C2_ac.n1 r_load.n1
+@connect circ_ac C2_ac.n2 gnd_ac.n
+@connect circ_ac r_load.n2 gnd_ac.n
+@connect circ_ac v_source.nminus gnd_ac.n
+
+# Connect probes
+@connect circ_ac v_source.nplus v_in_probe.n1
+@connect circ_ac gnd_ac.n v_in_probe.n2
+@connect circ_ac r_load.n1 v_out_probe.n1
+@connect circ_ac gnd_ac.n v_out_probe.n2
+
+# AC analysis from 1 MHz to 1 GHz
+ac_analysis = ACAnalysis(1e6, 1e9, 201, sweep_type=LINEAR)
+ac_result = simulate_qucsator(circ_ac, ac_analysis)
+
+println(&quot;AC analysis completed:&quot;)
+println(&quot;  Frequency points: &quot;, length(ac_result.frequencies_Hz))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">AC analysis completed:
+  Frequency points: 201</code></pre><h3 id="Voltage-Response"><a class="docs-heading-anchor" href="#Voltage-Response">Voltage Response</a><a id="Voltage-Response-1"></a><a class="docs-heading-anchor-permalink" href="#Voltage-Response" title="Permalink"></a></h3><p>Compare input and output voltages to see the filter&#39;s attenuation.</p><pre><code class="language-julia hljs"># Get frequency vector
+freq_ac_mhz = ac_result.frequencies_Hz ./ 1e6
+
+# Get voltages from probes (already complex vectors)
+v_in = ac_result.voltages[&quot;Vin_probe&quot;]
+v_out = ac_result.voltages[&quot;Vout_probe&quot;]
+
+# Convert to dB (magnitude)
+v_in_db = 20 .* log10.(abs.(v_in))
+v_out_db = 20 .* log10.(abs.(v_out))</code></pre><pre><code class="language-julia hljs">fig2 = Figure(size=(900, 600), fontsize=14)
+
+ax2 = Axis(fig2[1, 1],
+    xlabel = &quot;Frequency [MHz]&quot;,
+    ylabel = &quot;Voltage Magnitude [dB]&quot;,
+    title = &quot;AC Voltage Response&quot;,
+)
+
+lines!(ax2, freq_ac_mhz, v_in_db, label=&quot;Input Voltage&quot;, linewidth=2)
+lines!(ax2, freq_ac_mhz, v_out_db, label=&quot;Output Voltage&quot;, linewidth=2)
+
+xlims!(ax2, 0, 1000)
+axislegend(ax2, position=:lb)
+
+fig2</code></pre><img src="3b8c49c7.png" alt="Example block output"/><p>The AC analysis shows the same frequency response as the S-parameter analysis, but expressed as node voltages rather than scattering parameters.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../Devices/equation_defined/">« Equation Defined Device (EDD)</a><a class="docs-footer-nextpage" href="../dc_divider/">DC Analysis - Resistor Divider »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Sunday 14 December 2025 14:35">Sunday 14 December 2025</span>. Using Julia version 1.11.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
