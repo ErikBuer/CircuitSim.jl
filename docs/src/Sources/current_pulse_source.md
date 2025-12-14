@@ -17,7 +17,7 @@ add_component!(circ, GND)
 @connect circ I.nminus GND
 
 analysis = TransientAnalysis(15e-9, start=0.0, points=150)
-result = simulate_qucsator(circ, analysis)
+result = simulate_qucsator(circ, analysis; suppress_warnings=true)
 
 v_r = get_pin_voltage(result, R, :n1)
 

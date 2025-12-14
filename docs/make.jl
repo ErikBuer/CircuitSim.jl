@@ -54,7 +54,6 @@ makedocs(
             "Components/inductor.md",
             "Components/inductor_q.md",
             "Components/ground.md",
-            "Components/short.md",
             "Components/open.md",
             "Components/substrate.md",
             "Components/bond_wire.md",

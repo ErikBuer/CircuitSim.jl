@@ -33,6 +33,17 @@ end
 qucs_node(n::Int) = n == 0 ? "gnd" : "_net$n"
 
 """
+    prepare_external_files!(comp::AbstractCircuitComponent, netlist_dir::String)
+
+Prepare external files (S-parameters, data files, etc.) for a component before simulation.
+Default implementation does nothing. Components that need external files should implement this method.
+"""
+function prepare_external_files!(comp::AbstractCircuitComponent, netlist_dir::String)
+    # Default: do nothing
+    return nothing
+end
+
+"""
     to_qucs_netlist(comp::AbstractCircuitComponent) -> String
 
 Generate a Qucs netlist line for a component.
@@ -67,7 +78,7 @@ function netlist_qucs(c::Circuit)
 end
 
 """
-    run_qucsator(c::Circuit, analysis::AbstractAnalysis; output_file::String="")
+    run_qucsator(c::Circuit, analysis::AbstractAnalysis; output_file::String="", suppress_warnings::Bool=false)
 
 Run qucsator simulation with the given circuit and analysis.
 
@@ -75,6 +86,7 @@ Run qucsator simulation with the given circuit and analysis.
 - `c::Circuit`: The circuit to simulate
 - `analysis::AbstractAnalysis`: Analysis type (DCAnalysis, ACAnalysis, etc.)
 - `output_file::String=""`: Optional output file path. If empty, uses a temporary file.
+- `suppress_warnings::Bool=false`: If true, suppress qucsator warnings by redirecting stderr
 
 # Returns
 - `(success::Bool, output::String, netlist::String)`
@@ -82,10 +94,10 @@ Run qucsator simulation with the given circuit and analysis.
 # Example
 ```julia
 success, output, netlist = run_qucsator(c, DCAnalysis())
-success, output, netlist = run_qucsator(c, ACAnalysis(1.0, 1e6, 101))
+success, output, netlist = run_qucsator(c, ACAnalysis(1.0, 1e6, 101), suppress_warnings=true)
 ```
 """
-function run_qucsator(c::Circuit, analysis::AbstractAnalysis; output_file::String="")
+function run_qucsator(c::Circuit, analysis::AbstractAnalysis; output_file::String="", suppress_warnings::Bool=false)
     # Check if qucsator_rf is installed
     is_installed, version, path = check_qucsator()
     if !is_installed
@@ -104,25 +116,33 @@ function run_qucsator(c::Circuit, analysis::AbstractAnalysis; output_file::Strin
         netlist = netlist * "\n"
     end
 
-    # Create temporary file for netlist
-    netlist_file = tempname() * ".net"
+    # Create temporary directory for netlist and related files
+    netlist_dir = mktempdir()
+    netlist_file = joinpath(netlist_dir, "circuit.net")
     write(netlist_file, netlist)
+
+    # Prepare external files for all components (symlinks, data files, etc.)
+    # Components that don't need external files will use the default no-op implementation
+    for comp in c.components
+        prepare_external_files!(comp, netlist_dir)
+    end
 
     # Determine output file
     use_temp_output = isempty(output_file)
     if use_temp_output
-        output_file = tempname() * ".dat"
+        output_file = joinpath(netlist_dir, "output.dat")
     end
 
     try
-        # Run qucsator_rf from the directory containing the netlist
-        # This ensures data files referenced by basename are found
-        netlist_dir = dirname(netlist_file)
-        netlist_base = basename(netlist_file)
-        output_base = basename(output_file)
-
+        # Run qucsator_rf from the netlist directory
+        # This allows SPfile components to find their data files via basename
         result = cd(netlist_dir) do
-            read(`qucsator_rf -i $netlist_base -o $output_base`, String)
+            if suppress_warnings
+                # Redirect stderr to devnull to suppress warnings
+                pipeline(`qucsator_rf -i circuit.net -o $(basename(output_file))`, stderr=devnull) |> read |> String
+            else
+                read(`qucsator_rf -i circuit.net -o $(basename(output_file))`, String)
+            end
         end
 
         # Read the output if it exists
@@ -133,29 +153,23 @@ function run_qucsator(c::Circuit, analysis::AbstractAnalysis; output_file::Strin
             output = result
         end
 
-        # Clean up temporary files
-        rm(netlist_file, force=true)
-        if use_temp_output
-            rm(output_file, force=true)
-        end
+        # Clean up temporary directory and all files
+        rm(netlist_dir, recursive=true, force=true)
 
         return (true, output, netlist)
     catch e
         # Clean up on error
-        rm(netlist_file, force=true)
-        if use_temp_output
-            rm(output_file, force=true)
-        end
+        rm(netlist_dir, recursive=true, force=true)
         return (false, "Error running qucsator_rf: $e", netlist)
     end
 end
 
 """
-    run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_file::String="")
+    run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_file::String="", suppress_warnings::Bool=false)
 
 Run qucsator simulation with multiple analysis types.
 """
-function run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_file::String="")
+function run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_file::String="", suppress_warnings::Bool=false)
     # Check if qucsator_rf is installed
     is_installed, version, path = check_qucsator()
     if !is_installed
@@ -176,25 +190,33 @@ function run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_f
         netlist = netlist * "\n"
     end
 
-    # Create temporary file for netlist
-    netlist_file = tempname() * ".net"
+    # Create temporary directory for netlist and related files
+    netlist_dir = mktempdir()
+    netlist_file = joinpath(netlist_dir, "circuit.net")
     write(netlist_file, netlist)
+
+    # Prepare external files for all components (symlinks, data files, etc.)
+    # Components that don't need external files will use the default no-op implementation
+    for comp in c.components
+        prepare_external_files!(comp, netlist_dir)
+    end
 
     # Determine output file
     use_temp_output = isempty(output_file)
     if use_temp_output
-        output_file = tempname() * ".dat"
+        output_file = joinpath(netlist_dir, "output.dat")
     end
 
     try
-        # Run qucsator_rf from the directory containing the netlist
-        # This ensures data files referenced by basename are found
-        netlist_dir = dirname(netlist_file)
-        netlist_base = basename(netlist_file)
-        output_base = basename(output_file)
-
+        # Run qucsator_rf from the netlist directory
+        # This allows SPfile components to find their data files via basename
         result = cd(netlist_dir) do
-            read(`qucsator_rf -i $netlist_base -o $output_base`, String)
+            if suppress_warnings
+                # Redirect stderr to devnull to suppress warnings
+                pipeline(`qucsator_rf -i circuit.net -o $(basename(output_file))`, stderr=devnull) |> read |> String
+            else
+                read(`qucsator_rf -i circuit.net -o $(basename(output_file))`, String)
+            end
         end
 
         # Read the output if it exists
@@ -205,25 +227,19 @@ function run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_f
             output = result
         end
 
-        # Clean up temporary files
-        rm(netlist_file, force=true)
-        if use_temp_output
-            rm(output_file, force=true)
-        end
+        # Clean up temporary directory and all files
+        rm(netlist_dir, recursive=true, force=true)
 
         return (true, output, netlist)
     catch e
         # Clean up on error
-        rm(netlist_file, force=true)
-        if use_temp_output
-            rm(output_file, force=true)
-        end
+        rm(netlist_dir, recursive=true, force=true)
         return (false, "Error running qucsator_rf: $e", netlist)
     end
 end
 
 """
-    simulate_qucsator(c::Circuit, analysis::DCAnalysis) -> DCResult
+    simulate_qucsator(c::Circuit, analysis::DCAnalysis; suppress_warnings::Bool=false) -> DCResultrnings::Bool=false) -> DCResult
 
 Run qucsator DC simulation and return typed DC results.
 
@@ -234,8 +250,8 @@ v_node = dc_result.voltages["_net1"]
 i_source = dc_result.currents["V1"]
 ```
 """
-function simulate_qucsator(c::Circuit, analysis::DCAnalysis)::DCResult
-    success, output, netlist = run_qucsator(c, analysis)
+function simulate_qucsator(c::Circuit, analysis::DCAnalysis; suppress_warnings::Bool=false)::DCResult
+    success, output, netlist = run_qucsator(c, analysis, suppress_warnings=suppress_warnings)
 
     if !success
         error("DC simulation failed: $output")
@@ -251,7 +267,7 @@ function simulate_qucsator(c::Circuit, analysis::DCAnalysis)::DCResult
 end
 
 """
-    simulate_qucsator(c::Circuit, analysis::ACAnalysis) -> ACResult
+    simulate_qucsator(c::Circuit, analysis::ACAnalysis; suppress_warnings::Bool=false) -> ACResult
 
 Run qucsator AC simulation and return typed AC results.
 
@@ -262,8 +278,8 @@ freqs = ac_result.frequencies_Hz
 v_out = ac_result.voltages["_net1"]
 ```
 """
-function simulate_qucsator(c::Circuit, analysis::ACAnalysis)::ACResult
-    success, output, netlist = run_qucsator(c, analysis)
+function simulate_qucsator(c::Circuit, analysis::ACAnalysis; suppress_warnings::Bool=false)::ACResult
+    success, output, netlist = run_qucsator(c, analysis, suppress_warnings=suppress_warnings)
 
     if !success
         error("AC simulation failed: $output")
@@ -279,7 +295,7 @@ function simulate_qucsator(c::Circuit, analysis::ACAnalysis)::ACResult
 end
 
 """
-    simulate_qucsator(c::Circuit, analysis::TransientAnalysis) -> TransientResult
+    simulate_qucsator(c::Circuit, analysis::TransientAnalysis; suppress_warnings::Bool=false) -> TransientResult
 
 Run qucsator transient simulation and return typed transient results.
 
@@ -290,8 +306,8 @@ times = tran_result.time_s
 v_out = tran_result.voltages["_net1"]
 ```
 """
-function simulate_qucsator(c::Circuit, analysis::TransientAnalysis)::TransientResult
-    success, output, netlist = run_qucsator(c, analysis)
+function simulate_qucsator(c::Circuit, analysis::TransientAnalysis; suppress_warnings::Bool=false)::TransientResult
+    success, output, netlist = run_qucsator(c, analysis, suppress_warnings=suppress_warnings)
 
     if !success
         error("Transient simulation failed: $output")
@@ -307,7 +323,7 @@ function simulate_qucsator(c::Circuit, analysis::TransientAnalysis)::TransientRe
 end
 
 """
-    simulate_qucsator(c::Circuit, analysis::SParameterAnalysis) -> SParameterResult
+    simulate_qucsator(c::Circuit, analysis::SParameterAnalysis; suppress_warnings::Bool=false) -> SParameterResult
 
 Run qucsator S-parameter simulation and return typed S-parameter results.
 
@@ -318,8 +334,8 @@ freqs = sp_result.frequencies_Hz
 s21 = sp_result.s_matrix[(2,1)]
 ```
 """
-function simulate_qucsator(c::Circuit, analysis::SParameterAnalysis)::SParameterResult
-    success, output, netlist = run_qucsator(c, analysis)
+function simulate_qucsator(c::Circuit, analysis::SParameterAnalysis; suppress_warnings::Bool=false)::SParameterResult
+    success, output, netlist = run_qucsator(c, analysis, suppress_warnings=suppress_warnings)
 
     if !success
         error("S-parameter simulation failed: $output")
@@ -335,7 +351,7 @@ function simulate_qucsator(c::Circuit, analysis::SParameterAnalysis)::SParameter
 end
 
 """
-    simulate_qucsator(c::Circuit, analysis::AbstractAnalysis) -> QucsDataset
+    simulate_qucsator(c::Circuit, analysis::AbstractAnalysis; suppress_warnings::Bool=false) -> QucsDataset
 
 Fallback for other analysis types - returns raw QucsDataset.
 
@@ -345,8 +361,8 @@ dataset = simulate_qucsator(circ, HarmonicBalanceAnalysis(1e9))
 dataset = simulate_qucsator(circ, NoiseAnalysis(1e6, 1e9, 101, "out", "V1"))
 ```
 """
-function simulate_qucsator(c::Circuit, analysis::AbstractAnalysis)::QucsDataset
-    success, output, netlist = run_qucsator(c, analysis)
+function simulate_qucsator(c::Circuit, analysis::AbstractAnalysis; suppress_warnings::Bool=false)::QucsDataset
+    success, output, netlist = run_qucsator(c, analysis, suppress_warnings=suppress_warnings)
 
     if !success
         return QucsDataset(
@@ -364,7 +380,7 @@ function simulate_qucsator(c::Circuit, analysis::AbstractAnalysis)::QucsDataset
 end
 
 """
-    simulate_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}) -> MultiAnalysisResult
+    simulate_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; suppress_warnings::Bool=false) -> MultiAnalysisResult
 
 Run qucsator simulation with multiple analysis types and return typed results.
 
@@ -387,8 +403,8 @@ s21 = results.sparameter.s_matrix[(2,1)]
 dataset = results.dataset
 ```
 """
-function simulate_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis})::MultiAnalysisResult
-    success, output, netlist = run_qucsator(c, analyses)
+function simulate_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; suppress_warnings::Bool=false)::MultiAnalysisResult
+    success, output, netlist = run_qucsator(c, analyses, suppress_warnings=suppress_warnings)
 
     if !success
         error("Multi-analysis simulation failed: $output")

@@ -10,7 +10,7 @@ Defines the substrate properties for microstrip and planar components.
 - `h::Real`: Substrate height/thickness in meters
 - `t::Real`: Metal thickness in meters
 - `tand::Real`: Loss tangent (tan δ)
-- `rho::Real`: Metal resistivity relative to copper (Cu = 1.0)
+- `rho::Real`: Metal resistivity in Ω·m (Copper ≈ 0.022e-6)
 - `rough::Real`: Surface roughness in meters
 
 # Example
@@ -32,7 +32,7 @@ mutable struct Substrate <: AbstractCircuitComponent
     h::Real         # Substrate height (m)
     t::Real         # Metal thickness (m)
     tand::Real      # Loss tangent
-    rho::Real       # Resistivity relative to copper
+    rho::Real       # Resistivity in Ω·m
     rough::Real     # Surface roughness (m)
 
     function Substrate(name::AbstractString;
@@ -40,7 +40,7 @@ mutable struct Substrate <: AbstractCircuitComponent
         h::Real=1.6e-3,
         t::Real=35e-6,
         tand::Real=0.02,
-        rho::Real=1.0,
+        rho::Real=0.022e-6,
         rough::Real=0.0)
         er > 0 || throw(ArgumentError("Relative permittivity must be positive"))
         h > 0 || throw(ArgumentError("Substrate height must be positive"))
@@ -59,7 +59,7 @@ function to_qucs_netlist(sub::Substrate)::String
     push!(parts, "h=\"$(format_value(sub.h))\"")
     push!(parts, "t=\"$(format_value(sub.t))\"")
     push!(parts, "tand=\"$(sub.tand)\"")
-    push!(parts, "rho=\"$(sub.rho)\"")
+    push!(parts, "rho=\"$(format_value(sub.rho))\"")
     push!(parts, "D=\"$(format_value(sub.rough))\"")
     return join(parts, " ")
 end

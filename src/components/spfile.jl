@@ -110,6 +110,19 @@ function Base.setproperty!(spf::SPfile, sym::Symbol, val)
     end
 end
 
+"""
+    prepare_external_files!(comp::SPfile, netlist_dir::String)
+
+Copy S-parameter file to the netlist directory.
+Called by the backend before running qucsator.
+"""
+function prepare_external_files!(spf::SPfile, netlist_dir::String)
+    src_file = abspath(spf.file)
+    dest_file = joinpath(netlist_dir, "$(spf.name).s$(spf.num_ports)p")
+    cp(src_file, dest_file, force=true)
+    return nothing
+end
+
 function to_qucs_netlist(spf::SPfile)::String
     # Build node list: N port nodes followed by ground reference node
     parts = ["SPfile:$(spf.name)"]
@@ -119,7 +132,9 @@ function to_qucs_netlist(spf::SPfile)::String
         push!(parts, qucs_node(spf.nodes[i]))
     end
 
-    push!(parts, "File=\"$(spf.file)\"")
+    # Use component name for the file reference - backend creates symlink with this name
+    # This avoids issues with absolute paths and spaces that qucsator cannot handle
+    push!(parts, "File=\"$(spf.name).s$(spf.num_ports)p\"")
     push!(parts, "Data=\"$(spf.data_format)\"")
     push!(parts, "Interpolator=\"$(spf.interpolator)\"")
     push!(parts, "duringDC=\"$(spf.during_dc)\"")

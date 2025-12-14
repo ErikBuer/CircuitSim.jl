@@ -118,6 +118,29 @@ mutable struct FileCurrentSource <: AbstractSource
     end
 end
 
+"""
+    prepare_external_files!(comp::FileCurrentSource, netlist_dir::String)
+
+Create data file for FileCurrentSource in the netlist directory when using vector mode.
+Called by the backend before running qucsator.
+"""
+function prepare_external_files!(comp::FileCurrentSource, netlist_dir::String)
+    # Only create file if in vector mode (file === nothing)
+    if comp.file === nothing
+        ext = comp.format == :csv ? ".csv" : ".dat"
+        data_file = joinpath(netlist_dir, "ifile_$(comp.name)_data$(ext)")
+
+        if comp.format == :csv
+            write_csv(data_file, comp.time_vector, comp.current_vector,
+                time_name="time", var_name="I.$(comp.name)")
+        elseif comp.format == :qucs_dataset
+            write_qucs_dataset(data_file, comp.time_vector, comp.current_vector,
+                time_name="time", var_name="I.$(comp.name)")
+        end
+    end
+    return nothing
+end
+
 function to_qucs_netlist(comp::FileCurrentSource)::String
     actual_file = if comp.file !== nothing
         comp.file

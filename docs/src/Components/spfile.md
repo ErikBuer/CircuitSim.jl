@@ -1,10 +1,10 @@
 # S-Parameter File
 
-Load S-parameters from a Touchstone file (.s2p) for black-box modeling.
+Load S-parameters from a Touchstone file (`.snp`) for black-box modeling.
 
 
 
-```julia
+```@example spfile
 using CircuitSim
 using GLMakie
 
@@ -25,7 +25,7 @@ add_component!(circ, gnd)
 # Connect 1-port S-parameter file
 @connect circ port1.nplus spf.n1
 @connect circ port1.nminus gnd
-@connect circ spf.n1 gnd
+@connect circ spf.ref gnd
 
 sparam = SParameterAnalysis(1e9,2e9, 601,
     sweep_type=LINEAR,
@@ -35,7 +35,7 @@ sparam = SParameterAnalysis(1e9,2e9, 601,
 sp_result = simulate_qucsator(circ, sparam)
 ```
 
-```julia
+```@example spfile
 # Get frequency vector in MHz
 freq_mhz = sp_result.frequencies_Hz ./ 1e6
 
@@ -50,7 +50,7 @@ nothing # hide
 
 ### Plot S-Parameter Magnitude
 
-```julia
+```@example spfile
 fig = Figure(size=(900, 600), fontsize=14)
 
 ax1 = Axis(fig[1, 1],
@@ -59,9 +59,9 @@ ax1 = Axis(fig[1, 1],
     title = "",
 )
 
-lines!(ax1, freq_mhz, s21_db, label="S₂₁ (Insertion Loss)", linewidth=2)
+lines!(ax1, freq_mhz, s11_db, label="S₁₁ (Return Loss)", linewidth=2)
 
-ylims!(ax1, -50, 5)
+ylims!(ax1, -25, 5)
 xlims!(ax1, 1000, 2000)
 axislegend(ax1, position=:lb)
 

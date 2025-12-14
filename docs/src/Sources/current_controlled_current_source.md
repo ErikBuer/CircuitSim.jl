@@ -41,7 +41,7 @@ add_component!(circ, GND)
 
 # Transient analysis
 tran_analysis = TransientAnalysis(2e-3, points=200)
-result = simulate_qucsator(circ, tran_analysis)
+result = simulate_qucsator(circ, tran_analysis; suppress_warnings=true)
 
 # Output current = input × gain = 1mA × 5 = 5mA, Output voltage = 5V
 v_out = get_pin_voltage(result, rload, :n1)
