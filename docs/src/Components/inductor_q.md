@@ -4,7 +4,7 @@ This example demonstrates the `InductorQ` component, which models an inductor wi
 
 ```@example indq
 using CircuitSim
-using CairoMakie
+using GLMakie
 
 # Create circuit for S-parameter analysis
 circ = Circuit()

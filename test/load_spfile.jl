@@ -1,5 +1,5 @@
 using CircuitSim
-using CairoMakie
+using GLMakie
 
 circ = Circuit()
 

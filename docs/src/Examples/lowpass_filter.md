@@ -1,7 +1,7 @@
 # LC Lowpass Filter
 
 This example demonstrates designing a simple LC lowpass filter, 
-simulating its S-parameters using Qucsator, and plotting the results with CairoMakie.
+simulating its S-parameters using Qucsator, and plotting the results with GLMakie.
 
 ## Circuit Design
 
@@ -10,7 +10,7 @@ This creates a 3rd-order filter with a well-defined cutoff frequency.
 
 ```@example lpf
 using CircuitSim
-using CairoMakie
+using GLMakie
 
 # Create circuit
 circ = Circuit()

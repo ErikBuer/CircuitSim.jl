@@ -2,7 +2,7 @@
 
 ```@example capacitor
 using CircuitSim
-using CairoMakie
+using GLMakie
 
 P1 = ACPowerSource("P1", 1, impedance=50.0)
 P2 = ACPowerSource("P2", 2, impedance=50.0)

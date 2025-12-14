@@ -6,7 +6,7 @@ Load S-parameters from a Touchstone file (.s2p) for black-box modeling.
 
 ```julia
 using CircuitSim
-using CairoMakie
+using GLMakie
 
 circ = Circuit()
 
