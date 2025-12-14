@@ -1,5 +1,5 @@
 """
-    CurrentPulseSource <: AbstractCurrentSource
+    CurrentPulseSource <: AbstractSource
 
 Current source with pulse waveform for transient analysis.
 
@@ -21,7 +21,7 @@ Current source with pulse waveform for transient analysis.
 isrc = CurrentPulseSource("Ipulse1", i1=0.0, i2=10e-3, t1=1e-9, t2=10e-9)
 ```
 """
-mutable struct CurrentPulseSource <: AbstractCurrentPulseSource
+mutable struct CurrentPulseSource <: AbstractSource
     name::String
     n1::Int
     n2::Int

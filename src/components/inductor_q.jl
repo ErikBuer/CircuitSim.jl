@@ -1,5 +1,5 @@
 """
-    InductorQ <: AbstractInductorWithQualityFactor
+    InductorQ <: AbstractInductor
 
 Inductor with quality factor for RF simulations.
 
@@ -20,7 +20,7 @@ L1 = InductorQ("L1", 10e-9, 30.0)  # 10nH inductor with Q=30
 L2 = InductorQ("L2", 100e-9, 50.0, freq=2.4e9)  # 100nH, Q=50 at 2.4 GHz
 ```
 """
-mutable struct InductorQ <: AbstractInductorWithQualityFactor
+mutable struct InductorQ <: AbstractInductor
     name::String
     n1::Int
     n2::Int

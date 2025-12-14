@@ -16,7 +16,7 @@ Create a voltage-controlled voltage source with 4-port configuration.
 - `n3::Int`: Positive output node
 - `n4::Int`: Negative output node
 """
-mutable struct VoltageControlledVoltageSource <: AbstractVoltageControlledVoltageSource
+mutable struct VoltageControlledVoltageSource <: AbstractSource
     name::String
     n1::Int  # Positive input control node
     n2::Int  # Negative input control node  

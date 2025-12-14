@@ -3,7 +3,7 @@ Current-Controlled Voltage Source (CCVS).
 
 A voltage source whose output voltage is controlled by the current through another element.
 """
-mutable struct CurrentControlledVoltageSource <: AbstractCurrentControlledVoltageSource
+mutable struct CurrentControlledVoltageSource <: AbstractSource
     name::String
     n1::Int  # Positive input node (where current is sensed)
     n2::Int  # Negative input node (where current is sensed)

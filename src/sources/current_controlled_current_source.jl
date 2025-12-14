@@ -16,7 +16,7 @@ Create a current-controlled current source with 4-port configuration.
 - `n3::Int`: Positive output node
 - `n4::Int`: Negative output node
 """
-mutable struct CurrentControlledCurrentSource <: AbstractCurrentControlledCurrentSource
+mutable struct CurrentControlledCurrentSource <: AbstractSource
     name::String
     n1::Int  # Positive input node (where current is sensed)
     n2::Int  # Negative input node (where current is sensed)
