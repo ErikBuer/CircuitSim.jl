@@ -33,6 +33,17 @@ end
 qucs_node(n::Int) = n == 0 ? "gnd" : "_net$n"
 
 """
+    prepare_external_files!(comp::AbstractCircuitComponent, netlist_dir::String)
+
+Prepare external files (S-parameters, data files, etc.) for a component before simulation.
+Default implementation does nothing. Components that need external files should implement this method.
+"""
+function prepare_external_files!(comp::AbstractCircuitComponent, netlist_dir::String)
+    # Default: do nothing
+    return nothing
+end
+
+"""
     to_qucs_netlist(comp::AbstractCircuitComponent) -> String
 
 Generate a Qucs netlist line for a component.
@@ -110,39 +121,10 @@ function run_qucsator(c::Circuit, analysis::AbstractAnalysis; output_file::Strin
     netlist_file = joinpath(netlist_dir, "circuit.net")
     write(netlist_file, netlist)
 
-    # Create symlinks/data files for components with external files
-    # This is necessary because qucsator cannot handle absolute paths or spaces
+    # Prepare external files for all components (symlinks, data files, etc.)
+    # Components that don't need external files will use the default no-op implementation
     for comp in c.components
-        if comp isa AbstractSParameterFile
-            # SPfile: create symlink to S-parameter file
-            src_file = abspath(comp.file)
-            link_name = joinpath(netlist_dir, "$(comp.name).s$(comp.num_ports)p")
-            if !ispath(link_name)
-                symlink(src_file, link_name)
-            end
-        elseif hasproperty(comp, :time_vector) && hasproperty(comp, :voltage_vector) && comp.file === nothing
-            # FileVoltageSource in vector mode: create data file
-            ext = comp.format == :csv ? ".csv" : ".dat"
-            data_file = joinpath(netlist_dir, "vfile_$(comp.name)_data$(ext)")
-            if comp.format == :csv
-                write_csv(data_file, comp.time_vector, comp.voltage_vector,
-                    time_name="time", var_name="V.$(comp.name)")
-            elseif comp.format == :qucs_dataset
-                write_qucs_dataset(data_file, comp.time_vector, comp.voltage_vector,
-                    time_name="time", var_name="V.$(comp.name)")
-            end
-        elseif hasproperty(comp, :time_vector) && hasproperty(comp, :current_vector) && comp.file === nothing
-            # FileCurrentSource in vector mode: create data file
-            ext = comp.format == :csv ? ".csv" : ".dat"
-            data_file = joinpath(netlist_dir, "ifile_$(comp.name)_data$(ext)")
-            if comp.format == :csv
-                write_csv(data_file, comp.time_vector, comp.current_vector,
-                    time_name="time", var_name="I.$(comp.name)")
-            elseif comp.format == :qucs_dataset
-                write_qucs_dataset(data_file, comp.time_vector, comp.current_vector,
-                    time_name="time", var_name="I.$(comp.name)")
-            end
-        end
+        prepare_external_files!(comp, netlist_dir)
     end
 
     # Determine output file
@@ -213,39 +195,10 @@ function run_qucsator(c::Circuit, analyses::Vector{<:AbstractAnalysis}; output_f
     netlist_file = joinpath(netlist_dir, "circuit.net")
     write(netlist_file, netlist)
 
-    # Create symlinks/data files for components with external files
-    # This is necessary because qucsator cannot handle absolute paths or spaces
+    # Prepare external files for all components (symlinks, data files, etc.)
+    # Components that don't need external files will use the default no-op implementation
     for comp in c.components
-        if comp isa AbstractSParameterFile
-            # SPfile: create symlink to S-parameter file
-            src_file = abspath(comp.file)
-            link_name = joinpath(netlist_dir, "$(comp.name).s$(comp.num_ports)p")
-            if !ispath(link_name)
-                symlink(src_file, link_name)
-            end
-        elseif hasproperty(comp, :time_vector) && hasproperty(comp, :voltage_vector) && comp.file === nothing
-            # FileVoltageSource in vector mode: create data file
-            ext = comp.format == :csv ? ".csv" : ".dat"
-            data_file = joinpath(netlist_dir, "vfile_$(comp.name)_data$(ext)")
-            if comp.format == :csv
-                write_csv(data_file, comp.time_vector, comp.voltage_vector,
-                    time_name="time", var_name="V.$(comp.name)")
-            elseif comp.format == :qucs_dataset
-                write_qucs_dataset(data_file, comp.time_vector, comp.voltage_vector,
-                    time_name="time", var_name="V.$(comp.name)")
-            end
-        elseif hasproperty(comp, :time_vector) && hasproperty(comp, :current_vector) && comp.file === nothing
-            # FileCurrentSource in vector mode: create data file
-            ext = comp.format == :csv ? ".csv" : ".dat"
-            data_file = joinpath(netlist_dir, "ifile_$(comp.name)_data$(ext)")
-            if comp.format == :csv
-                write_csv(data_file, comp.time_vector, comp.current_vector,
-                    time_name="time", var_name="I.$(comp.name)")
-            elseif comp.format == :qucs_dataset
-                write_qucs_dataset(data_file, comp.time_vector, comp.current_vector,
-                    time_name="time", var_name="I.$(comp.name)")
-            end
-        end
+        prepare_external_files!(comp, netlist_dir)
     end
 
     # Determine output file
