@@ -22,8 +22,21 @@ jobs:
     steps:
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y xorg-dev mesa-utils xvfb libgl1 freeglut3-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev xsettingsd x11-xserver-utils
-
+      
+      - name: Install qucsator_rf dependencies
+        run: sudo apt-get install -y dos2unix gperf flex bison cmake
+      
       - uses: actions/checkout@v4
+      
+      - name: Build and install qucsator_rf
+        run: |
+          git clone https://github.com/ra3xdh/qucsator_rf.git
+          cd qucsator_rf
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local
+          cmake --build build --config Release
+          sudo make -C build install
+          cd ..
+      
       - uses: julia-actions/setup-julia@latest
         with:
           version: '1.11'
