@@ -12,7 +12,7 @@ TouchstoneParser = "b369b07b-dee1-4342-88e3-29a776361291"
 [compat]
 CairoMakie = "0.15.7"
 TouchstoneParser = "1.0.1"
-julia = "1.6"
+julia = "^1.6"
 
 [extras]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
