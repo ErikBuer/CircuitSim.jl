@@ -8,7 +8,7 @@ export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
 # Components - Basic
 export Resistor, Capacitor, Inductor
 export CapacitorQ, InductorQ
-export Ground, Short, Open
+export Ground, Open
 
 # Sources
 export DCVoltageSource, DCCurrentSource
@@ -135,7 +135,6 @@ include("components/inductor.jl")
 include("components/capacitor_q.jl")
 include("components/inductor_q.jl")
 include("components/ground.jl")
-include("components/short.jl")
 include("components/open.jl")
 
 # File I/O utilities
