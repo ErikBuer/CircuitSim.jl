@@ -116,6 +116,8 @@ include("analysis/noise_analysis.jl")
 
 include("pin.jl")
 include("union_find.jl")
+
+include("circuit_component.jl")  # Default implementations for AbstractCircuitComponent
 include("circuit.jl")
 
 # Parser (must be loaded before backends that use QucsDataset)

@@ -157,8 +157,6 @@ function num_pins(spf::SPfile)
     return spf.num_ports + 1
 end
 
-# Multiple dispatch methods for circuit node assignment
-
 # Register SPfile pins in union-find
 function _register_pins_in_uf!(uf::UnionFind, comp::SPfile)
     for i in 1:comp.num_ports
