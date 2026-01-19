@@ -14,26 +14,31 @@ This is a simplified amplifier model suitable for system-level simulations.
 - `nf::Real`: Noise figure (linear). For 3 dB NF, use nf=2.0. Default: 1.0 (noiseless)
 - `z_in::Real`: Input impedance in Ohms (default: 50)
 - `z_out::Real`: Output impedance in Ohms (default: 50)
-- `p1db::Real`: 1-dB compression point in dBm (default: 20 dBm)
 
 """
 mutable struct Amplifier <: AbstractPowerAmplifier
     name::String
+
     input::Int
     output::Int
+
     gain::Real
     nf::Real
     z_in::Real
     z_out::Real
-    p1db::Real          # TODO. Is this implemented in backends?
 
-    function Amplifier(name::AbstractString, gain::Real, nf::Real=1.0;
-        z_in::Real=50.0, z_out::Real=50.0, p1db::Real=20.0)
+    function Amplifier(
+        name::AbstractString,
+        gain::Real,
+        nf::Real=1.0;
+        z_in::Real=50.0,
+        z_out::Real=50.0
+    )
         z_in > 0 || throw(ArgumentError("Input impedance must be positive"))
         z_out > 0 || throw(ArgumentError("Output impedance must be positive"))
         gain >= 1 || throw(ArgumentError("Gain must be >= 1 (linear)"))
         nf >= 1 || throw(ArgumentError("Noise figure must be >= 1 (linear)"))
-        new(String(name), 0, 0, gain, nf, z_in, z_out, p1db)
+        new(String(name), 0, 0, gain, nf, z_in, z_out)
     end
 end
 
