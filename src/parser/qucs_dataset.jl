@@ -1,3 +1,5 @@
+abstract type AbstractQucsatorSimulationResult <: AbstractSimulationResult end
+
 """
     SimulationStatus
 
@@ -26,7 +28,7 @@ DC operating point results.
 - `voltages::Dict{String,Float64}`: Node voltages (node_name => voltage)
 - `currents::Dict{String,Float64}`: Branch currents (component_name => current)
 """
-struct DCResult
+struct DCResult <: AbstractQucsatorSimulationResult
     voltages::Dict{String,Float64}
     currents::Dict{String,Float64}
 end
@@ -42,7 +44,7 @@ AC analysis results (frequency sweep).
 - `voltages::Dict{String,Vector{ComplexF64}}`: Node voltages vs frequency
 - `currents::Dict{String,Vector{ComplexF64}}`: Branch currents vs frequency
 """
-struct ACResult
+struct ACResult <: AbstractQucsatorSimulationResult
     frequencies_Hz::Vector{Float64}
     voltages::Dict{String,Vector{ComplexF64}}
     currents::Dict{String,Vector{ComplexF64}}
@@ -59,7 +61,7 @@ Transient analysis results (time domain).
 - `voltages::Dict{String,Vector{Float64}}`: Node voltages vs time
 - `currents::Dict{String,Vector{Float64}}`: Branch currents vs time
 """
-struct TransientResult
+struct TransientResult <: AbstractQucsatorSimulationResult
     time_s::Vector{Float64}
     voltages::Dict{String,Vector{Float64}}
     currents::Dict{String,Vector{Float64}}
@@ -81,7 +83,7 @@ S-parameter analysis results.
 - `Sopt::Union{Nothing,Vector{ComplexF64}}`: Optimal source reflection coefficient vs frequency (if noise analysis enabled)
 - `Rn_Ohm::Union{Nothing,Vector{Float64}}`: Equivalent noise resistance in Ohms vs frequency (if noise analysis enabled)
 """
-struct SParameterResult
+struct SParameterResult <: AbstractQucsatorSimulationResult
     frequencies_Hz::Vector{Float64}
     num_ports::Int
     s_matrix::Dict{Tuple{Int,Int},Vector{ComplexF64}}
@@ -112,7 +114,7 @@ struct DataVector
 end
 
 """
-    QucsDataset
+    QucsatorDataset
 
 Parsed simulation result containing all vectors and metadata.
 
@@ -131,7 +133,7 @@ Parsed simulation result containing all vectors and metadata.
 Use `extract_dc_result()`, `extract_ac_result()`, `extract_transient_result()`, 
 or `extract_sparameter_result()` to get typed data structures.
 """
-struct QucsDataset
+struct QucsatorDataset
     status::SimulationStatus
     version::String
     independent_vars::Dict{String,DataVector}
@@ -174,12 +176,12 @@ function parse_qucs_value(s::AbstractString)::ComplexF64
 end
 
 """
-    parse_qucs_dataset(output::AbstractString) -> QucsDataset
+    parse_qucs_dataset(output::AbstractString) -> QucsatorDataset
 
 Parse the Qucs dataset format output from qucsator_rf.
-Returns a QucsDataset containing all parsed vectors and status information.
+Returns a QucsatorDataset containing all parsed vectors and status information.
 """
-function parse_qucs_dataset(output::AbstractString)::QucsDataset
+function parse_qucs_dataset(output::AbstractString)::QucsatorDataset
     lines = split(output, '\n')
 
     independent_vars = Dict{String,DataVector}()
@@ -191,7 +193,7 @@ function parse_qucs_dataset(output::AbstractString)::QucsDataset
 
     # Check for empty output
     if isempty(strip(output))
-        return QucsDataset(SIM_PARSE_ERROR, "", independent_vars, dependent_vars,
+        return QucsatorDataset(SIM_PARSE_ERROR, "", independent_vars, dependent_vars,
             ["Empty output received"], warnings, output)
     end
 
@@ -304,16 +306,16 @@ function parse_qucs_dataset(output::AbstractString)::QucsDataset
         status = SIM_PARSE_ERROR
     end
 
-    return QucsDataset(status, version, independent_vars, dependent_vars,
+    return QucsatorDataset(status, version, independent_vars, dependent_vars,
         errors, warnings, output)
 end
 
 """
-    get_real_vector(dataset::QucsDataset, name::String) -> Vector{Float64}
+    get_real_vector(dataset::QucsatorDataset, name::String) -> Vector{Float64}
 
 Extract real parts of a named vector from the dataset.
 """
-function get_real_vector(dataset::QucsDataset, name::String)::Vector{Float64}
+function get_real_vector(dataset::QucsatorDataset, name::String)::Vector{Float64}
     if haskey(dataset.independent_vars, name)
         return real.(dataset.independent_vars[name].values)
     elseif haskey(dataset.dependent_vars, name)
@@ -324,11 +326,11 @@ function get_real_vector(dataset::QucsDataset, name::String)::Vector{Float64}
 end
 
 """
-    get_imag_vector(dataset::QucsDataset, name::String) -> Vector{Float64}
+    get_imag_vector(dataset::QucsatorDataset, name::String) -> Vector{Float64}
 
 Extract imaginary parts of a named vector from the dataset.
 """
-function get_imag_vector(dataset::QucsDataset, name::String)::Vector{Float64}
+function get_imag_vector(dataset::QucsatorDataset, name::String)::Vector{Float64}
     if haskey(dataset.independent_vars, name)
         return imag.(dataset.independent_vars[name].values)
     elseif haskey(dataset.dependent_vars, name)
@@ -339,11 +341,11 @@ function get_imag_vector(dataset::QucsDataset, name::String)::Vector{Float64}
 end
 
 """
-    get_complex_vector(dataset::QucsDataset, name::String) -> Vector{ComplexF64}
+    get_complex_vector(dataset::QucsatorDataset, name::String) -> Vector{ComplexF64}
 
 Get the complex values of a named vector from the dataset.
 """
-function get_complex_vector(dataset::QucsDataset, name::String)::Vector{ComplexF64}
+function get_complex_vector(dataset::QucsatorDataset, name::String)::Vector{ComplexF64}
     if haskey(dataset.independent_vars, name)
         return dataset.independent_vars[name].values
     elseif haskey(dataset.dependent_vars, name)
@@ -354,30 +356,30 @@ function get_complex_vector(dataset::QucsDataset, name::String)::Vector{ComplexF
 end
 
 """
-    list_vectors(dataset::QucsDataset) -> Vector{String}
+    list_vectors(dataset::QucsatorDataset) -> Vector{String}
 
 List all vector names in the dataset.
 """
-function list_vectors(dataset::QucsDataset)::Vector{String}
+function list_vectors(dataset::QucsatorDataset)::Vector{String}
     return vcat(collect(keys(dataset.independent_vars)),
         collect(keys(dataset.dependent_vars)))
 end
 
 """
-    has_errors(dataset::QucsDataset) -> Bool
+    has_errors(dataset::QucsatorDataset) -> Bool
 
 Check if the simulation had any errors.
 """
-function has_errors(dataset::QucsDataset)::Bool
+function has_errors(dataset::QucsatorDataset)::Bool
     return dataset.status != SIM_SUCCESS || !isempty(dataset.errors)
 end
 
 """
-    print_summary(dataset::QucsDataset)
+    print_summary(dataset::QucsatorDataset)
 
 Print a summary of the dataset contents.
 """
-function print_summary(dataset::QucsDataset)
+function print_summary(dataset::QucsatorDataset)
     println("Qucs Dataset Summary")
     println("="^40)
     println("Status: $(dataset.status)")
@@ -416,7 +418,7 @@ end
 # Analysis-specific convenience methods for common access patterns
 
 """
-    get_frequency(dataset::QucsDataset) -> Vector{Float64}
+    get_frequency(dataset::QucsatorDataset) -> Vector{Float64}
 
 Get the frequency vector for S-parameter, AC, or other frequency-domain analyses.
 Looks for 'frequency', 'acfrequency', or 'hbfrequency' (for HB analysis, returns unique frequencies).
@@ -429,7 +431,7 @@ Looks for 'frequency', 'acfrequency', or 'hbfrequency' (for HB analysis, returns
 
 - ErrorException if no frequency vector found
 """
-function get_frequency(dataset::QucsDataset)::Vector{Float64}
+function get_frequency(dataset::QucsatorDataset)::Vector{Float64}
     # S-parameter and other frequency sweeps
     if haskey(dataset.independent_vars, "frequency")
         return real.(dataset.independent_vars["frequency"].values)
@@ -447,7 +449,7 @@ function get_frequency(dataset::QucsDataset)::Vector{Float64}
 end
 
 """
-    get_time(dataset::QucsDataset) -> Vector{Float64}
+    get_time(dataset::QucsatorDataset) -> Vector{Float64}
 
 Get the time vector for transient analyses.
 
@@ -459,7 +461,7 @@ Get the time vector for transient analyses.
 
 - ErrorException if no time vector found
 """
-function get_time(dataset::QucsDataset)::Vector{Float64}
+function get_time(dataset::QucsatorDataset)::Vector{Float64}
     if haskey(dataset.independent_vars, "time")
         return real.(dataset.independent_vars["time"].values)
     end
@@ -468,13 +470,13 @@ function get_time(dataset::QucsDataset)::Vector{Float64}
 end
 
 """
-    get_sparameter(dataset::QucsDataset, i::Int, j::Int) -> Vector{ComplexF64}
+    get_sparameter(dataset::QucsatorDataset, i::Int, j::Int) -> Vector{ComplexF64}
 
 Get S-parameter S[i,j] from dataset.
 
 # Arguments
 
-- `dataset::QucsDataset`: The simulation results
+- `dataset::QucsatorDataset`: The simulation results
 - `i::Int`: Output port number (1-indexed)
 - `j::Int`: Input port number (1-indexed)
 
@@ -489,7 +491,7 @@ s21 = get_sparameter(result, 2, 1)  # Forward transmission
 s11 = get_sparameter(result, 1, 1)  # Input reflection
 ```
 """
-function get_sparameter(dataset::QucsDataset, i::Int, j::Int)::Vector{ComplexF64}
+function get_sparameter(dataset::QucsatorDataset, i::Int, j::Int)::Vector{ComplexF64}
     name = "S[$i,$j]"
     if haskey(dataset.dependent_vars, name)
         return dataset.dependent_vars[name].values
@@ -508,13 +510,13 @@ function get_sparameter(dataset::QucsDataset, i::Int, j::Int)::Vector{ComplexF64
 end
 
 """
-    get_node_voltage(dataset::QucsDataset, node_name::String) -> Vector{ComplexF64}
+    get_node_voltage(dataset::QucsatorDataset, node_name::String) -> Vector{ComplexF64}
 
 Get voltage at a named node.
 
 # Arguments
 
-- `dataset::QucsDataset`: The simulation results  
+- `dataset::QucsatorDataset`: The simulation results  
 - `node_name::String`: Node name (e.g., "net1", "vout")
 
 # Returns
@@ -527,7 +529,7 @@ Get voltage at a named node.
 v_out = get_node_voltage(result, "net5")
 ```
 """
-function get_node_voltage(dataset::QucsDataset, node_name::String)::Vector{ComplexF64}
+function get_node_voltage(dataset::QucsatorDataset, node_name::String)::Vector{ComplexF64}
     # Try both with and without .V suffix
     names_to_try = [node_name, "$(node_name).V", "v.$(node_name)"]
 
@@ -541,7 +543,7 @@ function get_node_voltage(dataset::QucsDataset, node_name::String)::Vector{Compl
 end
 
 """
-    get_s_matrix_size(dataset::QucsDataset) -> Int
+    get_s_matrix_size(dataset::QucsatorDataset) -> Int
 
 Determine the size of the S-parameter matrix (number of ports).
 
@@ -555,7 +557,7 @@ Determine the size of the S-parameter matrix (number of ports).
 n_ports = get_s_matrix_size(result)  # Returns 2 for a 2-port network
 ```
 """
-function get_s_matrix_size(dataset::QucsDataset)::Int
+function get_s_matrix_size(dataset::QucsatorDataset)::Int
     max_port = 0
     for name in keys(dataset.dependent_vars)
         m = match(r"S\[(\d+),(\d+)\]", name)
@@ -577,7 +579,7 @@ end
 # Typed Result Extraction
 
 """
-    extract_dc_result(dataset::QucsDataset) -> DCResult
+    extract_dc_result(dataset::QucsatorDataset) -> DCResult
 
 Extract DC operating point results from dataset.
 
@@ -593,7 +595,7 @@ v_out = dc_data.voltages["_net1"]
 i_supply = dc_data.currents["V1"]
 ```
 """
-function extract_dc_result(dataset::QucsDataset)::DCResult
+function extract_dc_result(dataset::QucsatorDataset)::DCResult
     voltages = Dict{String,Float64}()
     currents = Dict{String,Float64}()
 
@@ -624,7 +626,7 @@ function extract_dc_result(dataset::QucsDataset)::DCResult
 end
 
 """
-    extract_ac_result(dataset::QucsDataset) -> ACResult
+    extract_ac_result(dataset::QucsatorDataset) -> ACResult
 
 Extract AC analysis results from dataset.
 
@@ -640,7 +642,7 @@ freqs = ac_data.frequencies_Hz
 v_out = ac_data.voltages["_net1"]  # ComplexF64 vector vs frequency
 ```
 """
-function extract_ac_result(dataset::QucsDataset)::ACResult
+function extract_ac_result(dataset::QucsatorDataset)::ACResult
     frequencies_Hz = get_frequency(dataset)
     voltages = Dict{String,Vector{ComplexF64}}()
     currents = Dict{String,Vector{ComplexF64}}()
@@ -661,7 +663,7 @@ function extract_ac_result(dataset::QucsDataset)::ACResult
 end
 
 """
-    extract_transient_result(dataset::QucsDataset) -> TransientResult
+    extract_transient_result(dataset::QucsatorDataset) -> TransientResult
 
 Extract transient analysis results from dataset.
 
@@ -677,7 +679,7 @@ times = tran_data.time_s
 v_out = tran_data.voltages["_net1"]  # Float64 vector vs time
 ```
 """
-function extract_transient_result(dataset::QucsDataset)::TransientResult
+function extract_transient_result(dataset::QucsatorDataset)::TransientResult
     time_s = get_time(dataset)
     voltages = Dict{String,Vector{Float64}}()
     currents = Dict{String,Vector{Float64}}()
@@ -698,13 +700,13 @@ function extract_transient_result(dataset::QucsDataset)::TransientResult
 end
 
 """
-    extract_sparameter_result(dataset::QucsDataset; z0::Real=50.0) -> SParameterResult
+    extract_sparameter_result(dataset::QucsatorDataset; z0::Real=50.0) -> SParameterResult
 
 Extract S-parameter analysis results from dataset.
 
 # Arguments
 
-- `dataset::QucsDataset`: Parsed simulation output
+- `dataset::QucsatorDataset`: Parsed simulation output
 - `z0::Real=50.0`: Reference impedance in Ohms
 
 # Returns
@@ -727,7 +729,7 @@ if !isnothing(sp_data.F)
 end
 ```
 """
-function extract_sparameter_result(dataset::QucsDataset; z0::Real=50.0)::SParameterResult
+function extract_sparameter_result(dataset::QucsatorDataset; z0::Real=50.0)::SParameterResult
     frequencies_Hz = get_frequency(dataset)
     num_ports = get_s_matrix_size(dataset)
     s_matrix = Dict{Tuple{Int,Int},Vector{ComplexF64}}()
@@ -758,11 +760,11 @@ end
 
 Results from multiple analyses run simultaneously.
 
-Contains the raw QucsDataset plus typed results for each analysis type found.
+Contains the raw QucsatorDataset plus typed results for each analysis type found.
 
 # Fields
 
-- `dataset::QucsDataset`: Raw parsed dataset with all vectors
+- `dataset::QucsatorDataset`: Raw parsed dataset with all vectors
 - `dc::Union{Nothing,DCResult}`: DC analysis results (if DC analysis was run)
 - `ac::Union{Nothing,ACResult}`: AC analysis results (if AC analysis was run)
 - `transient::Union{Nothing,TransientResult}`: Transient analysis results (if transient analysis was run)
@@ -785,8 +787,8 @@ if !isnothing(results.sparameter)
 end
 ```
 """
-struct MultiAnalysisResult
-    dataset::QucsDataset
+struct MultiAnalysisResult <: AbstractQucsatorSimulationResult
+    dataset::QucsatorDataset
     dc::Union{Nothing,DCResult}
     ac::Union{Nothing,ACResult}
     transient::Union{Nothing,TransientResult}
@@ -794,20 +796,20 @@ struct MultiAnalysisResult
 end
 
 """
-    MultiAnalysisResult(dataset::QucsDataset, analyses::Vector{<:AbstractAnalysis})
+    MultiAnalysisResult(dataset::QucsatorDataset, analyses::Vector{<:AbstractAnalysis})
 
 Create a MultiAnalysisResult by extracting typed results for each analysis type.
 
 # Arguments
 
-- `dataset::QucsDataset`: Parsed simulation output
+- `dataset::QucsatorDataset`: Parsed simulation output
 - `analyses::Vector{<:AbstractAnalysis}`: List of analyses that were run
 
 # Returns
 
 - `MultiAnalysisResult` with typed results for each analysis found
 """
-function MultiAnalysisResult(dataset::QucsDataset, analyses::Vector{<:AbstractAnalysis})
+function MultiAnalysisResult(dataset::QucsatorDataset, analyses::Vector{<:AbstractAnalysis})
     # Extract results based on analysis types present
     dc = nothing
     ac = nothing
@@ -831,7 +833,7 @@ function MultiAnalysisResult(dataset::QucsDataset, analyses::Vector{<:AbstractAn
         end
     end
 
-    return MultiAnalysisResult(dataset, dc, ac, transient, sparameter)
+    return MultiAnalysisResult(dataset, dc, ac, transient, sparameter) #TODO finish implementation
 end
 
 

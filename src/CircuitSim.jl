@@ -78,7 +78,7 @@ export to_qucs_analysis, to_spice_analysis
 
 # Parser exports - Base types
 export SimulationStatus, SIM_SUCCESS, SIM_ERROR, SIM_PARSE_ERROR, SIM_NOT_RUN
-export DataVector, QucsDataset
+export DataVector, QucsatorDataset
 export parse_qucs_value, parse_qucs_dataset
 export get_real_vector, get_imag_vector, get_complex_vector
 export list_vectors, has_errors, print_summary
@@ -120,7 +120,8 @@ include("union_find.jl")
 include("circuit_component.jl")  # Default implementations for AbstractCircuitComponent
 include("circuit.jl")
 
-# Parser (must be loaded before backends that use QucsDataset)
+# Parser (must be loaded before backends that use QucsatorDataset)
+abstract type AbstractSimulationResult end
 include("parser/qucs_dataset.jl")
 include("parser/simulation_result.jl")
 
