@@ -495,7 +495,16 @@ function get_sparameter(dataset::QucsDataset, i::Int, j::Int)::Vector{ComplexF64
         return dataset.dependent_vars[name].values
     end
 
-    error("S-parameter '$name' not found in dataset. Available S-parameters: $(filter(n -> startswith(n, "S["), collect(keys(dataset.dependent_vars))))")
+    # If S-parameter not found, return vector of zeros with same length as frequency vector
+    # This handles cases where ports are not connected (S-parameter would be zero anyway)
+    try
+        freq_length = length(get_frequency(dataset))
+        return zeros(ComplexF64, freq_length)
+    catch
+        # If we can't determine frequency length, return empty vector
+        @warn "S-parameter '$name' not found and cannot determine frequency vector length."
+        return ComplexF64[]
+    end
 end
 
 """
