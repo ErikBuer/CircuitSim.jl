@@ -8,8 +8,8 @@ using CircuitSim
 circ = Circuit()
 
 # Components
-port1 = ACPowerSource("P1", 1, impedance=50.0)
-port2 = ACPowerSource("P2", 2, impedance=50.0)
+port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
+port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 tline = TransmissionLine("TL1", z0=50.0, length_m=0.05)  # 5cm line
 gnd = Ground("GND")
 

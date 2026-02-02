@@ -5,8 +5,8 @@ using CircuitSim
 
 circ = Circuit()
 
-port1 = ACPowerSource("P1", 1, impedance=50.0)
-port2 = ACPowerSource("P2", 2, impedance=50.0)
+port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
+port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 add_component!(circ, port1)
 add_component!(circ, port2)
 

@@ -11,11 +11,11 @@ using CircuitSim
 circ = Circuit()
 
 # AC power sources (S-parameter ports)
-port1 = ACPowerSource("P1", 1, impedance=50.0)
-port2 = ACPowerSource("P2", 2, impedance=50.0)
+port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
+port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 
 # 10 dB attenuator
-att = Attenuator("ATT1", 10)
+att = Attenuator("ATT1", attenuation=10)
 
 # Ground
 gnd = Ground("GND")
