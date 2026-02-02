@@ -78,8 +78,7 @@ BT2 = BiasTee("BT2", c_block=10e-6, l_choke=10e-3)  # Custom
 RF/microwave amplifier with gain and noise figure.
 
 ```julia
-LNA = Amplifier("LNA", 20.0, 1.5)  # 20dB gain, 1.5dB NF
-PA = Amplifier("PA", 30.0, 5.0, p1db=30.0)  # Power amp with P1dB spec
+LNA = Amplifier("LNA", gain=20.0, nf=1.5)
 ```
 
 **Parameters:**
@@ -126,8 +125,8 @@ CIRC2 = Circulator("CIRC2", isolation=30.0)  # Better isolation
 Fixed attenuator for signal level control.
 
 ```julia
-ATT1 = Attenuator("ATT1", 10.0)  # 10dB attenuator
-ATT2 = Attenuator("ATT2", 20.0, z0=75.0)  # 75Ω system
+ATT1 = Attenuator("ATT1", attenuation=10.0)  # 10dB attenuator
+ATT2 = Attenuator("ATT2", attenuation=20.0, z0=75.0)  # 75Ω system
 ```
 
 **Parameters:**

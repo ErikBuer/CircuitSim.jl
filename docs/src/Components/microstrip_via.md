@@ -12,7 +12,7 @@ sub = Substrate("Sub1", er=4.5, h=1.6e-3, t=35e-6)
 add_component!(circ, sub)
 
 # Components
-port1 = ACPowerSource("P1", 1, impedance=50.0)
+port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 ms_line = MicrostripLine("MS1", sub, w=3.0e-3, l=10e-3)
 via = MicrostripVia("VIA1", sub, d=0.3e-3)
 gnd = Ground("GND")

@@ -14,8 +14,8 @@ Ideal capacitor with two terminals.
 # Example
 
 ```julia
-C1 = Capacitor("C1", 100e-9)  # 100nF capacitor
-C2 = Capacitor("C2", 10e-6, 5.0)  # 10µF capacitor with 5V initial voltage
+C1 = Capacitor("C1", capacitance=100e-9)  # 100nF capacitor
+C2 = Capacitor("C2", capacitance=10e-6, initial_voltage=5.0)  # 10µF capacitor with 5V initial voltage
 ```
 """
 mutable struct Capacitor <: AbstractCapacitor
@@ -28,7 +28,7 @@ mutable struct Capacitor <: AbstractCapacitor
     initial_voltage::Real
 
     function Capacitor(name::AbstractString;
-        capacitance::Real=1e9,
+        capacitance::Real=1e-9,
         initial_voltage::Real=0.0
     )
         new(String(name), 0, 0, capacitance, initial_voltage)

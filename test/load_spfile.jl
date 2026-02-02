@@ -4,7 +4,7 @@ using CircuitSim
 circ = Circuit()
 
 # Components
-port1 = ACPowerSource("P1", 1, impedance=50.0)
+port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 
 path = joinpath(@__DIR__, "test_files", "70 mm L1 L5 Single feed.s1p")
 println(path)

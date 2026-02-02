@@ -16,15 +16,15 @@ using GLMakie
 circ = Circuit()
 
 # Ports
-port1 = ACPowerSource("P1", 1, impedance=50.0)
-port2 = ACPowerSource("P2", 2, impedance=50.0)
+port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
+port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 add_component!(circ, port1)
 add_component!(circ, port2)
 
 # Components
 L1 = Inductor("L1", 80e-9)    # 80 nH
-C1 = Capacitor("C1", 32e-12)  # 32 pF  
-C2 = Capacitor("C2", 32e-12)  # 32 pF
+C1 = Capacitor("C1", capacitance=32e-12)  # 32 pF  
+C2 = Capacitor("C2", capacitance=32e-12)  # 32 pF
 add_component!(circ, L1)
 add_component!(circ, C1)
 add_component!(circ, C2)
@@ -132,8 +132,8 @@ add_component!(circ_ac, r_load)
 
 # Same filter components
 L1_ac = Inductor("L1", 80e-9)
-C1_ac = Capacitor("C1", 32e-12)
-C2_ac = Capacitor("C2", 32e-12)
+C1_ac = Capacitor("C1", capacitance=32e-12)
+C2_ac = Capacitor("C2", capacitance=32e-12)
 add_component!(circ_ac, L1_ac)
 add_component!(circ_ac, C1_ac)
 add_component!(circ_ac, C2_ac)

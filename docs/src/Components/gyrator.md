@@ -10,9 +10,9 @@ using CircuitSim
 circ = Circuit()
 
 # Components
-pac = ACPowerSource("P1", 1, impedance=50.0)
+pac = ACPowerSource("P1", port_num=1, impedance=50.0)
 gyrator = Gyrator("GYR1", r=100.0, zref=50.0)
-cap = Capacitor("C1", 1e-9)  # 1nF capacitor
+cap = Capacitor("C1", capacitance=1e-9)  # 1nF capacitor
 gnd = Ground("GND")
 
 add_component!(circ, pac)

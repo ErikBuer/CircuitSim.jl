@@ -12,10 +12,10 @@ sub = Substrate("Sub1", er=4.5, h=1.6e-3, t=35e-6)
 add_component!(circ, sub)
 
 # Components
-port1 = ACPowerSource("P1", 1, impedance=50.0)
-port2 = ACPowerSource("P2", 2, impedance=50.0)
-port3 = ACPowerSource("P3", 3, impedance=50.0)
-port4 = ACPowerSource("P4", 4, impedance=50.0)
+port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
+port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
+port3 = ACPowerSource("P3", port_num=3, impedance=50.0)
+port4 = ACPowerSource("P4", port_num=4, impedance=50.0)
 cross = MicrostripCross("MX1", sub, w1=1.5e-3, w2=1.5e-3, w3=1.5e-3, w4=1.5e-3)
 gnd = Ground("GND")
 

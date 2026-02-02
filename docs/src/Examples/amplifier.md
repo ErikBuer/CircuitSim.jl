@@ -11,11 +11,11 @@ using CircuitSim
 circ = Circuit()
 
 # AC power sources (S-parameter ports)
-port1 = ACPowerSource("P1", 1, impedance=50.0)
-port2 = ACPowerSource("P2", 2, impedance=50.0)
+port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
+port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 
 # Amplifier voltage gain: 20 dB gain = linear gain of 10, NF = 2.0
-amp = Amplifier("AMP1", 10.0, 2.0)
+amp = Amplifier("AMP1", gain=10.0, nf=2.0)
 
 # Ground
 gnd = Ground("GND")

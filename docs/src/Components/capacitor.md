@@ -4,9 +4,9 @@
 using CircuitSim
 using GLMakie
 
-P1 = ACPowerSource("P1", 1, impedance=50.0)
-P2 = ACPowerSource("P2", 2, impedance=50.0)
-C = Capacitor("C1", 1e-9)
+P1 = ACPowerSource("P1", port_num=1, impedance=50.0)
+P2 = ACPowerSource("P2", port_num=2, impedance=50.0)
+C = Capacitor("C1", capacitance=1e-9)
 
 circ = Circuit()
 add_component!(circ, P1)

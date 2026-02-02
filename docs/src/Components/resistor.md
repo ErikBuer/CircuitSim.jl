@@ -11,7 +11,7 @@ using CircuitSim
 circ = Circuit()
 
 # AC power sources (S-parameter ports)
-port1 = ACPowerSource("P1", 1, impedance=50.0)
+port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 
 # 100 Ω resistor
 res = Resistor("R1", 100)

@@ -6,8 +6,8 @@ using Printf
 
 # 1V AC source with capacitor divider (1nF and 2nF)
 V = ACVoltageSource("V1", 1.0)
-C1 = Capacitor("C1", 1e-9)   # 1 nF
-C2 = Capacitor("C2", 2e-9)   # 2 nF
+C1 = Capacitor("C1", capacitance=1e-9)   # 1 nF
+C2 = Capacitor("C2", capacitance=2e-9)   # 2 nF
 GND = Ground("GND")
 
 circ = Circuit()
