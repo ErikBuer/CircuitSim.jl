@@ -4,8 +4,8 @@
 using CircuitSim
 
 I = CurrentRectangularSource("I1", i=10e-3, th=1e-6, tl=1e-6, tr=10e-9, tf=10e-9, td=0.0)
-R = Resistor("R1", 100.0)
-L = Inductor("L1", 10e-6)
+R = Resistor("R1", resistance=100.0)
+L = Inductor("L1", inductance=10e-6)
 GND = Ground("GND")
 
 circ = Circuit()

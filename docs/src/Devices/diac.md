@@ -13,9 +13,9 @@ using CircuitSim
 circ = Circuit()
 
 # DC voltage source below breakover
-vin = DCVoltageSource("VIN", 20.0)
+vin = DCVoltageSource("VIN", voltage=20.0)
 diac = DIAC("D1", Vbo=30, Ibo=50e-6)
-rs = Resistor("RS", 1000)  # Series resistor
+rs = Resistor("RS", resistance=1000)  # Series resistor
 gnd = Ground("GND")
 
 add_component!(circ, vin)

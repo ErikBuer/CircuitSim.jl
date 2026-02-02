@@ -23,14 +23,17 @@ Approximated using standard inductor with calculated value
 """
 mutable struct CircularLoop <: AbstractCircularLoop
     name::String
+
     n1::Int
     n2::Int
+
     r::Real         # Loop radius (m)
     w::Real         # Wire/trace width (m)
 
     function CircularLoop(name::AbstractString;
         r::Real=5e-3,
-        w::Real=0.5e-3)
+        w::Real=0.5e-3
+    )
         r > 0 || throw(ArgumentError("Loop radius must be positive"))
         w > 0 || throw(ArgumentError("Wire width must be positive"))
         r > w / 2 || throw(ArgumentError("Loop radius must be greater than half wire width"))

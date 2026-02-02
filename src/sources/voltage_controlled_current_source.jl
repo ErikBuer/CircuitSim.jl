@@ -18,14 +18,19 @@ Create a voltage-controlled current source with 4-port configuration.
 """
 mutable struct VoltageControlledCurrentSource <: AbstractSource
     name::String
+
     n1::Int  # Positive input control node
     n2::Int  # Negative input control node
     n3::Int  # Positive output node
     n4::Int  # Negative output node
+
     g::Real  # Transconductance in Siemens (A/V)
     t::Real  # Optional time delay in seconds
 
-    function VoltageControlledCurrentSource(name::String; g::Real=1.0, t::Real=0.0)
+    function VoltageControlledCurrentSource(name::String;
+        g::Real=1.0,
+        t::Real=0.0
+    )
         g >= 0 || throw(ArgumentError("Transconductance g must be non-negative, got $g"))
         t >= 0 || throw(ArgumentError("Time delay t must be non-negative, got $t"))
         new(name, -1, -1, -1, -1, g, t)

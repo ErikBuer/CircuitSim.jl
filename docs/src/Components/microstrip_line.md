@@ -13,7 +13,7 @@ port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 add_component!(circ, port1)
 add_component!(circ, port2)
 
-MS = MicrostripLine("MS1", sub, w=1e-3, l=10e-3)
+MS = MicrostripLine("MS1", substrate=sub, w=1e-3, l=10e-3)
 add_component!(circ, MS)
 
 gnd = Ground("GND")

@@ -26,18 +26,22 @@ tee = MicrostripTee("MTEE1", sub, w1=3.0e-3, w2=1.5e-3)
 """
 mutable struct MicrostripTee <: AbstractMicrostripTee
     name::String
+
     n1::Int
     n2::Int
     n3::Int
+
     substrate::Substrate
     w1::Real        # Port 1 width (m)
     w2::Real        # Port 2 width (m)
     w3::Real        # Port 3 (branch) width (m)
 
-    function MicrostripTee(name::AbstractString, substrate::Substrate;
+    function MicrostripTee(name::AbstractString;
+        substrate::Substrate,
         w1::Real=1e-3,
         w2::Real=1e-3,
-        w3::Real=1e-3)
+        w3::Real=1e-3
+    )
         w1 > 0 || throw(ArgumentError("Width 1 must be positive"))
         w2 > 0 || throw(ArgumentError("Width 2 must be positive"))
         w3 > 0 || throw(ArgumentError("Width 3 must be positive"))

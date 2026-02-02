@@ -29,9 +29,11 @@ CIRC2 = Circulator("CIRC2", isolation=30.0)
 """
 mutable struct Circulator <: AbstractCirculator
     name::String
+
     n1::Int
     n2::Int
     n3::Int
+
     insertion_loss::Real
     isolation::Real
     z0::Real
@@ -39,7 +41,8 @@ mutable struct Circulator <: AbstractCirculator
     function Circulator(name::AbstractString;
         insertion_loss::Real=0.5,
         isolation::Real=20.0,
-        z0::Real=50.0)
+        z0::Real=50.0
+    )
         insertion_loss >= 0 || throw(ArgumentError("Insertion loss must be non-negative"))
         isolation >= 0 || throw(ArgumentError("Isolation must be non-negative"))
         z0 > 0 || throw(ArgumentError("Impedance must be positive"))

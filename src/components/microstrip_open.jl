@@ -23,12 +23,16 @@ open_end = MicrostripOpen("MO1", sub, w=3.0e-3)
 """
 mutable struct MicrostripOpen <: AbstractMicrostripOpen
     name::String
+
     n1::Int
+
     substrate::Substrate
     w::Real
 
-    function MicrostripOpen(name::AbstractString, substrate::Substrate;
-        w::Real=1e-3)
+    function MicrostripOpen(name::AbstractString;
+        substrate::Substrate,
+        w::Real=1e-3
+    )
         w > 0 || throw(ArgumentError("Width must be positive"))
         new(String(name), 0, substrate, w)
     end

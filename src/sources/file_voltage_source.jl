@@ -79,8 +79,10 @@ V4 = FileVoltageSource("V4", time, voltage, interpolator="cubic", gain=2.0)
 """
 mutable struct FileVoltageSource <: AbstractSource
     name::String
+
     nplus::Int
     nminus::Int
+
     file::Union{String,Nothing}
     time_vector::Union{AbstractVector,Nothing}
     voltage_vector::Union{AbstractVector,Nothing}
@@ -90,9 +92,8 @@ mutable struct FileVoltageSource <: AbstractSource
     delay::Real
     format::Symbol
 
-    function FileVoltageSource(
-        name::AbstractString,
-        file::AbstractString;
+    function FileVoltageSource(name::AbstractString;
+        file::AbstractString,
         interpolator::AbstractString="linear",
         repeat::Bool=false,
         gain::Real=1.0,

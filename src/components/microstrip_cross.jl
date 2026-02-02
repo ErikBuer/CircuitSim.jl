@@ -30,21 +30,25 @@ cross = MicrostripCross("MX1", sub, w1=3.0e-3, w2=3.0e-3, w3=3.0e-3, w4=3.0e-3)
 """
 mutable struct MicrostripCross <: AbstractMicrostripCross
     name::String
+
     n1::Int
     n2::Int
     n3::Int
     n4::Int
+
     substrate::Substrate
     w1::Real        # Port 1 width (m)
     w2::Real        # Port 2 width (m)
     w3::Real        # Port 3 width (m)
     w4::Real        # Port 4 width (m)
 
-    function MicrostripCross(name::AbstractString, substrate::Substrate;
+    function MicrostripCross(name::AbstractString;
+        substrate::Substrate,
         w1::Real=1e-3,
         w2::Real=1e-3,
         w3::Real=1e-3,
-        w4::Real=1e-3)
+        w4::Real=1e-3
+    )
         w1 > 0 || throw(ArgumentError("Width 1 must be positive"))
         w2 > 0 || throw(ArgumentError("Width 2 must be positive"))
         w3 > 0 || throw(ArgumentError("Width 3 must be positive"))

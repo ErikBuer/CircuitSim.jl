@@ -108,10 +108,10 @@ using CircuitSim
 circ = Circuit()
 
 q1 = BJT("q1", Type="npn", Bf=100, Is=1e-15)
-vcc = DCVoltageSource("vcc", 12.0)
-vb = DCVoltageSource("vb", 0.7)
-rc = Resistor("rc", 1000.0)
-rb = Resistor("rb", 10000.0)
+vcc = DCVoltageSource("vcc", voltage=12.0)
+vb = DCVoltageSource("vb", voltage=0.7)
+rc = Resistor("rc", resistance=1000.0)
+rb = Resistor("rb", resistance=10000.0)
 gnd = Ground("gnd")
 
 add_component!(circ, q1)

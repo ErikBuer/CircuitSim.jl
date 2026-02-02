@@ -5,6 +5,16 @@ format_value(v::Real) = sprint(x -> begin
     show(x, v)
 end)
 
+"""
+Format capacitance values for circuit netlists
+"""
+format_capacitance(c::Real) = format_value(c)
+
+"""
+Format inductance values for circuit netlists
+"""
+format_inductance(l::Real) = format_value(l)
+
 using StaticArrays
 
 """

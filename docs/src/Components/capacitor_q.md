@@ -15,7 +15,7 @@ port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 add_component!(circ, port1)
 add_component!(circ, port2)
 
-cap_q = CapacitorQ("C1", 100e-12, 100.0, freq=100e6)
+cap_q = CapacitorQ("C1", capacitance=100e-12, q=100.0, frequency=100e6)
 add_component!(circ, cap_q)
 
 # Ground

@@ -8,13 +8,13 @@ A current source whose output current is proportional to the voltage across anot
 using CircuitSim
 
 # Input voltage source (1V DC)
-vin = DCVoltageSource("Vin", 1.0)
+vin = DCVoltageSource("Vin", voltage=1.0)
 
 # VCCS with transconductance 0.01 S (10 mA/V)
 vccs = VoltageControlledCurrentSource("G1", g=0.01)
 
 # Load resistor
-rload = Resistor("Rload", 1000.0)
+rload = Resistor("Rload", resistance=1000.0)
 GND = Ground("GND")
 
 circ = Circuit()

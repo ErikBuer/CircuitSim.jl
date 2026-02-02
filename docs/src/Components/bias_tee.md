@@ -3,9 +3,9 @@
 ```@example bias_tee
 using CircuitSim
 
-BT = BiasTee("BT1", c_block=1e-6, l_choke=1e-3)
-V_dc = DCVoltageSource("V_dc", 5.0)
-R_load = Resistor("R_load", 50.0)
+BT = BiasTee("BT1", capacitance=1e-6, inductance=1e-3)
+V_dc = DCVoltageSource("V_dc", voltage=5.0)
+R_load = Resistor("R_load", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

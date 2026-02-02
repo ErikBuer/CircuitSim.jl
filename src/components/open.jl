@@ -22,8 +22,10 @@ Open("Open1", 0, 0)
 """
 mutable struct Open <: AbstractOpenCircuit
     name::String
+
     n1::Int
     n2::Int
+
     Open(name::AbstractString) = new(String(name), 0, 0)
 end
 

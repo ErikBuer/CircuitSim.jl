@@ -8,7 +8,7 @@ Inductor with quality factor for RF simulations.
 - `name::String`: Component identifier
 - `n1::Int`: First terminal node number
 - `n2::Int`: Second terminal node number
-- `value::Real`: Inductance in Henries
+- `inductance::Real`: Inductance in Henries
 - `q::Real`: Quality factor (Q) at the specified frequency
 - `freq::Real`: Frequency in Hz where Q is specified (default: 1 GHz)
 
@@ -22,29 +22,35 @@ L2 = InductorQ("L2", 100e-9, 50.0, freq=2.4e9)  # 100nH, Q=50 at 2.4 GHz
 """
 mutable struct InductorQ <: AbstractInductor
     name::String
+
     n1::Int
     n2::Int
-    value::Real
+
+    inductance::Real
     q::Real
     freq::Real
 
-    function InductorQ(name::AbstractString, value::Real, q::Real; freq::Real=1e9)
-        value > 0 || throw(ArgumentError("Inductance must be positive"))
+    function InductorQ(name::AbstractString;
+        inductance::Real,
+        q::Real,
+        freq::Real=1e9
+    )
+        inductance > 0 || throw(ArgumentError("Inductance must be positive"))
         q > 0 || throw(ArgumentError("Quality factor must be positive"))
         freq > 0 || throw(ArgumentError("Frequency must be positive"))
-        new(String(name), 0, 0, value, q, freq)
+        new(String(name), 0, 0, inductance, q, freq)
     end
 end
 
 function to_qucs_netlist(comp::InductorQ)::String
     # Qucsator-RF uses INDQ component with properties L, Q, f, Mode
-    # INDQ:name n1 n2 L="value" Q="q" f="freq" Mode="Constant"
+    # INDQ:name n1 n2 L="inductance" Q="q" f="freq" Mode="Constant"
     parts = ["INDQ:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n1))")
     push!(parts, "$(qucs_node(comp.n2))")
-    push!(parts, "L=\"$(format_value(comp.value))\"")
-    push!(parts, "Q=\"$(format_value(comp.q))\"")
-    push!(parts, "f=\"$(format_value(comp.freq))\"")
+    push!(parts, "L=\"$(format_inductance(comp.inductance))\"")
+    push!(parts, "Q=\"$(format_inductance(comp.q))\"")
+    push!(parts, "f=\"$(format_inductance(comp.freq))\"")
     push!(parts, "Mode=\"Constant\"")
     return join(parts, " ")
 end
@@ -52,11 +58,11 @@ end
 function to_spice_netlist(comp::InductorQ)::String
     # SPICE models Q factor using series resistance
     # ESR = 2*pi*f*L / Q
-    esr = 2 * π * comp.freq * comp.value / comp.q
+    esr = 2 * π * comp.freq * comp.inductance / comp.q
 
     lines = String[]
     push!(lines, "* Inductor with Q=$(comp.q) at $(comp.freq) Hz")
-    push!(lines, "L$(comp.name) $(comp.n1) $(comp.n1)_int $(comp.value)")
+    push!(lines, "L$(comp.name) $(comp.n1) $(comp.n1)_int $(comp.inductance)")
     push!(lines, "R$(comp.name)_esr $(comp.n1)_int $(comp.n2) $(esr)")
     return join(lines, "\n")
 end

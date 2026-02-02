@@ -1,5 +1,6 @@
 mutable struct Thyristor <: AbstractThyristor
     name::String
+
     anode::Int
     gate::Int
     cathode::Int
@@ -24,7 +25,8 @@ mutable struct Thyristor <: AbstractThyristor
         N::Real=2,
         Ri::Real=10,
         Rg::Real=5,
-        Temp::Real=26.85)
+        Temp::Real=26.85
+    )
         new(name, 0, 0, 0, Igt, Vbo, Cj0, Is, N, Ri, Rg, Temp)
     end
 end

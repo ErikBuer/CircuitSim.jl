@@ -21,15 +21,21 @@ vsrc = VoltageNoiseSource("Vnoise1", u=1e-6, e=0)  # White noise
 """
 mutable struct VoltageNoiseSource <: AbstractVoltageNoiseSource
     name::String
+
     n1::Int
     n2::Int
+
     u::Real
     a::Real
     c::Real
     e::Real
 
     function VoltageNoiseSource(name::AbstractString;
-        u::Real=1e-6, a::Real=0.0, c::Real=1.0, e::Real=0.0)
+        u::Real=1e-6,
+        a::Real=0.0,
+        c::Real=1.0,
+        e::Real=0.0
+    )
         u > 0 || throw(ArgumentError("Noise PSD must be positive"))
         a >= 0 || throw(ArgumentError("Frequency offset must be non-negative"))
         c > 0 || throw(ArgumentError("Frequency coefficient must be positive"))

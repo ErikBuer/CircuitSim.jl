@@ -18,8 +18,10 @@ impedance matching.
 """
 mutable struct Attenuator <: AbstractAttenuator
     name::String
+
     n1::Int
     n2::Int
+
     attenuation::Real
     z0::Real
     temp::Real

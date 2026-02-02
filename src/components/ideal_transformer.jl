@@ -6,11 +6,11 @@ Ideal transformer with specified turns ratio.
 # Fields
 
 - `name::String`: Component identifier
-- `t::Float64`: Turns ratio N2/N1 (default: 1.0)
 - `n1::Int`: Primary winding positive node
 - `n2::Int`: Primary winding negative node
 - `n3::Int`: Secondary winding positive node
 - `n4::Int`: Secondary winding negative node
+- `t::Float64`: Turns ratio N2/N1 (default: 1.0)
 
 # Pins
 
@@ -21,19 +21,23 @@ Ideal transformer with specified turns ratio.
 
 ```jldoctest
 julia> trafo = IdealTransformer("TR1", t=2.0)
-IdealTransformer("TR1", 2.0, 0, 0, 0, 0)
+IdealTransformer("TR1", 0, 0, 0, 0, 2.0)
 ```
 """
 mutable struct IdealTransformer <: AbstractIdealTransformer
     name::String
-    t::Float64
+
     n1::Int
     n2::Int
     n3::Int
     n4::Int
 
-    function IdealTransformer(name::AbstractString; t::Real=1.0)
-        new(String(name), Float64(t), 0, 0, 0, 0)
+    t::Float64
+
+    function IdealTransformer(name::AbstractString;
+        t::Real=1.0
+    )
+        new(String(name), 0, 0, 0, 0, Float64(t))
     end
 end
 

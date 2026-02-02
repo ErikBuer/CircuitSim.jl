@@ -10,10 +10,10 @@ using CircuitSim
 circ = Circuit()
 
 # Create components
-vdc = DCVoltageSource("V1", 5.0)
-r1 = Resistor("R1", 1000.0)
+vdc = DCVoltageSource("V1", voltage=5.0)
+r1 = Resistor("R1", resistance=1000.0)
 open_ckt = Open("Open1")
-r2 = Resistor("R2", 1000.0)
+r2 = Resistor("R2", resistance=1000.0)
 gnd = Ground("GND")
 
 add_component!(circ, vdc)

@@ -3,9 +3,9 @@
 ```@example voltage_probe
 using CircuitSim
 
-V = DCVoltageSource("V", 10.0)
-R1 = Resistor("R1", 100.0)
-R2 = Resistor("R2", 100.0)
+V = DCVoltageSource("V", voltage=10.0)
+R1 = Resistor("R1", resistance=100.0)
+R2 = Resistor("R2", resistance=100.0)
 VP = VoltageProbe("VP1")
 GND = Ground("GND")
 

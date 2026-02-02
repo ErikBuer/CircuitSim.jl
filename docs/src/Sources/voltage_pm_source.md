@@ -8,13 +8,13 @@ A voltage source with phase modulation (PM) based on a control signal.
 using CircuitSim
 
 # Modulation signal (1 kHz sine wave, 0.5V amplitude)
-vmod = ACVoltageSource("Vmod", 0.5, freq=1e3)
+vmod = ACVoltageSource("Vmod", ac_magnitude=0.5, freq=1e3)
 
 # PM source (1 MHz carrier, phase modulated by node 1)
 vpm = VoltagePMSource("PM1", u=1.0, f=1e6, m=1.0)
 
 # Load resistor
-rload = Resistor("Rload", 50.0)
+rload = Resistor("Rload", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

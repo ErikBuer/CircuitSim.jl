@@ -27,19 +27,23 @@ line = MicrostripLine("MS1", sub, w=3.0e-3, l=20e-3)
 """
 mutable struct MicrostripLine <: AbstractMicrostripLine
     name::String
+
     n1::Int
     n2::Int
+
     substrate::Substrate
     w::Real         # Width (m)
     l::Real         # Length (m)
     model::String   # SPICE model name
     temp::Real      # Temperature (K)
 
-    function MicrostripLine(name::AbstractString, substrate::Substrate;
+    function MicrostripLine(name::AbstractString;
+        substrate::Substrate,
         w::Real=1e-3,
         l::Real=10e-3,
         model::String="",
-        temp::Real=293.15)
+        temp::Real=293.15
+    )
         w > 0 || throw(ArgumentError("Width must be positive"))
         l > 0 || throw(ArgumentError("Length must be positive"))
         temp > 0 || throw(ArgumentError("Temperature must be positive"))

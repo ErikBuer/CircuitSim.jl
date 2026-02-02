@@ -58,7 +58,9 @@ filter_sp = SPfile("FILT1", "filter.s2p",
 """
 mutable struct SPfile <: AbstractSParameterFile
     name::String
+
     nodes::Vector{Int}
+
     file::String
     num_ports::Int
     data_format::String
@@ -66,12 +68,14 @@ mutable struct SPfile <: AbstractSParameterFile
     temp::Real
     during_dc::String
 
-    function SPfile(name::AbstractString, file::AbstractString;
+    function SPfile(name::AbstractString;
+        file::AbstractString,
         num_ports::Union{Int,Nothing}=nothing,
         data_format::String="rectangular",
         interpolator::String="linear",
         temp::Real=293.15,
-        during_dc::String="open")
+        during_dc::String="open"
+    )
 
         data_format in ["rectangular", "polar"] || throw(ArgumentError("data_format must be 'rectangular' or 'polar'"))
         interpolator in ["linear", "cubic"] || throw(ArgumentError("interpolator must be 'linear' or 'cubic'"))

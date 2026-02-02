@@ -11,9 +11,9 @@ using CircuitSim
 circ = Circuit()
 
 # DC voltage source
-vin = DCVoltageSource("VIN", 0.5)
+vin = DCVoltageSource("VIN", voltage=0.5)
 rtd = TunnelDiode("RTD1", Ip=4e-3, Iv=0.6e-3, Vv=0.8)
-rs = Resistor("RS", 100)  # Series resistor
+rs = Resistor("RS", resistance=100)  # Series resistor
 gnd = Ground("GND")
 
 add_component!(circ, vin)

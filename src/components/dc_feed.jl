@@ -11,7 +11,7 @@ Typically implemented as a large inductor.
 - `name::String`: Component identifier
 - `n1::Int`: First terminal node number
 - `n2::Int`: Second terminal node number
-- `value::Real`: Inductance in Henries (default: 1 mH for good RF blocking)
+- `inductance::Real`: Inductance in Henries (default: 1 mH for good RF blocking)
 
 # Example
 
@@ -21,27 +21,31 @@ using CircuitSim
 DCF1 = DCFeed("DCF1")
 
 # Custom inductance
-DCF2 = DCFeed("DCF2", 10e-3)  # 10 mH
+DCF2 = DCFeed("DCF2", inductance=10e-3)  # 10 mH
 ```
 """
 mutable struct DCFeed <: AbstractDCFeed
     name::String
+
     n1::Int
     n2::Int
-    value::Real
 
-    function DCFeed(name::AbstractString, value::Real=1e-3)
-        value > 0 || throw(ArgumentError("Inductance must be positive"))
-        new(String(name), 0, 0, value)
+    inductance::Real
+
+    function DCFeed(name::AbstractString;
+        inductance::Real=1e-3
+    )
+        inductance > 0 || throw(ArgumentError("Inductance must be positive"))
+        new(String(name), 0, 0, inductance)
     end
 end
 
 function to_qucs_netlist(comp::DCFeed)::String
-    "DCFeed:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) L=\"$(format_value(comp.value))\""
+    "DCFeed:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) L=\"$(format_inductance(comp.inductance))\""
 end
 
 function to_spice_netlist(comp::DCFeed)::String
-    "L$(comp.name)_dcf $(comp.n1) $(comp.n2) $(comp.value)"
+    "L$(comp.name)_dcf $(comp.n1) $(comp.n2) $(comp.inductance)"
 end
 
 function _get_node_number(component::DCFeed, pin::Symbol)::Int

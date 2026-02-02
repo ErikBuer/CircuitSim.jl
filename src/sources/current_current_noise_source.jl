@@ -22,10 +22,12 @@ Create correlated current-current noise sources with 4-port configuration.
 """
 mutable struct CurrentCurrentNoiseSource <: AbstractNoiseSource
     name::String
+
     i1plus::Int   # Positive node of first current source
     i1minus::Int  # Negative node of first current source
     i2plus::Int   # Positive node of second current source
     i2minus::Int  # Negative node of second current source
+
     i1::Real      # RMS current of first source in A
     i2::Real      # RMS current of second source in A
     c_corr::Real  # Correlation coefficient (-1 to 1)
@@ -33,8 +35,14 @@ mutable struct CurrentCurrentNoiseSource <: AbstractNoiseSource
     c::Real       # Flicker noise coefficient
     e::Real       # Flicker noise frequency exponent
 
-    function CurrentCurrentNoiseSource(name::String; i1::Real=1e-6, i2::Real=1e-6, c_corr::Real=0.0,
-        a::Real=0.0, c::Real=1.0, e::Real=0.0)
+    function CurrentCurrentNoiseSource(name::String;
+        i1::Real=1e-6,
+        i2::Real=1e-6,
+        c_corr::Real=0.0,
+        a::Real=0.0,
+        c::Real=1.0,
+        e::Real=0.0
+    )
         i1 >= 0 || throw(ArgumentError("Current i1 must be non-negative, got $i1"))
         i2 >= 0 || throw(ArgumentError("Current i2 must be non-negative, got $i2"))
         -1 <= c_corr <= 1 || throw(ArgumentError("Correlation coefficient c_corr must be between -1 and 1, got $c_corr"))

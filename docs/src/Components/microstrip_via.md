@@ -13,8 +13,8 @@ add_component!(circ, sub)
 
 # Components
 port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
-ms_line = MicrostripLine("MS1", sub, w=3.0e-3, l=10e-3)
-via = MicrostripVia("VIA1", sub, d=0.3e-3)
+ms_line = MicrostripLine("MS1", substrate=sub, w=3.0e-3, l=10e-3)
+via = MicrostripVia("VIA1", substrate=sub, d=0.3e-3)
 gnd = Ground("GND")
 
 add_component!(circ, port1)

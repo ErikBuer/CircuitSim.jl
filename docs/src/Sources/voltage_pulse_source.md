@@ -4,7 +4,7 @@
 using CircuitSim
 
 V = VoltagePulseSource("V1", u1=0.0, u2=5.0, t1=1e-9, t2=10e-9, tr=100e-12, tf=100e-12)
-R = Resistor("R1", 50.0)
+R = Resistor("R1", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

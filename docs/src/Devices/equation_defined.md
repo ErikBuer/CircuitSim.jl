@@ -45,7 +45,7 @@ Q_eqs = Dict{Int, String}(
     1 => "0"  # No charge storage
 )
 
-edd = EquationDefinedDevice("resistor_edd", 1, 
+edd = EquationDefinedDevice("resistor_edd", num_branches=1, 
                            I_equations=I_eqs, 
                            Q_equations=Q_eqs)
 
@@ -67,7 +67,7 @@ Q_eqs = Dict{Int, String}(
     1 => "1e-12 * V1 * (1 + 0.5 * V1)"  # Q = C0*V*(1 + α*V)
 )
 
-edd = EquationDefinedDevice("varactor", 1,
+edd = EquationDefinedDevice("varactor", num_branches=1,
                            I_equations=I_eqs,
                            Q_equations=Q_eqs)
 
@@ -91,7 +91,7 @@ Q_eqs = Dict{Int, String}(
     2 => "2e-9 * V2"      # Branch 2: 2nF
 )
 
-edd = EquationDefinedDevice("coupled", 2,
+edd = EquationDefinedDevice("coupled", num_branches=2,
                            I_equations=I_eqs,
                            Q_equations=Q_eqs)
 

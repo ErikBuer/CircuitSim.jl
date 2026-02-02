@@ -10,7 +10,7 @@ port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 add_component!(circ, port1)
 add_component!(circ, port2)
 
-PS = PhaseShifter("PS1", 90.0)
+PS = PhaseShifter("PS1", phase=90.0)
 add_component!(circ, PS)
 
 gnd = Ground("GND")

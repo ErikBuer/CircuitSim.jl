@@ -3,9 +3,9 @@
 ```@example dc_block
 using CircuitSim
 
-V_dc = DCVoltageSource("V_dc", 5.0)
+V_dc = DCVoltageSource("V_dc", voltage=5.0)
 DCB = DCBlock("DCB1")
-R = Resistor("R1", 50.0)
+R = Resistor("R1", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

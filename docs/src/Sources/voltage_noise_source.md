@@ -4,7 +4,7 @@
 using CircuitSim
 
 Vn = VoltageNoiseSource("Vn1", u=1e-6, a=0.0, c=1.0, e=0.0)
-R = Resistor("R1", 50.0)
+R = Resistor("R1", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

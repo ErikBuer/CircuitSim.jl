@@ -6,13 +6,13 @@ Two coupled inductors with mutual inductance.
 # Fields
 
 - `name::String`: Component identifier
-- `l1::Float64`: Inductance of first coil in H
-- `l2::Float64`: Inductance of second coil in H
-- `k::Float64`: Coupling coefficient (0 to 1, default: 0.9)
 - `n1::Int`: First inductor node 1
 - `n2::Int`: First inductor node 2
 - `n3::Int`: Second inductor node 1
 - `n4::Int`: Second inductor node 2
+- `l1::Float64`: Inductance of first coil in H
+- `l2::Float64`: Inductance of second coil in H
+- `k::Float64`: Coupling coefficient (0 to 1, default: 0.9)
 
 # Pins
 
@@ -23,21 +23,27 @@ Two coupled inductors with mutual inductance.
 
 ```jldoctest
 julia> mut = MutualInductor("MUT1", l1=1e-6, l2=1e-6, k=0.95)
-MutualInductor("MUT1", 1.0e-6, 1.0e-6, 0.95, 0, 0, 0, 0)
+MutualInductor("MUT1", 0, 0, 0, 0, 1.0e-6, 1.0e-6, 0.95)
 ```
 """
 mutable struct MutualInductor <: AbstractMutualInductance
     name::String
-    l1::Float64
-    l2::Float64
-    k::Float64
+
     n1::Int
     n2::Int
     n3::Int
     n4::Int
 
-    function MutualInductor(name::AbstractString; l1::Real, l2::Real, k::Real=0.9)
-        new(String(name), Float64(l1), Float64(l2), Float64(k), 0, 0, 0, 0)
+    l1::Float64
+    l2::Float64
+    k::Float64
+
+    function MutualInductor(name::AbstractString;
+        l1::Real,
+        l2::Real,
+        k::Real=0.9
+    )
+        new(String(name), 0, 0, 0, 0, Float64(l1), Float64(l2), Float64(k))
     end
 end
 

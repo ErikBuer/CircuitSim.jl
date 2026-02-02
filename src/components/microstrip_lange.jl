@@ -33,17 +33,20 @@ mutable struct MicrostripLange <: AbstractMicrostripLange
     n2::Int
     n3::Int
     n4::Int
+
     substrate::Substrate
     w::Real         # Finger width (m)
     l::Real         # Finger length (m)
     s::Real         # Finger spacing (m)
     nfingers::Int   # Number of fingers (renamed to avoid conflict with node fields)
 
-    function MicrostripLange(name::AbstractString, substrate::Substrate;
+    function MicrostripLange(name::AbstractString;
+        substrate::Substrate,
         w::Real=0.15e-3,
         l::Real=10e-3,
         s::Real=0.1e-3,
-        n::Int=4)
+        n::Int=4
+    )
         w > 0 || throw(ArgumentError("Finger width must be positive"))
         l > 0 || throw(ArgumentError("Finger length must be positive"))
         s > 0 || throw(ArgumentError("Finger spacing must be positive"))

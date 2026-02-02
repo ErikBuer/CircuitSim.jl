@@ -4,7 +4,7 @@
 using CircuitSim
 
 V = VoltageExponentialSource("V1", u1=0.0, u2=5.0, t1=1e-9, t2=10e-9, tr=1e-9, tf=2e-9)
-R = Resistor("R1", 50.0)
+R = Resistor("R1", resistance=50.0)
 C = Capacitor("C1", capacitance=10e-12)
 GND = Ground("GND")
 

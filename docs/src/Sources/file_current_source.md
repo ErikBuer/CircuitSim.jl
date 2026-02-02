@@ -11,7 +11,7 @@ current_vec = [0.001 * sin(2π * 1e9 * ti) for ti in time_vec]  # 1 mA peak
 # Amplifier circuit with 50 Ohm load
 I_in = FileCurrentSource("I_in", time_vec, current_vec)
 Amp = Amplifier("Amp", gain=10.0)  # 10x gain, 50 Ohm input impedance
-R_load = Resistor("R_load", 50.0)
+R_load = Resistor("R_load", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

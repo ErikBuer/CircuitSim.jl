@@ -1,5 +1,6 @@
 mutable struct Diode <: AbstractDiode
     name::String
+
     cathode::Int  # Negative terminal, connects to lower potential
     anode::Int    # Positive terminal, connects to higher potential
 
@@ -63,7 +64,8 @@ mutable struct Diode <: AbstractDiode
         Tm1::Real=0,
         Tm2::Real=0,
         Tnom::Real=26.85,
-        Area::Real=1)
+        Area::Real=1
+    )
         new(name, 0, 0, Is, N, M, Cj0, Vj, Rs, Isr, Nr, Bv, Ibv, Ikf, Tt, Fc, Cp,
             Kf, Af, Ffe, Temp, Xti, Eg, Tbv, Trs, Ttt1, Ttt2, Tm1, Tm2, Tnom, Area)
     end

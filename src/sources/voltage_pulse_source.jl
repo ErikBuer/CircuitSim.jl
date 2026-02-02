@@ -23,8 +23,10 @@ vsrc = VoltagePulseSource("Vpulse1", u1=0.0, u2=5.0, t1=1e-9, t2=10e-9, tr=1e-10
 """
 mutable struct VoltagePulseSource <: AbstractVoltagePulseSource
     name::String
+
     n1::Int
     n2::Int
+
     u1::Real
     u2::Real
     t1::Real
@@ -33,8 +35,13 @@ mutable struct VoltagePulseSource <: AbstractVoltagePulseSource
     tf::Real
 
     function VoltagePulseSource(name::AbstractString;
-        u1::Real=0.0, u2::Real=1.0, t1::Real=0.0, t2::Real=1e-3,
-        tr::Real=1e-9, tf::Real=1e-9)
+        u1::Real=0.0,
+        u2::Real=1.0,
+        t1::Real=0.0,
+        t2::Real=1e-3,
+        tr::Real=1e-9,
+        tf::Real=1e-9
+    )
         t1 >= 0 || throw(ArgumentError("Start time must be non-negative"))
         t2 > t1 || throw(ArgumentError("End time must be greater than start time"))
         tr > 0 || throw(ArgumentError("Rise time must be positive"))

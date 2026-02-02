@@ -25,11 +25,15 @@ Coaxial transmission line with physical parameters.
 
 ```jldoctest
 julia> coax = CoaxialLine("COAX1", er=2.3, length_m=0.1, d_mm=0.5, d_outer_mm=3.0)
-CoaxialLine("COAX1", 2.3, 1.0, 0.1, 0.5, 3.0, 0.0004, 2.2e-8, 0, 0)
+CoaxialLine("COAX1", 0, 0, 2.3, 1.0, 0.1, 0.5, 3.0, 0.0004, 2.2e-8)
 ```
 """
 mutable struct CoaxialLine <: AbstractTransmissionLine2Port
     name::String
+
+    n1::Int
+    n2::Int
+
     er::Float64
     mur::Float64
     length_m::Float64
@@ -37,13 +41,18 @@ mutable struct CoaxialLine <: AbstractTransmissionLine2Port
     d_outer_mm::Float64
     tand::Float64
     rho::Float64
-    n1::Int
-    n2::Int
 
-    function CoaxialLine(name::AbstractString; er::Real=2.3, mur::Real=1.0, length_m::Real,
-        d_mm::Real, d_outer_mm::Real, tand::Real=0.0004, rho::Real=2.2e-8)
-        new(String(name), Float64(er), Float64(mur), Float64(length_m),
-            Float64(d_mm), Float64(d_outer_mm), Float64(tand), Float64(rho), 0, 0)
+    function CoaxialLine(name::AbstractString;
+        er::Real=2.3,
+        mur::Real=1.0,
+        length_m::Real,
+        d_mm::Real,
+        d_outer_mm::Real,
+        tand::Real=0.0004,
+        rho::Real=2.2e-8
+    )
+        new(String(name), 0, 0, Float64(er), Float64(mur), Float64(length_m),
+            Float64(d_mm), Float64(d_outer_mm), Float64(tand), Float64(rho))
     end
 end
 

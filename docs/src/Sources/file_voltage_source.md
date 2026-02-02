@@ -11,7 +11,7 @@ voltage_vec = [0.1 * sin(2π * 1e9 * ti) for ti in time_vec]
 # Amplifier circuit with 50 Ohm load
 V_in = FileVoltageSource("V_in", time_vec, voltage_vec)
 Amp = Amplifier("Amp", gain=10.0)  # 10x gain, 50 Ohm input impedance
-R_load = Resistor("R_load", 50.0)
+R_load = Resistor("R_load", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

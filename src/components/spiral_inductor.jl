@@ -24,8 +24,10 @@ spiral = SpiralInductor("L1", sub, geometry="Circular", w=0.2e-3, s=0.15e-3, di=
 """
 mutable struct SpiralInductor <: AbstractSpiralInductor
     name::String
+
     n1::Int
     n2::Int
+
     substrate::Substrate
     geometry::String    # Inductor geometry
     w::Real         # Track width (m)
@@ -33,12 +35,14 @@ mutable struct SpiralInductor <: AbstractSpiralInductor
     di::Real        # Inner diameter (m)
     turns::Real     # Number of turns
 
-    function SpiralInductor(name::AbstractString, substrate::Substrate;
+    function SpiralInductor(name::AbstractString;
+        substrate::Substrate,
         geometry::AbstractString="Circular",
         w::Real=0.2e-3,
         s::Real=0.15e-3,
         di::Real=1e-3,
-        turns::Real=5.0)
+        turns::Real=5.0
+    )
         valid_geometries = ["Circular", "Square", "Hexagonal", "Octogonal"]
         geometry in valid_geometries || throw(ArgumentError("Geometry must be one of: $(join(valid_geometries, ", "))"))
         w > 0 || throw(ArgumentError("Track width must be positive"))

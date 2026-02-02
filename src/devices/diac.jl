@@ -1,5 +1,6 @@
 mutable struct DIAC <: AbstractDiode
     name::String
+
     cathode::Int  # Also labeled as A2 in some references
     anode::Int    # Also labeled as A1 in some references
 
@@ -21,7 +22,8 @@ mutable struct DIAC <: AbstractDiode
         Is::Real=1e-10,
         N::Real=2,
         Ri::Real=10,
-        Temp::Real=26.85)
+        Temp::Real=26.85
+    )
         new(name, 0, 0, Ibo, Vbo, Cj0, Is, N, Ri, Temp)
     end
 end

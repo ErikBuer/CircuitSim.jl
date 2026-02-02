@@ -1,5 +1,6 @@
 mutable struct TunnelDiode <: AbstractTunnelDiode
     name::String
+
     cathode::Int
     anode::Int
 
@@ -39,7 +40,8 @@ mutable struct TunnelDiode <: AbstractTunnelDiode
         nv::Real=16.0,
         te::Real=0.5e-12,
         Temp::Real=26.85,
-        Area::Real=1.0)
+        Area::Real=1.0
+    )
         new(name, 0, 0, Ip, Iv, Vv, Cj0, M, Vj, Wr, eta, dW, Tmax, de, dv, nv, te, Temp, Area)
     end
 end

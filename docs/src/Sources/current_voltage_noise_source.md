@@ -11,8 +11,8 @@ using CircuitSim
 ivnoise = CurrentVoltageNoiseSource("IVN1", i1=1e-9, v2=1e-6, c_corr=0.7)
 
 # Load resistors
-r1 = Resistor("R1", 1000.0)
-r2 = Resistor("R2", 50.0)
+r1 = Resistor("R1", resistance=1000.0)
+r2 = Resistor("R2", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

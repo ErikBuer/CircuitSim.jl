@@ -29,9 +29,9 @@ using CircuitSim
 circ = Circuit()
 
 triac = Triac("triac1", Vbo=30)
-vt = DCVoltageSource("vt", 20.0)
-vg = DCVoltageSource("vg", 0.15)
-rg = Resistor("rg", 1000.0)
+vt = DCVoltageSource("vt", voltage=20.0)
+vg = DCVoltageSource("vg", voltage=0.15)
+rg = Resistor("rg", resistance=1000.0)
 gnd = Ground("gnd")
 
 add_component!(circ, triac)

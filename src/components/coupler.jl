@@ -13,7 +13,7 @@ Ports: 1=input, 2=through, 3=coupled, 4=isolated
 - `n2::Int`: Port 2 (through) node number
 - `n3::Int`: Port 3 (coupled) node number
 - `n4::Int`: Port 4 (isolated) node number
-- `coupling::Real`: Coupling factor in dB (e.g., 3 for 3dB coupler, 10 for 10dB coupler)
+- `coupling::Real`: Coupling factor in dB (e.g., 3 for 3 dB coupler, 10 for 10 dB coupler)
 - `isolation::Real`: Isolation in dB (default: 20)
 - `insertion_loss::Real`: Insertion loss (through path) in dB (default: 0.5)
 - `z0::Real`: Reference impedance in Ohms (default: 50)
@@ -23,30 +23,34 @@ Ports: 1=input, 2=through, 3=coupled, 4=isolated
 ```julia
 using CircuitSim
 # 3 dB (50/50) directional coupler
-DC1 = Coupler("DC1", 3.0)
+DC1 = Coupler("DC1", coupling=3.0)
 
 # 10 dB directional coupler (10% coupling)
-DC2 = Coupler("DC2", 10.0)
+DC2 = Coupler("DC2", coupling=10.0)
 
 # 20 dB directional coupler with high isolation
-DC3 = Coupler("DC3", 20.0, isolation=30.0)
+DC3 = Coupler("DC3", coupling=20.0, isolation=30.0)
 ```
 """
 mutable struct Coupler <: AbstractCoupler
     name::String
+
     n1::Int
     n2::Int
     n3::Int
     n4::Int
+
     coupling::Real
     isolation::Real
     insertion_loss::Real
     z0::Real
 
-    function Coupler(name::AbstractString, coupling::Real;
+    function Coupler(name::AbstractString;
+        coupling::Real=3.0,
         isolation::Real=20.0,
         insertion_loss::Real=0.5,
-        z0::Real=50.0)
+        z0::Real=50.0
+    )
         coupling >= 0 || throw(ArgumentError("Coupling must be non-negative"))
         isolation >= 0 || throw(ArgumentError("Isolation must be non-negative"))
         insertion_loss >= 0 || throw(ArgumentError("Insertion loss must be non-negative"))

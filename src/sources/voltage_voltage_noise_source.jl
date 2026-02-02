@@ -22,10 +22,12 @@ Create correlated voltage-voltage noise sources with 4-port configuration.
 """
 mutable struct VoltageVoltageNoiseSource <: AbstractNoiseSource
     name::String
+
     v1plus::Int   # Positive node of first voltage source
     v1minus::Int  # Negative node of first voltage source
     v2plus::Int   # Positive node of second voltage source
     v2minus::Int  # Negative node of second voltage source
+
     v1::Real      # RMS voltage of first source in V
     v2::Real      # RMS voltage of second source in V
     c_corr::Real  # Correlation coefficient (-1 to 1)
@@ -33,8 +35,15 @@ mutable struct VoltageVoltageNoiseSource <: AbstractNoiseSource
     c::Real       # Flicker noise coefficient
     e::Real       # Flicker noise frequency exponent
 
-    function VoltageVoltageNoiseSource(name::String; v1::Real=1e-6, v2::Real=1e-6, c_corr::Real=0.0,
-        a::Real=0.0, c::Real=1.0, e::Real=0.0)
+    function VoltageVoltageNoiseSource(name::String;
+        v1::Real=1e-6,
+        v2::Real=1e-6,
+        c_corr::Real=0.0,
+        a::Real=0.0,
+        c::Real=1.0,
+        e::Real=0.0
+    )
+
         v1 >= 0 || throw(ArgumentError("Voltage v1 must be non-negative, got $v1"))
         v2 >= 0 || throw(ArgumentError("Voltage v2 must be non-negative, got $v2"))
         -1 <= c_corr <= 1 || throw(ArgumentError("Correlation coefficient c_corr must be between -1 and 1, got $c_corr"))

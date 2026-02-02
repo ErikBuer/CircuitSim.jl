@@ -28,14 +28,19 @@ PS2 = PhaseShifter("PS2", 180.0, insertion_loss=0.5)
 """
 mutable struct PhaseShifter <: AbstractPhaseShifter
     name::String
+
     n1::Int
     n2::Int
+
     phase::Real
     z0::Real
     insertion_loss::Real
 
-    function PhaseShifter(name::AbstractString, phase::Real;
-        z0::Real=50.0, insertion_loss::Real=0.0)
+    function PhaseShifter(name::AbstractString;
+        phase::Real,
+        z0::Real=50.0,
+        insertion_loss::Real=0.0
+    )
         z0 > 0 || throw(ArgumentError("Impedance must be positive"))
         insertion_loss >= 0 || throw(ArgumentError("Insertion loss must be non-negative"))
         new(String(name), 0, 0, phase, z0, insertion_loss)

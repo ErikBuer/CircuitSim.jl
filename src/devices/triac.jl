@@ -1,5 +1,6 @@
 mutable struct Triac <: AbstractTriac
     name::String
+
     t1::Int  # Terminal 1
     gate::Int
     t2::Int  # Terminal 2
@@ -22,7 +23,8 @@ mutable struct Triac <: AbstractTriac
         N::Real=2,
         Ri::Real=10,
         Rg::Real=5,
-        Temp::Real=26.85)
+        Temp::Real=26.85
+    )
         new(name, 0, 0, 0, Vbo, Cj0, Is, N, Ri, Rg, Temp)
     end
 end

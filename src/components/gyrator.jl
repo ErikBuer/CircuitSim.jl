@@ -22,20 +22,25 @@ Gyrator converts impedance (e.g., capacitor ↔ inductor).
 
 ```jldoctest
 julia> gyr = Gyrator("GYR1", r=100.0)
-Gyrator("GYR1", 100.0, 50.0, 0, 0, 0, 0)
+Gyrator("GYR1", 0, 0, 0, 0, 100.0, 50.0)
 ```
 """
 mutable struct Gyrator <: AbstractGyrator
     name::String
-    r::Float64
-    zref::Float64
+
     n1::Int
     n2::Int
     n3::Int
     n4::Int
 
-    function Gyrator(name::AbstractString; r::Real=50.0, zref::Real=50.0)
-        new(String(name), Float64(r), Float64(zref), 0, 0, 0, 0)
+    r::Float64
+    zref::Float64
+
+    function Gyrator(name::AbstractString;
+        r::Real=50.0,
+        zref::Real=50.0
+    )
+        new(String(name), 0, 0, 0, 0, Float64(r), Float64(zref))
     end
 end
 

@@ -16,7 +16,7 @@ port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 port3 = ACPowerSource("P3", port_num=3, impedance=50.0)
 port4 = ACPowerSource("P4", port_num=4, impedance=50.0)
-coupled = MicrostripCoupled("MCPL1", sub, w=1.0e-3, l=20e-3, s=0.2e-3)
+coupled = MicrostripCoupled("MCPL1", substrate=sub, w=1.0e-3, l=20e-3, s=0.2e-3)
 gnd = Ground("GND")
 
 add_component!(circ, port1)

@@ -8,13 +8,13 @@ A voltage source whose output is proportional to the voltage across another pair
 using CircuitSim
 
 # Input voltage source (1V DC)
-vin = DCVoltageSource("Vin", 1.0)
+vin = DCVoltageSource("Vin", voltage=1.0)
 
 # VCVS with gain of 10
 vcvs = VoltageControlledVoltageSource("E1", g=10.0)
 
 # Load resistor
-rload = Resistor("Rload", 50.0)
+rload = Resistor("Rload", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

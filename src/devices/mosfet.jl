@@ -1,5 +1,6 @@
 mutable struct MOSFET <: AbstractMOSFET
     name::String
+
     gate::Int
     drain::Int
     source::Int
@@ -73,7 +74,8 @@ mutable struct MOSFET <: AbstractMOSFET
         Ps::Real=0,
         Temp::Real=26.85,
         Tnom::Real=26.85,
-        Type::String="nfet")
+        Type::String="nfet"
+    )
         Type in ["nfet", "pfet"] || throw(ArgumentError("Type must be 'nfet' or 'pfet'"))
         new(name, 0, 0, 0, 0, Is, N, Vt0, Lambda, Kp, Gamma, Phi,
             Theta, Ld, W, L, Rd, Rs, Rg, Rb, Cbd, Cbs, Cgb, Cgd, Cgs,

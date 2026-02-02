@@ -10,11 +10,11 @@ using CircuitSim
 circ = Circuit()
 
 # Components
-vin = ACVoltageSource("Vin", 0.1, freq=1e3)  # 100mV AC input
+vin = ACVoltageSource("Vin", ac_magnitude=0.1, freq=1e3)  # 100mV AC input
 opamp = OpAmp("OP1", g=1e5, umax=12.0)
-r1 = Resistor("R1", 1000.0)   # Feedback resistor
-r2 = Resistor("R2", 100.0)    # Ground resistor
-rload = Resistor("Rload", 10000.0)
+r1 = Resistor("R1", resistance=1000.0)   # Feedback resistor
+r2 = Resistor("R2", resistance=100.0)    # Ground resistor
+rload = Resistor("Rload", resistance=10000.0)
 gnd = Ground("GND")
 
 add_component!(circ, vin)

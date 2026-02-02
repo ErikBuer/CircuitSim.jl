@@ -16,7 +16,7 @@ port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 port3 = ACPowerSource("P3", port_num=3, impedance=50.0)
 port4 = ACPowerSource("P4", port_num=4, impedance=50.0)
-lange = MicrostripLange("LC1", sub, w=0.15e-3, l=10e-3, s=0.1e-3, n=4)
+lange = MicrostripLange("LC1", substrate=sub, w=0.15e-3, l=10e-3, s=0.1e-3, n=4)
 gnd = Ground("GND")
 
 add_component!(circ, port1)

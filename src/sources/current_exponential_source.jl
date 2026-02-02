@@ -23,8 +23,10 @@ isrc = CurrentExponentialSource("Iexp1", i1=0.0, i2=10e-3, t1=1e-9, t2=10e-9)
 """
 mutable struct CurrentExponentialSource <: AbstractSource
     name::String
+
     n1::Int
     n2::Int
+
     i1::Real
     i2::Real
     t1::Real
@@ -33,8 +35,13 @@ mutable struct CurrentExponentialSource <: AbstractSource
     tf::Real
 
     function CurrentExponentialSource(name::AbstractString;
-        i1::Real=0.0, i2::Real=1e-3, t1::Real=0.0, t2::Real=1e-3,
-        tr::Real=1e-9, tf::Real=1e-9)
+        i1::Real=0.0,
+        i2::Real=1e-3,
+        t1::Real=0.0,
+        t2::Real=1e-3,
+        tr::Real=1e-9,
+        tf::Real=1e-9
+    )
         t1 >= 0 || throw(ArgumentError("Rise delay must be non-negative"))
         t2 > t1 || throw(ArgumentError("Fall delay must be greater than rise delay"))
         tr > 0 || throw(ArgumentError("Rise time constant must be positive"))

@@ -34,9 +34,9 @@ using CircuitSim
 circ = Circuit()
 
 scr = Thyristor("scr1", Igt=50e-6, Vbo=30)
-vak = DCVoltageSource("vak", 20.0)
-vg = DCVoltageSource("vg", 0.15)
-rg = Resistor("rg", 1000.0)
+vak = DCVoltageSource("vak", voltage=20.0)
+vg = DCVoltageSource("vg", voltage=0.15)
+rg = Resistor("rg", resistance=1000.0)
 gnd = Ground("gnd")
 
 add_component!(circ, scr)

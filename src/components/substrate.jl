@@ -41,7 +41,8 @@ mutable struct Substrate <: AbstractCircuitComponent
         t::Real=35e-6,
         tand::Real=0.02,
         rho::Real=0.022e-6,
-        rough::Real=0.0)
+        rough::Real=0.0
+    )
         er > 0 || throw(ArgumentError("Relative permittivity must be positive"))
         h > 0 || throw(ArgumentError("Substrate height must be positive"))
         t >= 0 || throw(ArgumentError("Metal thickness must be non-negative"))

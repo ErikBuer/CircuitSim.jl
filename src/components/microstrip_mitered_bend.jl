@@ -24,13 +24,17 @@ bend = MicrostripMiteredBend("MB1", sub, w=3.0e-3)
 """
 mutable struct MicrostripMiteredBend <: AbstractMicrostripMiteredBend
     name::String
+
     n1::Int
     n2::Int
+
     substrate::Substrate
     w::Real
 
-    function MicrostripMiteredBend(name::AbstractString, substrate::Substrate;
-        w::Real=1e-3)
+    function MicrostripMiteredBend(name::AbstractString;
+        substrate::Substrate,
+        w::Real=1e-3
+    )
         w > 0 || throw(ArgumentError("Width must be positive"))
         new(String(name), 0, 0, substrate, w)
     end
