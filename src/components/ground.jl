@@ -20,7 +20,9 @@ GND = Ground("GND")
 """
 mutable struct Ground <: AbstractGround
     name::String
+
     n::Int
+
     Ground(name::AbstractString="GND") = new(String(name), 0)
 end
 
