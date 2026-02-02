@@ -1,3 +1,5 @@
+abstract type AbstractQucsSimulationResult <: AbstractSimulationResult end
+
 """
     SimulationStatus
 
@@ -26,7 +28,7 @@ DC operating point results.
 - `voltages::Dict{String,Float64}`: Node voltages (node_name => voltage)
 - `currents::Dict{String,Float64}`: Branch currents (component_name => current)
 """
-struct DCResult
+struct DCResult <: AbstractQucsSimulationResult
     voltages::Dict{String,Float64}
     currents::Dict{String,Float64}
 end
@@ -42,7 +44,7 @@ AC analysis results (frequency sweep).
 - `voltages::Dict{String,Vector{ComplexF64}}`: Node voltages vs frequency
 - `currents::Dict{String,Vector{ComplexF64}}`: Branch currents vs frequency
 """
-struct ACResult
+struct ACResult <: AbstractQucsSimulationResult
     frequencies_Hz::Vector{Float64}
     voltages::Dict{String,Vector{ComplexF64}}
     currents::Dict{String,Vector{ComplexF64}}
@@ -59,7 +61,7 @@ Transient analysis results (time domain).
 - `voltages::Dict{String,Vector{Float64}}`: Node voltages vs time
 - `currents::Dict{String,Vector{Float64}}`: Branch currents vs time
 """
-struct TransientResult
+struct TransientResult <: AbstractQucsSimulationResult
     time_s::Vector{Float64}
     voltages::Dict{String,Vector{Float64}}
     currents::Dict{String,Vector{Float64}}
@@ -81,7 +83,7 @@ S-parameter analysis results.
 - `Sopt::Union{Nothing,Vector{ComplexF64}}`: Optimal source reflection coefficient vs frequency (if noise analysis enabled)
 - `Rn_Ohm::Union{Nothing,Vector{Float64}}`: Equivalent noise resistance in Ohms vs frequency (if noise analysis enabled)
 """
-struct SParameterResult
+struct SParameterResult <: AbstractQucsSimulationResult
     frequencies_Hz::Vector{Float64}
     num_ports::Int
     s_matrix::Dict{Tuple{Int,Int},Vector{ComplexF64}}
@@ -785,7 +787,7 @@ if !isnothing(results.sparameter)
 end
 ```
 """
-struct MultiAnalysisResult
+struct MultiAnalysisResult <: AbstractQucsSimulationResult
     dataset::QucsDataset
     dc::Union{Nothing,DCResult}
     ac::Union{Nothing,ACResult}
@@ -831,7 +833,7 @@ function MultiAnalysisResult(dataset::QucsDataset, analyses::Vector{<:AbstractAn
         end
     end
 
-    return MultiAnalysisResult(dataset, dc, ac, transient, sparameter)
+    return MultiAnalysisResult(dataset, dc, ac, transient, sparameter) #TODO finish implementation
 end
 
 

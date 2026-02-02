@@ -121,6 +121,7 @@ include("circuit_component.jl")  # Default implementations for AbstractCircuitCo
 include("circuit.jl")
 
 # Parser (must be loaded before backends that use QucsDataset)
+abstract type AbstractSimulationResult end
 include("parser/qucs_dataset.jl")
 include("parser/simulation_result.jl")
 
