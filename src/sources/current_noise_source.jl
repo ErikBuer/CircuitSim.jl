@@ -21,15 +21,21 @@ isrc = CurrentNoiseSource("Inoise1", i=1e-12, e=0)  # White noise
 """
 mutable struct CurrentNoiseSource <: AbstractCurrentNoiseSource
     name::String
+
     n1::Int
     n2::Int
+
     i::Real
     a::Real
     c::Real
     e::Real
 
     function CurrentNoiseSource(name::AbstractString;
-        i::Real=1e-6, a::Real=0.0, c::Real=1.0, e::Real=0.0)
+        i::Real=1e-6,
+        a::Real=0.0,
+        c::Real=1.0,
+        e::Real=0.0
+    )
         i > 0 || throw(ArgumentError("Noise PSD must be positive"))
         a >= 0 || throw(ArgumentError("Frequency offset must be non-negative"))
         c > 0 || throw(ArgumentError("Frequency coefficient must be positive"))

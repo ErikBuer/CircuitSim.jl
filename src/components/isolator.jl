@@ -29,8 +29,10 @@ ISO2 = Isolator("ISO2", forward_loss=1.0, reverse_loss=30.0)
 """
 mutable struct Isolator <: AbstractIsolator
     name::String
+
     n1::Int
     n2::Int
+
     forward_loss::Real
     reverse_loss::Real
     z0::Real
@@ -38,7 +40,8 @@ mutable struct Isolator <: AbstractIsolator
     function Isolator(name::AbstractString;
         forward_loss::Real=0.5,
         reverse_loss::Real=20.0,
-        z0::Real=50.0)
+        z0::Real=50.0
+    )
         forward_loss >= 0 || throw(ArgumentError("Forward loss must be non-negative"))
         reverse_loss >= 0 || throw(ArgumentError("Reverse loss must be non-negative"))
         z0 > 0 || throw(ArgumentError("Impedance must be positive"))

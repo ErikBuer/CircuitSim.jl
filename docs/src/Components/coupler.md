@@ -14,7 +14,7 @@ add_component!(circ, port2)
 add_component!(circ, port3)
 add_component!(circ, port4)
 
-CPL = Coupler("CPL1", 3.0)
+CPL = Coupler("CPL1", coupling=3.0)
 add_component!(circ, CPL)
 
 gnd = Ground("GND")

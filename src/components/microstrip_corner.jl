@@ -1,8 +1,4 @@
 """
-Microstrip corner (90° bend) component.
-"""
-
-"""
     MicrostripCorner <: AbstractMicrostripCorner
 
 A 90° microstrip corner/bend.
@@ -28,13 +24,17 @@ corner = MicrostripCorner("MC1", sub, w=3.0e-3)
 """
 mutable struct MicrostripCorner <: AbstractMicrostripCorner
     name::String
+
     n1::Int
     n2::Int
+
     substrate::Substrate
     w::Real
 
-    function MicrostripCorner(name::AbstractString, substrate::Substrate;
-        w::Real=1e-3)
+    function MicrostripCorner(name::AbstractString;
+        substrate::Substrate,
+        w::Real=1e-3
+    )
         w > 0 || throw(ArgumentError("Width must be positive"))
         new(String(name), 0, 0, substrate, w)
     end

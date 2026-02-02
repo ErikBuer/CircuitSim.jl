@@ -10,10 +10,10 @@ using CircuitSim
 circ = Circuit()
 
 # Components
-vin = ACVoltageSource("Vin", 1.0, freq=1e6)
-r_in = Resistor("Rin", 50.0)
+vin = ACVoltageSource("Vin", ac_magnitude=1.0, freq=1e6)
+r_in = Resistor("Rin", resistance=50.0)
 mutual = MutualInductor("MUT1", l1=1e-6, l2=1e-6, k=0.9)
-rload = Resistor("Rload", 50.0)
+rload = Resistor("Rload", resistance=50.0)
 gnd = Ground("GND")
 
 add_component!(circ, vin)

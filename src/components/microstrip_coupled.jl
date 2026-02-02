@@ -28,21 +28,25 @@ coupled = MicrostripCoupled("MCPL1", sub, w=1.0e-3, l=20e-3, s=0.2e-3)
 """
 mutable struct MicrostripCoupled <: AbstractMicrostripCoupled
     name::String
+
     n1::Int
     n2::Int
     n3::Int
     n4::Int
+
     substrate::Substrate
     w::Real         # Line width (m)
     l::Real         # Line length (m)
     s::Real         # Line spacing (m)
     model::String   # Model name
 
-    function MicrostripCoupled(name::AbstractString, substrate::Substrate;
+    function MicrostripCoupled(name::AbstractString;
+        substrate::Substrate,
         w::Real=1e-3,
         l::Real=10e-3,
         s::Real=0.2e-3,
-        model::String="Kirschning")
+        model::String="Kirschning"
+    )
         w > 0 || throw(ArgumentError("Width must be positive"))
         l > 0 || throw(ArgumentError("Length must be positive"))
         s > 0 || throw(ArgumentError("Spacing must be positive"))
@@ -60,8 +64,8 @@ function to_qucs_netlist(mc::MicrostripCoupled)::String
     push!(parts, "W=\"$(format_value(mc.w))\"")
     push!(parts, "L=\"$(format_value(mc.l))\"")
     push!(parts, "S=\"$(format_value(mc.s))\"")
-    push!(parts, "Model=\"Kirschning\"")
-    push!(parts, "DispModel=\"Kirschning\"")
+    push!(parts, "Model=\"$(mc.model)\"")
+    push!(parts, "DispModel=\"$(mc.model)\"")
     return join(parts, " ")
 end
 

@@ -8,28 +8,32 @@ DC voltage source with two terminals.
 - `name::String`: Component identifier
 - `nplus::Int`: Positive terminal node number
 - `nminus::Int`: Negative terminal node number
-- `dc::Real`: DC voltage in Volts
+- `voltage::Real`: DC voltage in Volts
 
 # Example
 
 ```julia
-V1 = DCVoltageSource("V1", 12.0)  # 12V DC source
+V1 = DCVoltageSource("V1", voltage=12.0)  # 12V DC source
 ```
 """
 mutable struct DCVoltageSource <: AbstractDCVoltageSource
     name::String
+
     nplus::Int
     nminus::Int
-    dc::Real
-    DCVoltageSource(name::AbstractString, dc::Real) = new(String(name), 0, 0, dc)
+    voltage::Real
+
+    DCVoltageSource(name::AbstractString;
+        voltage::Real
+    ) = new(String(name), 0, 0, voltage)
 end
 
 function to_qucs_netlist(comp::DCVoltageSource)::String
-    "Vdc:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) U=\"$(format_value(comp.dc))\""
+    "Vdc:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) U=\"$(format_value(comp.voltage))\""
 end
 
 function to_spice_netlist(comp::DCVoltageSource)::String
-    "V$(comp.name) $(comp.nplus) $(comp.nminus) DC $(comp.dc)"
+    "V$(comp.name) $(comp.nplus) $(comp.nminus) DC $(comp.voltage)"
 end
 
 function _get_node_number(component::DCVoltageSource, pin::Symbol)::Int

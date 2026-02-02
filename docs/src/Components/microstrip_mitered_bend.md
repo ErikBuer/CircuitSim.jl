@@ -14,7 +14,7 @@ add_component!(circ, sub)
 # Components
 port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
-bend = MicrostripMiteredBend("MB1", sub, w=3.0e-3)
+bend = MicrostripMiteredBend("MB1", substrate=sub, w=3.0e-3)
 gnd = Ground("GND")
 
 add_component!(circ, port1)

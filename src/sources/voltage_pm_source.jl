@@ -19,15 +19,22 @@ Create a phase modulated voltage source with 3-port configuration.
 """
 mutable struct VoltagePMSource <: AbstractSource
     name::String
+
     nplus::Int   # Positive output node
     nminus::Int  # Negative output node
     nmod::Int    # Modulation input node
+
     u::Real      # Carrier amplitude in Volts
     f::Real      # Carrier frequency in Hz
     m::Real      # Modulation index (0 to 1)
     phase::Real  # Base phase in degrees (-360 to 360)
 
-    function VoltagePMSource(name::String; u::Real=1.0, f::Real=1e9, m::Real=1.0, phase::Real=0.0)
+    function VoltagePMSource(name::String;
+        u::Real=1.0,
+        f::Real=1e9,
+        m::Real=1.0,
+        phase::Real=0.0
+    )
         f > 0 || throw(ArgumentError("Frequency f must be positive, got $f"))
         0 <= m <= 1 || throw(ArgumentError("Modulation index m must be between 0 and 1, got $m"))
         -360 <= phase <= 360 || throw(ArgumentError("Phase must be between -360 and 360 degrees, got $phase"))

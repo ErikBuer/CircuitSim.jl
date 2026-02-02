@@ -1,5 +1,6 @@
 mutable struct JFET <: AbstractJFET
     name::String
+
     gate::Int
     drain::Int
     source::Int
@@ -56,7 +57,8 @@ mutable struct JFET <: AbstractJFET
         Vt0tc::Real=0,
         Betatce::Real=0,
         Tnom::Real=26.85,
-        Area::Real=1)
+        Area::Real=1
+    )
         Type in ["nfet", "pfet"] || throw(ArgumentError("Type must be 'nfet' or 'pfet'"))
         new(name, 0, 0, 0, Is, N, Vt0, Lambda, Beta, M, Pb, Fc, Cgs, Cgd,
             Rd, Rs, Isr, Nr, Kf, Af, Ffe, Temp, Type, Xti, Vt0tc, Betatce, Tnom, Area)

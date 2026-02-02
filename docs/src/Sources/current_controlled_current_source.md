@@ -8,16 +8,16 @@ A current source whose output current is proportional to the current through a c
 using CircuitSim
 
 # Input current source (1 mA AC at 1kHz)
-iin = ACCurrentSource("Iin", 0.001, freq=1e3)
+iin = ACCurrentSource("Iin", ac_mag=0.001, freq=1e3)
 
 # Sense resistor for current measurement
-rsense = Resistor("Rsense", 100.0)
+rsense = Resistor("Rsense", resistance=100.0)
 
 # CCCS with current gain of 5
 cccs = CurrentControlledCurrentSource("F1", g=5.0)
 
 # Load resistor
-rload = Resistor("Rload", 1000.0)
+rload = Resistor("Rload", resistance=1000.0)
 GND = Ground("GND")
 
 circ = Circuit()

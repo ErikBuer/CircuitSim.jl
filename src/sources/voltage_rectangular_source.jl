@@ -28,8 +28,10 @@ vsrc = VoltageRectangularSource("Vrect1", u=5.0, th=1e-6, tl=1e-6)
 """
 mutable struct VoltageRectangularSource <: AbstractVoltageRectifiedSource
     name::String
+
     n1::Int
     n2::Int
+
     u::Real
     th::Real
     tl::Real
@@ -38,8 +40,14 @@ mutable struct VoltageRectangularSource <: AbstractVoltageRectifiedSource
     td::Real
 
     function VoltageRectangularSource(name::AbstractString;
-        u::Real=1.0, th::Real=1e-3, tl::Real=1e-3,
-        tr::Real=1e-9, tf::Real=1e-9, td::Real=0.0)
+        u::Real=1.0,
+        th::Real=1e-3,
+        tl::Real=1e-3,
+        tr::Real=1e-9,
+        tf::Real=1e-9,
+        td::Real=0.0
+    )
+
         th > 0 || throw(ArgumentError("High time must be positive"))
         tl > 0 || throw(ArgumentError("Low time must be positive"))
         tr > 0 || throw(ArgumentError("Rise time must be positive"))

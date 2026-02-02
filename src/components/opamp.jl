@@ -6,11 +6,11 @@ Operational amplifier with ideal characteristics.
 # Fields
 
 - `name::String`: Component identifier
-- `g::Float64`: Open-loop voltage gain (default: 1e6)
-- `umax::Float64`: Maximum output voltage (default: 15.0 V)
 - `ninp::Int`: Non-inverting input node
 - `ninn::Int`: Inverting input node  
 - `nout::Int`: Output node
+- `g::Float64`: Open-loop voltage gain (default: 1e6)
+- `umax::Float64`: Maximum output voltage (default: 15.0 V)
 
 # Pins
 
@@ -22,19 +22,24 @@ Operational amplifier with ideal characteristics.
 
 ```jldoctest
 julia> opamp = OpAmp("OP1", g=1e5, umax=12.0)
-OpAmp("OP1", 100000.0, 12.0, 0, 0, 0)
+OpAmp("OP1", 0, 0, 0, 100000.0, 12.0)
 ```
 """
 mutable struct OpAmp <: AbstractActiveComponent
     name::String
-    g::Float64
-    umax::Float64
+
     ninp::Int
     ninn::Int
     nout::Int
 
-    function OpAmp(name::AbstractString; g::Real=1e6, umax::Real=15.0)
-        new(String(name), Float64(g), Float64(umax), 0, 0, 0)
+    g::Float64
+    umax::Float64
+
+    function OpAmp(name::AbstractString;
+        g::Real=1e6,
+        umax::Real=15.0
+    )
+        new(String(name), 0, 0, 0, Float64(g), Float64(umax))
     end
 end
 

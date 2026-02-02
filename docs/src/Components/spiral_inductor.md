@@ -4,9 +4,9 @@
 using CircuitSim
 
 sub = Substrate("Sub1", er=4.5, h=1.6e-3, t=35e-6)
-V = DCVoltageSource("V1", 1.0)
-SP = SpiralInductor("SP1", sub, geometry="Circular", w=10e-6, s=5e-6, di=100e-6, turns=5)
-R = Resistor("R1", 50.0)
+V = DCVoltageSource("V1", voltage=1.0)
+SP = SpiralInductor("SP1", substrate=sub, geometry="Circular", w=10e-6, s=5e-6, di=100e-6, turns=5)
+R = Resistor("R1", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

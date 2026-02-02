@@ -25,15 +25,19 @@ step = MicrostripStep("MSTEP1", sub, w1=3.0e-3, w2=1.5e-3)
 """
 mutable struct MicrostripStep <: AbstractMicrostripStep
     name::String
+
     n1::Int
     n2::Int
+
     substrate::Substrate
     w1::Real        # Width at port 1 (m)
     w2::Real        # Width at port 2 (m)
 
-    function MicrostripStep(name::AbstractString, substrate::Substrate;
+    function MicrostripStep(name::AbstractString;
+        substrate::Substrate,
         w1::Real=2e-3,
-        w2::Real=1e-3)
+        w2::Real=1e-3
+    )
         w1 > 0 || throw(ArgumentError("Width 1 must be positive"))
         w2 > 0 || throw(ArgumentError("Width 2 must be positive"))
         new(String(name), 0, 0, substrate, w1, w2)

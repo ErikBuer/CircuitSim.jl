@@ -11,7 +11,7 @@ Typically used to isolate DC bias points between stages.
 - `name::String`: Component identifier
 - `n1::Int`: First terminal node number
 - `n2::Int`: Second terminal node number
-- `value::Real`: Capacitance in Farads (default: 1 μF for near-ideal blocking)
+- `capacitance::Real`: Capacitance in Farads (default: 1 μF for near-ideal blocking)
 
 # Example
 
@@ -21,27 +21,29 @@ using CircuitSim
 DCB1 = DCBlock("DCB1")
 
 # Custom capacitance
-DCB2 = DCBlock("DCB2", 10e-6)  # 10 μF
+DCB2 = DCBlock("DCB2", capacitance=10e-6)  # 10 μF
 ```
 """
 mutable struct DCBlock <: AbstractDCBlock
     name::String
+
     n1::Int
     n2::Int
-    value::Real
 
-    function DCBlock(name::AbstractString, value::Real=1e-6)
-        value > 0 || throw(ArgumentError("Capacitance must be positive"))
-        new(String(name), 0, 0, value)
+    capacitance::Real
+
+    function DCBlock(name::AbstractString, capacitance::Real=1e-6)
+        capacitance > 0 || throw(ArgumentError("Capacitance must be positive"))
+        new(String(name), 0, 0, capacitance)
     end
 end
 
 function to_qucs_netlist(comp::DCBlock)::String
-    "DCBlock:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) C=\"$(format_value(comp.value))\""
+    "DCBlock:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) C=\"$(format_capacitance(comp.capacitance))\""
 end
 
 function to_spice_netlist(comp::DCBlock)::String
-    "C$(comp.name)_dcb $(comp.n1) $(comp.n2) $(comp.value)"
+    "C$(comp.name)_dcb $(comp.n1) $(comp.n2) $(comp.capacitance)"
 end
 
 function _get_node_number(component::DCBlock, pin::Symbol)::Int

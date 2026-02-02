@@ -14,7 +14,7 @@ circ = Circuit()
 port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 
 # Load S-parameters from file (1-port antenna)
-spf = SPfile("ANT1", "../assets/test_files/70 mm L1 L5 Single feed.s1p", data_format="rectangular", interpolator="linear")
+spf = SPfile("ANT1", file="../assets/test_files/70 mm L1 L5 Single feed.s1p", data_format="rectangular", interpolator="linear")
 
 gnd = Ground("GND")
 

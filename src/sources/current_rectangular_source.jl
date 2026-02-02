@@ -23,8 +23,10 @@ isrc = CurrentRectangularSource("Irect1", i=10e-3, th=1e-6, tl=1e-6)
 """
 mutable struct CurrentRectangularSource <: AbstractCurrentRectifiedSource
     name::String
+
     n1::Int
     n2::Int
+
     i::Real
     th::Real
     tl::Real
@@ -33,8 +35,13 @@ mutable struct CurrentRectangularSource <: AbstractCurrentRectifiedSource
     td::Real
 
     function CurrentRectangularSource(name::AbstractString;
-        i::Real=1e-3, th::Real=1e-3, tl::Real=1e-3,
-        tr::Real=1e-9, tf::Real=1e-9, td::Real=0.0)
+        i::Real=1e-3,
+        th::Real=1e-3,
+        tl::Real=1e-3,
+        tr::Real=1e-9,
+        tf::Real=1e-9,
+        td::Real=0.0
+    )
         th > 0 || throw(ArgumentError("High time must be positive"))
         tl > 0 || throw(ArgumentError("Low time must be positive"))
         tr > 0 || throw(ArgumentError("Rise time must be positive"))

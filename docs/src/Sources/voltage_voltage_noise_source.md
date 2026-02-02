@@ -11,8 +11,8 @@ using CircuitSim
 vnoise = VoltageVoltageNoiseSource("VVN1", v1=1e-6, v2=1e-6, c_corr=0.8)
 
 # Load resistors to observe noise voltage
-r1 = Resistor("R1", 50.0)
-r2 = Resistor("R2", 50.0)
+r1 = Resistor("R1", resistance=50.0)
+r2 = Resistor("R2", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

@@ -34,10 +34,12 @@ HYB3 = Hybrid("HYB3", insertion_loss=0.2, isolation=30.0)
 """
 mutable struct Hybrid <: AbstractHybridCoupler
     name::String
+
     n1::Int
     n2::Int
     n3::Int
     n4::Int
+
     phase::Real
     insertion_loss::Real
     isolation::Real
@@ -47,7 +49,8 @@ mutable struct Hybrid <: AbstractHybridCoupler
         phase::Real=90.0,
         insertion_loss::Real=0.5,
         isolation::Real=20.0,
-        z0::Real=50.0)
+        z0::Real=50.0
+    )
         (phase == 90.0 || phase == 180.0) || @warn "Hybrid phase is typically 90° or 180°, got $(phase)°"
         insertion_loss >= 0 || throw(ArgumentError("Insertion loss must be non-negative"))
         isolation >= 0 || throw(ArgumentError("Isolation must be non-negative"))

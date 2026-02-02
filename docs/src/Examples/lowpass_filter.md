@@ -22,7 +22,7 @@ add_component!(circ, port1)
 add_component!(circ, port2)
 
 # Components
-L1 = Inductor("L1", 80e-9)    # 80 nH
+L1 = Inductor("L1", inductance=80e-9)    # 80 nH
 C1 = Capacitor("C1", capacitance=32e-12)  # 32 pF  
 C2 = Capacitor("C2", capacitance=32e-12)  # 32 pF
 add_component!(circ, L1)
@@ -123,15 +123,15 @@ For AC voltage analysis, we use an AC voltage source at the input and a resistiv
 circ_ac = Circuit()
 
 # AC voltage source at input
-v_source = ACVoltageSource("Vin", 1.0)  # 1V AC source
+v_source = ACVoltageSource("Vin", ac_magnitude=1.0)  # 1V AC source
 add_component!(circ_ac, v_source)
 
 # Output load resistor
-r_load = Resistor("Rload", 50.0)  # 50Ω load
+r_load = Resistor("Rload", resistance=50.0)  # 50Ω load
 add_component!(circ_ac, r_load)
 
 # Same filter components
-L1_ac = Inductor("L1", 80e-9)
+L1_ac = Inductor("L1", inductance=80e-9)
 C1_ac = Capacitor("C1", capacitance=32e-12)
 C2_ac = Capacitor("C2", capacitance=32e-12)
 add_component!(circ_ac, L1_ac)

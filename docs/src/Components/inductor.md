@@ -3,9 +3,9 @@
 ```@example inductor
 using CircuitSim
 
-V = DCVoltageSource("V1", 10.0)
-L = Inductor("L1", 1e-3)
-R = Resistor("R1", 100.0)
+V = DCVoltageSource("V1", voltage=10.0)
+L = Inductor("L1", inductance=1e-3)
+R = Resistor("R1", resistance=100.0)
 GND = Ground("GND")
 
 circ = Circuit()

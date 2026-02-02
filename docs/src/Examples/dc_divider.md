@@ -4,9 +4,9 @@
 using CircuitSim
 
 # 10V source with resistor divider (1kΩ and 500Ω)
-V = DCVoltageSource("V1", 10.0)
-R1 = Resistor("R1", 1000.0)
-R2 = Resistor("R2", 500.0)
+V = DCVoltageSource("V1", voltage=10.0)
+R1 = Resistor("R1", resistance=1000.0)
+R2 = Resistor("R2", resistance=500.0)
 GND = Ground("GND")
 
 circ = Circuit()

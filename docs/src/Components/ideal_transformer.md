@@ -10,9 +10,9 @@ using CircuitSim
 circ = Circuit()
 
 # Components
-vin = ACVoltageSource("Vin", 10.0, freq=1e3)
+vin = ACVoltageSource("Vin", ac_magnitude=10.0, freq=1e3)
 trafo = IdealTransformer("TR1", t=0.5)  # 2:1 step-down
-rload = Resistor("Rload", 50.0)
+rload = Resistor("Rload", resistance=50.0)
 gnd = Ground("GND")
 
 add_component!(circ, vin)

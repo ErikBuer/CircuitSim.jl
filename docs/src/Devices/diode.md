@@ -10,13 +10,13 @@ using CircuitSim
 circ = Circuit()
 
 # DC voltage source: 5V
-vin = DCVoltageSource("V1", 5.0)
+vin = DCVoltageSource("V1", voltage=5.0)
 
 # Diode with default parameters
 d1 = Diode("D1")
 
 # Load resistor
-rload = Resistor("RL", 1000)
+rload = Resistor("RL", resistance=1000)
 
 # Ground
 gnd = Ground("GND")

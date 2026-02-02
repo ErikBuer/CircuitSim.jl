@@ -13,14 +13,14 @@ using CircuitSim
 circ = Circuit()
 
 # DC sources
-vdd = DCVoltageSource("VDD", 5.0)
-vgs = DCVoltageSource("VGS", 2.0)
+vdd = DCVoltageSource("VDD", voltage=5.0)
+vgs = DCVoltageSource("VGS", voltage=2.0)
 
 # MOSFET (N-channel, W=10um, L=1um)
 mosfet = MOSFET("M1", Type="nfet", Kp=200e-6, Vt0=0.7, W=10e-6, L=1e-6)
 
 # Load resistor
-rd = Resistor("RD", 1000)
+rd = Resistor("RD", resistance=1000)
 gnd = Ground("GND")
 
 add_component!(circ, vdd)

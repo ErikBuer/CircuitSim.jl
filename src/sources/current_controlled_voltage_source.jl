@@ -5,14 +5,19 @@ A voltage source whose output voltage is controlled by the current through anoth
 """
 mutable struct CurrentControlledVoltageSource <: AbstractSource
     name::String
+
     n1::Int  # Positive input node (where current is sensed)
     n2::Int  # Negative input node (where current is sensed)
     n3::Int  # Positive output node
     n4::Int  # Negative output node
+
     g::Real  # Transresistance in Ohms (V/A)
     t::Real  # Optional time delay in seconds
 
-    function CurrentControlledVoltageSource(name::String; g::Real=1.0, t::Real=0.0)
+    function CurrentControlledVoltageSource(name::String;
+        g::Real=1.0,
+        t::Real=0.0
+    )
         g >= 0 || throw(ArgumentError("Transresistance g must be non-negative, got $g"))
         t >= 0 || throw(ArgumentError("Time delay t must be non-negative, got $t"))
         new(name, -1, -1, -1, -1, g, t)

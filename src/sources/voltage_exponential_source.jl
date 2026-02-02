@@ -23,8 +23,10 @@ vsrc = VoltageExponentialSource("Vexp1", u1=0.0, u2=5.0, t1=1e-9, t2=10e-9)
 """
 mutable struct VoltageExponentialSource <: AbstractSource
     name::String
+
     n1::Int
     n2::Int
+
     u1::Real
     u2::Real
     t1::Real
@@ -33,8 +35,13 @@ mutable struct VoltageExponentialSource <: AbstractSource
     tf::Real
 
     function VoltageExponentialSource(name::AbstractString;
-        u1::Real=0.0, u2::Real=1.0, t1::Real=0.0, t2::Real=1e-3,
-        tr::Real=1e-9, tf::Real=1e-9)
+        u1::Real=0.0,
+        u2::Real=1.0,
+        t1::Real=0.0,
+        t2::Real=1e-3,
+        tr::Real=1e-9,
+        tf::Real=1e-9
+    )
         t1 >= 0 || throw(ArgumentError("Rise delay must be non-negative"))
         t2 > t1 || throw(ArgumentError("Fall delay must be greater than rise delay"))
         tr > 0 || throw(ArgumentError("Rise time constant must be positive"))

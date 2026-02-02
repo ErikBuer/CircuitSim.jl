@@ -1,5 +1,6 @@
 mutable struct BJT <: AbstractBipolarJunctionTransistor
     name::String
+
     base::Int
     collector::Int
     emitter::Int

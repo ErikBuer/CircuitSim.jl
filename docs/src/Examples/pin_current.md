@@ -3,8 +3,8 @@
 ```@example pin_current
 using CircuitSim
 
-V = DCVoltageSource("V", 10.0)
-R = Resistor("R", 100.0)
+V = DCVoltageSource("V", voltage=10.0)
+R = Resistor("R", resistance=100.0)
 GND = Ground("GND")
 
 circ = Circuit()

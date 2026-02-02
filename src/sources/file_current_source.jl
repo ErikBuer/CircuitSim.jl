@@ -77,8 +77,10 @@ I4 = FileCurrentSource("I4", time, current, interpolator="cubic", repeat=true)
 """
 mutable struct FileCurrentSource <: AbstractSource
     name::String
+
     nplus::Int
     nminus::Int
+
     file::Union{String,Nothing}
     time_vector::Union{AbstractVector,Nothing}
     current_vector::Union{AbstractVector,Nothing}
@@ -88,9 +90,8 @@ mutable struct FileCurrentSource <: AbstractSource
     delay::Real
     format::Symbol
 
-    function FileCurrentSource(
-        name::AbstractString,
-        file::AbstractString;
+    function FileCurrentSource(name::AbstractString;
+        file::AbstractString,
         interpolator::AbstractString="linear",
         repeat::Bool=false,
         gain::Real=1.0,

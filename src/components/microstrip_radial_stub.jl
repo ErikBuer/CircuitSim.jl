@@ -26,18 +26,22 @@ stub = MicrostripRadialStub("RS1", sub, ri=0.5e-3, ro=5.0e-3, wf=1.0e-3, alpha=6
 """
 mutable struct MicrostripRadialStub <: AbstractMicrostripRadialStub
     name::String
+
     n1::Int
+
     substrate::Substrate
     ri::Real        # Inner radius (m)
     ro::Real        # Outer radius (m)
     wf::Real        # Feedline width (m)
     alpha::Real     # Stub angle (degrees)
 
-    function MicrostripRadialStub(name::AbstractString, substrate::Substrate;
+    function MicrostripRadialStub(name::AbstractString;
+        substrate::Substrate,
         ri::Real=0.5e-3,
         ro::Real=5e-3,
         wf::Real=1e-3,
-        alpha::Real=60.0)
+        alpha::Real=60.0
+    )
         ri > 0 || throw(ArgumentError("Inner radius must be positive"))
         ro > ri || throw(ArgumentError("Outer radius must be greater than inner radius"))
         wf > 0 || throw(ArgumentError("Feedline width must be positive"))

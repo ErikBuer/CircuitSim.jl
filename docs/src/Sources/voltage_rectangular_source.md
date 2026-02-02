@@ -4,7 +4,7 @@
 using CircuitSim
 
 V = VoltageRectangularSource("V1", u=5.0, th=1e-6, tl=1e-6, tr=10e-9, tf=10e-9, td=0.0)
-R = Resistor("R1", 50.0)
+R = Resistor("R1", resistance=50.0)
 C = Capacitor("C1", capacitance=100e-12)
 GND = Ground("GND")
 

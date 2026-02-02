@@ -1,14 +1,17 @@
 mutable struct EquationDefinedDevice <: AbstractEquationDefinedDevice
     name::String
+
     nodes::Vector{Int}
     num_branches::Int
 
     I_equations::Dict{Int,String}
     Q_equations::Dict{Int,String}
 
-    function EquationDefinedDevice(name::String, num_branches::Int;
+    function EquationDefinedDevice(name::String;
+        num_branches::Int,
         I_equations::Dict{Int,String}=Dict{Int,String}(),
-        Q_equations::Dict{Int,String}=Dict{Int,String}())
+        Q_equations::Dict{Int,String}=Dict{Int,String}()
+    )
 
         if num_branches < 1 || num_branches > 20
             error("EquationDefinedDevice num_branches must be between 1 and 20, got: $num_branches")

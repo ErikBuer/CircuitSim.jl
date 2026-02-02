@@ -4,8 +4,8 @@
 using CircuitSim
 
 I = CurrentExponentialSource("I1", i1=0.0, i2=10e-3, t1=1e-9, t2=10e-9, tr=1e-9, tf=2e-9)
-R = Resistor("R1", 1000.0)
-L = Inductor("L1", 1e-6)
+R = Resistor("R1", resistance=1000.0)
+L = Inductor("L1", inductance=1e-6)
 GND = Ground("GND")
 
 circ = Circuit()

@@ -17,8 +17,8 @@ Ideal resistor with two terminals.
 # Example
 
 ```julia
-R1 = Resistor("R1", 1000.0)  # 1kΩ resistor
-R2 = Resistor("R2", 2200.0, 85.0, 0.001, 0.0, 25.0)  # 2.2kΩ resistor with temperature coefficients
+R1 = Resistor("R1", resistance=1000.0)  # 1kΩ resistor
+R2 = Resistor("R2", resistance=2200.0, temp=85.0, tc1=0.001, tc2=0.0, tnom=25.0)  # 2.2kΩ resistor with temperature coefficients
 ```
 """
 mutable struct Resistor <: AbstractResistor
@@ -33,7 +33,13 @@ mutable struct Resistor <: AbstractResistor
     tc2::Real
     tnom::Real
 
-    function Resistor(name::AbstractString, resistance::Real, temp::Real=26.85, tc1::Real=0.0, tc2::Real=0.0, tnom::Real=26.85)
+    function Resistor(name::AbstractString;
+        resistance::Real,
+        temp::Real=26.85,
+        tc1::Real=0.0,
+        tc2::Real=0.0,
+        tnom::Real=26.85
+    )
         new(String(name), 0, 0, resistance, temp, tc1, tc2, tnom)
     end
 end

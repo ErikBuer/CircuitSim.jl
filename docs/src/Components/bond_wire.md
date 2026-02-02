@@ -4,9 +4,9 @@
 using CircuitSim
 
 sub = Substrate("Sub1", er=4.5, h=1.6e-3, t=35e-6)
-V = DCVoltageSource("V1", 1.0)
+V = DCVoltageSource("V1", voltage=1.0)
 wire = BondWire("BW1", l=1e-3, d=25e-6, h=0.3e-3)
-R = Resistor("R1", 50.0)
+R = Resistor("R1", resistance=50.0)
 GND = Ground("GND")
 
 circ = Circuit()

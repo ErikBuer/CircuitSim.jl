@@ -24,14 +24,18 @@ via = MicrostripVia("VIA1", sub, d=0.3e-3)
 """
 mutable struct MicrostripVia <: AbstractMicrostripVia
     name::String
+
     n1::Int
+
     substrate::Substrate
     d::Real         # Via diameter (m)
     t::Real         # Metal thickness override (m), 0 = use substrate
 
-    function MicrostripVia(name::AbstractString, substrate::Substrate;
+    function MicrostripVia(name::AbstractString;
+        substrate::Substrate,
         d::Real=0.3e-3,
-        t::Real=0.0)
+        t::Real=0.0
+    )
         d > 0 || throw(ArgumentError("Via diameter must be positive"))
         t >= 0 || throw(ArgumentError("Metal thickness must be non-negative"))
         new(String(name), 0, substrate, d, t)

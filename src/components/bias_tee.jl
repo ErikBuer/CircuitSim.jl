@@ -14,8 +14,8 @@ A bias tee has three ports:
 - `n_rf::Int`: RF input port node number
 - `n_dc::Int`: DC input port node number
 - `n_out::Int`: Combined output port node number
-- `c_block::Real`: DC blocking capacitance (default: 1 μF)
-- `l_choke::Real`: RF choke inductance (default: 1 mH)
+- `capacitance::Real`: DC blocking capacitance (default: 1 μF)
+- `inductance::Real`: RF choke inductance (default: 1 mH)
 
 # Example
 
@@ -25,21 +25,26 @@ using CircuitSim
 BT1 = BiasTee("BT1")
 
 # Custom component values
-BT2 = BiasTee("BT2", c_block=10e-6, l_choke=10e-3)
+BT2 = BiasTee("BT2", capacitance=10e-6, inductance=10e-3)
 ```
 """
 mutable struct BiasTee <: AbstractBiasTee
     name::String
+
     n_rf::Int
     n_dc::Int
     n_out::Int
-    c_block::Real
-    l_choke::Real
 
-    function BiasTee(name::AbstractString; c_block::Real=1e-6, l_choke::Real=1e-3)
-        c_block > 0 || throw(ArgumentError("Blocking capacitance must be positive"))
-        l_choke > 0 || throw(ArgumentError("Choke inductance must be positive"))
-        new(String(name), 0, 0, 0, c_block, l_choke)
+    capacitance::Real
+    inductance::Real
+
+    function BiasTee(name::AbstractString;
+        capacitance::Real=1e-6,
+        inductance::Real=1e-3
+    )
+        capacitance > 0 || throw(ArgumentError("Blocking capacitance must be positive"))
+        inductance > 0 || throw(ArgumentError("Choke inductance must be positive"))
+        new(String(name), 0, 0, 0, capacitance, inductance)
     end
 end
 
@@ -48,16 +53,16 @@ function to_qucs_netlist(comp::BiasTee)::String
     push!(parts, "$(qucs_node(comp.n_rf))")
     push!(parts, "$(qucs_node(comp.n_dc))")
     push!(parts, "$(qucs_node(comp.n_out))")
-    push!(parts, "C=\"$(format_value(comp.c_block))\"")
-    push!(parts, "L=\"$(format_value(comp.l_choke))\"")
+    push!(parts, "C=\"$(format_value(comp.capacitance))\"")
+    push!(parts, "L=\"$(format_value(comp.inductance))\"")
     return join(parts, " ")
 end
 
 function to_spice_netlist(comp::BiasTee)::String
     lines = String[]
     push!(lines, "* Bias Tee $(comp.name)")
-    push!(lines, "C$(comp.name)_block $(comp.n_rf) $(comp.n_out) $(comp.c_block)")
-    push!(lines, "L$(comp.name)_choke $(comp.n_dc) $(comp.n_out) $(comp.l_choke)")
+    push!(lines, "C$(comp.name)_block $(comp.n_rf) $(comp.n_out) $(comp.capacitance)")
+    push!(lines, "L$(comp.name)_choke $(comp.n_dc) $(comp.n_out) $(comp.inductance)")
     return join(lines, "\n")
 end
 

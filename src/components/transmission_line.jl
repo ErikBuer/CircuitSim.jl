@@ -23,21 +23,27 @@ Simple lossless transmission line.
 
 ```jldoctest
 julia> tline = TransmissionLine("TL1", z0=75.0, length_m=0.1)
-TransmissionLine("TL1", 75.0, 0.1, 0.0, 0, 0, 0, 0)
+TransmissionLine("TL1", 0, 0, 0, 0, 75.0, 0.1, 0.0)
 ```
 """
 mutable struct TransmissionLine <: AbstractTransmissionLine2Port
     name::String
-    z0::Float64
-    length_m::Float64
-    alpha::Float64
+
     n1::Int
     n2::Int
     n3::Int
     n4::Int
 
-    function TransmissionLine(name::AbstractString; z0::Real=50.0, length_m::Real, alpha::Real=0.0)
-        new(String(name), Float64(z0), Float64(length_m), Float64(alpha), 0, 0, 0, 0)
+    z0::Float64
+    length_m::Float64
+    alpha::Float64
+
+    function TransmissionLine(name::AbstractString;
+        z0::Real=50.0,
+        length_m::Real,
+        alpha::Real=0.0
+    )
+        new(String(name), 0, 0, 0, 0, Float64(z0), Float64(length_m), Float64(alpha))
     end
 end
 

@@ -26,17 +26,21 @@ gap = MicrostripGap("MG1", sub, w1=3.0e-3, w2=3.0e-3, s=0.2e-3)
 """
 mutable struct MicrostripGap <: AbstractMicrostripGap
     name::String
+
     n1::Int
     n2::Int
+
     substrate::Substrate
     w1::Real        # Width at port 1 (m)
     w2::Real        # Width at port 2 (m)
     s::Real         # Gap spacing (m)
 
-    function MicrostripGap(name::AbstractString, substrate::Substrate;
+    function MicrostripGap(name::AbstractString;
+        substrate::Substrate,
         w1::Real=1e-3,
         w2::Real=1e-3,
-        s::Real=0.1e-3)
+        s::Real=0.1e-3
+    )
         w1 > 0 || throw(ArgumentError("Width 1 must be positive"))
         w2 > 0 || throw(ArgumentError("Width 2 must be positive"))
         s > 0 || throw(ArgumentError("Gap spacing must be positive"))

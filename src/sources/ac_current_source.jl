@@ -32,14 +32,20 @@ I2 = ACCurrentSource("I2", 0.01, dc=0.005, freq=50.0)
 """
 mutable struct ACCurrentSource <: AbstractACCurrentSource
     name::String
+
     nplus::Int
     nminus::Int
+
     dc::Real
     ac_mag::Real
     ac_phase::Real  # degrees
     freq::Real      # Hz, for transient
-    ACCurrentSource(name::AbstractString, ac_mag::Real; dc::Real=0.0, ac_phase::Real=0.0, freq::Real=1e6) =
-        new(String(name), 0, 0, dc, ac_mag, ac_phase, freq)
+    ACCurrentSource(name::AbstractString;
+        ac_mag::Real,
+        dc::Real=0.0,
+        ac_phase::Real=0.0,
+        freq::Real=1e6
+    ) = new(String(name), 0, 0, dc, ac_mag, ac_phase, freq)
 end
 
 function to_qucs_netlist(comp::ACCurrentSource)::String

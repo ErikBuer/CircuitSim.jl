@@ -14,7 +14,7 @@ circ = Circuit()
 port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 
 # 100 Ω resistor
-res = Resistor("R1", 100)
+res = Resistor("R1", resistance=100)
 
 # Ground
 gnd = Ground("GND")

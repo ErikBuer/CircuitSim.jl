@@ -3,9 +3,9 @@
 ```@example ground
 using CircuitSim
 
-V = DCVoltageSource("V1", 5.0)
-R1 = Resistor("R1", 1000.0)
-R2 = Resistor("R2", 2000.0)
+V = DCVoltageSource("V1", voltage=5.0)
+R1 = Resistor("R1", resistance=1000.0)
+R2 = Resistor("R2", resistance=2000.0)
 GND = Ground("GND")
 
 circ = Circuit()

@@ -11,8 +11,8 @@ using CircuitSim
 inoise = CurrentCurrentNoiseSource("IIN1", i1=1e-9, i2=1e-9, c_corr=0.5)
 
 # Load resistors to convert current noise to voltage
-r1 = Resistor("R1", 1000.0)
-r2 = Resistor("R2", 1000.0)
+r1 = Resistor("R1", resistance=1000.0)
+r2 = Resistor("R2", resistance=1000.0)
 GND = Ground("GND")
 
 circ = Circuit()

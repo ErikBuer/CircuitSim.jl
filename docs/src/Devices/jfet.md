@@ -13,14 +13,14 @@ using CircuitSim
 circ = Circuit()
 
 # DC sources
-vdd = DCVoltageSource("VDD", 12.0)
-vgs = DCVoltageSource("VGS", -1.0)
+vdd = DCVoltageSource("VDD", voltage=12.0)
+vgs = DCVoltageSource("VGS", voltage=-1.0)
 
 # JFET (N-channel)
 jfet = JFET("J1", Type="nfet", Beta=2e-3, Vt0=-2.0)
 
 # Load resistor
-rd = Resistor("RD", 2000)
+rd = Resistor("RD", resistance=2000)
 gnd = Ground("GND")
 
 add_component!(circ, vdd)
