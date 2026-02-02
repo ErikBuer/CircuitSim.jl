@@ -351,9 +351,9 @@ function simulate_qucsator(c::Circuit, analysis::SParameterAnalysis; suppress_wa
 end
 
 """
-    simulate_qucsator(c::Circuit, analysis::AbstractAnalysis; suppress_warnings::Bool=false) -> QucsDataset
+    simulate_qucsator(c::Circuit, analysis::AbstractAnalysis; suppress_warnings::Bool=false) -> QucsatorDataset
 
-Fallback for other analysis types - returns raw QucsDataset.
+Fallback for other analysis types - returns raw QucsatorDataset.
 
 # Example
 ```julia
@@ -361,11 +361,11 @@ dataset = simulate_qucsator(circ, HarmonicBalanceAnalysis(1e9))
 dataset = simulate_qucsator(circ, NoiseAnalysis(1e6, 1e9, 101, "out", "V1"))
 ```
 """
-function simulate_qucsator(c::Circuit, analysis::AbstractAnalysis; suppress_warnings::Bool=false)::QucsDataset
+function simulate_qucsator(c::Circuit, analysis::AbstractAnalysis; suppress_warnings::Bool=false)::QucsatorDataset
     success, output, netlist = run_qucsator(c, analysis, suppress_warnings=suppress_warnings)
 
     if !success
-        return QucsDataset(
+        return QucsatorDataset(
             SIM_ERROR,
             "",
             Dict{String,DataVector}(),
