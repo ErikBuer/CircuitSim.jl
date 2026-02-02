@@ -6,15 +6,15 @@ using GLMakie
 circ = Circuit()
 
 # Ports
-port1 = ACPowerSource(&quot;P1&quot;, 1, impedance=50.0)
-port2 = ACPowerSource(&quot;P2&quot;, 2, impedance=50.0)
+port1 = ACPowerSource(&quot;P1&quot;, port_num=1, impedance=50.0)
+port2 = ACPowerSource(&quot;P2&quot;, port_num=2, impedance=50.0)
 add_component!(circ, port1)
 add_component!(circ, port2)
 
 # Components
 L1 = Inductor(&quot;L1&quot;, 80e-9)    # 80 nH
-C1 = Capacitor(&quot;C1&quot;, 32e-12)  # 32 pF
-C2 = Capacitor(&quot;C2&quot;, 32e-12)  # 32 pF
+C1 = Capacitor(&quot;C1&quot;, capacitance=32e-12)  # 32 pF
+C2 = Capacitor(&quot;C2&quot;, capacitance=32e-12)  # 32 pF
 add_component!(circ, L1)
 add_component!(circ, C1)
 add_component!(circ, C2)
@@ -87,8 +87,8 @@ add_component!(circ_ac, r_load)
 
 # Same filter components
 L1_ac = Inductor(&quot;L1&quot;, 80e-9)
-C1_ac = Capacitor(&quot;C1&quot;, 32e-12)
-C2_ac = Capacitor(&quot;C2&quot;, 32e-12)
+C1_ac = Capacitor(&quot;C1&quot;, capacitance=32e-12)
+C2_ac = Capacitor(&quot;C2&quot;, capacitance=32e-12)
 add_component!(circ_ac, L1_ac)
 add_component!(circ_ac, C1_ac)
 add_component!(circ_ac, C2_ac)
@@ -148,4 +148,4 @@ lines!(ax2, freq_ac_mhz, v_out_db, label=&quot;Output Voltage&quot;, linewidth=2
 xlims!(ax2, 0, 1000)
 axislegend(ax2, position=:lb)
 
-fig2</code></pre><img src="3b8c49c7.png" alt="Example block output"/><p>The AC analysis shows the same frequency response as the S-parameter analysis, but expressed as node voltages rather than scattering parameters.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../Devices/equation_defined/">« Equation Defined Device (EDD)</a><a class="docs-footer-nextpage" href="../dc_divider/">DC Analysis - Resistor Divider »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Sunday 14 December 2025 18:49">Sunday 14 December 2025</span>. Using Julia version 1.11.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+fig2</code></pre><img src="3b8c49c7.png" alt="Example block output"/><p>The AC analysis shows the same frequency response as the S-parameter analysis, but expressed as node voltages rather than scattering parameters.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../Devices/equation_defined/">« Equation Defined Device (EDD)</a><a class="docs-footer-nextpage" href="../dc_divider/">DC Analysis - Resistor Divider »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Monday 2 February 2026 18:20">Monday 2 February 2026</span>. Using Julia version 1.11.8.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
