@@ -27,7 +27,10 @@ mutable struct Capacitor <: AbstractCapacitor
     capacitance::Real
     initial_voltage::Real
 
-    function Capacitor(name::AbstractString, capacitance::Real, initial_voltage::Real=0.0)
+    function Capacitor(name::AbstractString;
+        capacitance::Real=1e9,
+        initial_voltage::Real=0.0
+    )
         new(String(name), 0, 0, capacitance, initial_voltage)
     end
 end

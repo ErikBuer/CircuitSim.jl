@@ -27,9 +27,8 @@ mutable struct Amplifier <: AbstractPowerAmplifier
     z_in::Real
     z_out::Real
 
-    function Amplifier(
-        name::AbstractString,
-        gain::Real,
+    function Amplifier(name::AbstractString;
+        gain::Real=1.0,
         nf::Real=1.0;
         z_in::Real=50.0,
         z_out::Real=50.0

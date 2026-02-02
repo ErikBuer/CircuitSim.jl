@@ -24,8 +24,11 @@ mutable struct Attenuator <: AbstractAttenuator
     z0::Real
     temp::Real
 
-    function Attenuator(name::AbstractString, attenuation::Real;
-        z0::Real=50.0, temp::Real=26.85)
+    function Attenuator(name::AbstractString;
+        attenuation::Real=1.0,
+        z0::Real=50.0,
+        temp::Real=26.85
+    )
         attenuation >= 0 || throw(ArgumentError("Attenuation must be non-negative"))
         z0 > 0 || throw(ArgumentError("Impedance must be positive"))
         new(String(name), 0, 0, attenuation, z0, temp)
@@ -43,20 +46,8 @@ function to_qucs_netlist(comp::Attenuator)::String
 end
 
 function to_spice_netlist(comp::Attenuator)::String
-    # Pi-network attenuator for SPICE
-    # K = 10^(attenuation/20)
-    # R1 = R2 = Z0 * (K - 1) / (K + 1)
-    # R3 = Z0 * 2*K / (K^2 - 1)
-    k = 10^(comp.attenuation / 20)
-    r1 = comp.z0 * (k - 1) / (k + 1)
-    r3 = comp.z0 * 2 * k / (k^2 - 1)
-
-    lines = String[]
-    push!(lines, "* Pi Attenuator $(comp.name): $(comp.attenuation) dB")
-    push!(lines, "R$(comp.name)_1 $(comp.n1) 0 $(r1)")
-    push!(lines, "R$(comp.name)_3 $(comp.n1) $(comp.n2) $(r3)")
-    push!(lines, "R$(comp.name)_2 $(comp.n2) 0 $(r1)")
-    return join(lines, "\n")
+    # SPICE doesn't have a direct attenuator component - output warning
+    return ""
 end
 
 function _get_node_number(component::Attenuator, pin::Symbol)::Int
