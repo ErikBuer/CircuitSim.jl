@@ -11,13 +11,15 @@ Capacitor with quality factor for RF simulations.
 - `capacitance::Real`: Capacitance in Farads
 - `q::Real`: Quality factor (Q) at the specified frequency
 - `frequency::Real`: frequency in Hz where Q is specified (default: 1 GHz)
+- `mode::String`: Q frequency dependency mode - "Linear", "SquareRoot", or "Constant" (default: "Linear")
+- `temp::Real`: Temperature in Celsius for noise calculations (default: 26.85°C)
 
 # Example
 
 ```julia
 using CircuitSim
-C1 = CapacitorQ("C1", 10e-12, 50.0)  # 10pF capacitor with Q=50
-C2 = CapacitorQ("C2", 100e-12, 100.0, frequency=2.4e9)  # 100pF, Q=100 at 2.4 GHz
+C1 = CapacitorQ("C1", capacitance=10e-12, q=50.0)  # 10pF capacitor with Q=50
+C2 = CapacitorQ("C2", capacitance=100e-12, q=100.0, frequency=2.4e9, mode="SquareRoot")  # 100pF, Q=100 at 2.4 GHz
 ```
 """
 mutable struct CapacitorQ <: AbstractCapacitor
@@ -29,29 +31,37 @@ mutable struct CapacitorQ <: AbstractCapacitor
     capacitance::Real
     q::Real
     frequency::Real
+    mode::String
+    temp::Real
 
     function CapacitorQ(name::AbstractString;
         capacitance::Real,
         q::Real,
-        frequency::Real=1e9
+        frequency::Real=1e9,
+        mode::String="Linear",
+        temp::Real=26.85
     )
         capacitance > 0 || throw(ArgumentError("Capacitance must be positive"))
         q > 0 || throw(ArgumentError("Quality factor must be positive"))
-        frequency > 0 || throw(ArgumentError("frequencyuency must be positive"))
-        new(String(name), 0, 0, capacitance, q, frequency)
+        frequency > 0 || throw(ArgumentError("Frequency must be positive"))
+        mode in ["Linear", "SquareRoot", "Constant"] || throw(ArgumentError("Mode must be one of: Linear, SquareRoot, Constant"))
+        new(String(name), 0, 0, capacitance, q, frequency, mode, temp)
     end
 end
 
 function to_qucs_netlist(comp::CapacitorQ)::String
-    # Qucsator-RF uses CAPQ component with properties C, Q, f, Mode
-    # CAPQ:name n1 n2 C="capacitance" Q="q" f="frequency" Mode="Constant"
+    # Qucsator-RF uses CAPQ component with properties C, Q, f, Mode, Temp
+    # CAPQ:name n1 n2 C="capacitance" Q="q" f="frequency" Mode="mode" Temp="temp"
     parts = ["CAPQ:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n1))")
     push!(parts, "$(qucs_node(comp.n2))")
     push!(parts, "C=\"$(format_capacitance(comp.capacitance))\"")
-    push!(parts, "Q=\"$(format_capacitance(comp.q))\"")
-    push!(parts, "f=\"$(format_capacitance(comp.frequency))\"")
-    push!(parts, "Mode=\"Constant\"")
+    push!(parts, "Q=\"$(format_value(comp.q))\"")
+    push!(parts, "f=\"$(format_value(comp.frequency))\"")
+    push!(parts, "Mode=\"$(comp.mode)\"")
+    if comp.temp != 26.85
+        push!(parts, "Temp=\"$(comp.temp)\"")
+    end
     return join(parts, " ")
 end
 
