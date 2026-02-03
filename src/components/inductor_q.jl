@@ -11,13 +11,15 @@ Inductor with quality factor for RF simulations.
 - `inductance::Real`: Inductance in Henries
 - `q::Real`: Quality factor (Q) at the specified frequency
 - `freq::Real`: Frequency in Hz where Q is specified (default: 1 GHz)
+- `mode::String`: Q frequency dependency mode - "Linear", "SquareRoot", or "Constant" (default: "Linear")
+- `temp::Real`: Temperature in Celsius for noise calculations (default: 26.85°C)
 
 # Example
 
 ```julia
 using CircuitSim
-L1 = InductorQ("L1", 10e-9, 30.0)  # 10nH inductor with Q=30
-L2 = InductorQ("L2", 100e-9, 50.0, freq=2.4e9)  # 100nH, Q=50 at 2.4 GHz
+L1 = InductorQ("L1", inductance=10e-9, q=30.0)  # 10nH inductor with Q=30
+L2 = InductorQ("L2", inductance=100e-9, q=50.0, freq=2.4e9, mode="SquareRoot")  # 100nH, Q=50 at 2.4 GHz
 ```
 """
 mutable struct InductorQ <: AbstractInductor
@@ -29,29 +31,37 @@ mutable struct InductorQ <: AbstractInductor
     inductance::Real
     q::Real
     freq::Real
+    mode::String
+    temp::Real
 
     function InductorQ(name::AbstractString;
         inductance::Real,
         q::Real,
-        freq::Real=1e9
+        freq::Real=1e9,
+        mode::String="Linear",
+        temp::Real=26.85
     )
         inductance > 0 || throw(ArgumentError("Inductance must be positive"))
         q > 0 || throw(ArgumentError("Quality factor must be positive"))
         freq > 0 || throw(ArgumentError("Frequency must be positive"))
-        new(String(name), 0, 0, inductance, q, freq)
+        mode in ["Linear", "SquareRoot", "Constant"] || throw(ArgumentError("Mode must be one of: Linear, SquareRoot, Constant"))
+        new(String(name), 0, 0, inductance, q, freq, mode, temp)
     end
 end
 
 function to_qucs_netlist(comp::InductorQ)::String
-    # Qucsator-RF uses INDQ component with properties L, Q, f, Mode
-    # INDQ:name n1 n2 L="inductance" Q="q" f="freq" Mode="Constant"
+    # Qucsator-RF uses INDQ component with properties L, Q, f, Mode, Temp
+    # INDQ:name n1 n2 L="inductance" Q="q" f="freq" Mode="mode" Temp="temp"
     parts = ["INDQ:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n1))")
     push!(parts, "$(qucs_node(comp.n2))")
     push!(parts, "L=\"$(format_inductance(comp.inductance))\"")
-    push!(parts, "Q=\"$(format_inductance(comp.q))\"")
-    push!(parts, "f=\"$(format_inductance(comp.freq))\"")
-    push!(parts, "Mode=\"Constant\"")
+    push!(parts, "Q=\"$(format_value(comp.q))\"")
+    push!(parts, "f=\"$(format_value(comp.freq))\"")
+    push!(parts, "Mode=\"$(comp.mode)\"")
+    if comp.temp != 26.85
+        push!(parts, "Temp=\"$(comp.temp)\"")
+    end
     return join(parts, " ")
 end
 
