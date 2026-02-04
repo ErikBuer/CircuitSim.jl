@@ -5,14 +5,14 @@
 circ = Circuit()
 
 # DC sources
-vdd = DCVoltageSource(&quot;VDD&quot;, 5.0)
-vgs = DCVoltageSource(&quot;VGS&quot;, 2.0)
+vdd = DCVoltageSource(&quot;VDD&quot;, voltage=5.0)
+vgs = DCVoltageSource(&quot;VGS&quot;, voltage=2.0)
 
 # MOSFET (N-channel, W=10um, L=1um)
 mosfet = MOSFET(&quot;M1&quot;, Type=&quot;nfet&quot;, Kp=200e-6, Vt0=0.7, W=10e-6, L=1e-6)
 
 # Load resistor
-rd = Resistor(&quot;RD&quot;, 1000)
+rd = Resistor(&quot;RD&quot;, resistance=1000)
 gnd = Ground(&quot;GND&quot;)
 
 add_component!(circ, vdd)
@@ -45,6 +45,6 @@ println(&quot;MOSFET DC operating point:&quot;)
 println(&quot;  VGS = $(round(v_gate, digits=2)) V&quot;)
 println(&quot;  VDS = $(round(v_ds, digits=2)) V&quot;)
 println(&quot;  ID = $(round(i_d * 1000, digits=2)) mA&quot;)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">MOSFET DC operating point:
-  VGS = 3.31 V
+  VGS = 5.0 V
   VDS = 2.0 V
-  ID = 3.0 mA</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../diac/">« DIAC</a><a class="docs-footer-nextpage" href="../thyristor/">Thyristor (SCR) »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Monday 2 February 2026 18:20">Monday 2 February 2026</span>. Using Julia version 1.11.8.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+  ID = 1.31 mA</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../diac/">« DIAC</a><a class="docs-footer-nextpage" href="../thyristor/">Thyristor (SCR) »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Wednesday 4 February 2026 13:30">Wednesday 4 February 2026</span>. Using Julia version 1.11.8.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

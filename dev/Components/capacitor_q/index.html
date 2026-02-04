@@ -11,7 +11,7 @@ port2 = ACPowerSource(&quot;P2&quot;, port_num=2, impedance=50.0)
 add_component!(circ, port1)
 add_component!(circ, port2)
 
-cap_q = CapacitorQ(&quot;C1&quot;, 100e-12, 100.0, freq=100e6)
+cap_q = CapacitorQ(&quot;C1&quot;, capacitance=100e-12, q=100.0, frequency=100e6)
 add_component!(circ, cap_q)
 
 # Ground
@@ -60,7 +60,7 @@ ax1 = Axis(fig1[1, 1],
 
 lines!(ax1, freq_MHz, abs.(z_cap), linewidth=2, color=:blue)
 
-fig1</code></pre><img src="5e7da256.png" alt="Example block output"/><h3 id="S-Parameter-Magnitude"><a class="docs-heading-anchor" href="#S-Parameter-Magnitude">S-Parameter Magnitude</a><a id="S-Parameter-Magnitude-1"></a><a class="docs-heading-anchor-permalink" href="#S-Parameter-Magnitude" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig2 = Figure(size=(900, 600), fontsize=14)
+fig1</code></pre><img src="c2a905f1.png" alt="Example block output"/><h3 id="S-Parameter-Magnitude"><a class="docs-heading-anchor" href="#S-Parameter-Magnitude">S-Parameter Magnitude</a><a id="S-Parameter-Magnitude-1"></a><a class="docs-heading-anchor-permalink" href="#S-Parameter-Magnitude" title="Permalink"></a></h3><pre><code class="language-julia hljs">fig2 = Figure(size=(900, 600), fontsize=14)
 
 ax2 = Axis(fig2[1, 1],
     xlabel = &quot;Frequency [MHz]&quot;,
@@ -75,4 +75,4 @@ lines!(ax2, freq_MHz, s11_db, label=&quot;S₁₁ (Reflection)&quot;, linewidth=
 ylims!(ax2, -30, 5)
 axislegend(ax2, position=:rb)
 
-fig2</code></pre><img src="f15bd0d5.png" alt="Example block output"/></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../capacitor/">« Capacitor</a><a class="docs-footer-nextpage" href="../inductor/">Inductor »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Monday 2 February 2026 18:20">Monday 2 February 2026</span>. Using Julia version 1.11.8.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+fig2</code></pre><img src="a2fea3f7.png" alt="Example block output"/></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../capacitor/">« Capacitor</a><a class="docs-footer-nextpage" href="../inductor/">Inductor »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Wednesday 4 February 2026 13:30">Wednesday 4 February 2026</span>. Using Julia version 1.11.8.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
