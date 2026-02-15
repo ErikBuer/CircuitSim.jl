@@ -1,7 +1,5 @@
 module CircuitSim
 
-# Exports
-
 # Core types
 export Pin, pin, Circuit, add_component!, connect!, @connect, assign_nodes!
 
