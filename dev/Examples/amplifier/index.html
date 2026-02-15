@@ -25,7 +25,7 @@ add_component!(circ, gnd)
 @connect circ amp.output port2.nplus
 @connect circ port1.nminus gnd.n
 @connect circ port2.nminus gnd.n</code></pre><h2 id="S-Parameter-Simulation"><a class="docs-heading-anchor" href="#S-Parameter-Simulation">S-Parameter Simulation</a><a id="S-Parameter-Simulation-1"></a><a class="docs-heading-anchor-permalink" href="#S-Parameter-Simulation" title="Permalink"></a></h2><p>Measure S-parameters at 2.4 GHz (qucsator requires at least 2 points).</p><pre><code class="language-julia hljs"># S-parameter analysis: 2.4 GHz with minimal span (2 points required by simulator)
-analysis = SParameterAnalysis(2.4e9, 2.4001e9, 2, z0=50.0)
+analysis = SParameterAnalysis(start=2.4e9, stop=2.4001e9, points=2, z0=50.0)
 
 # Run simulation - returns typed SParameterResult directly
 sp_result = simulate_qucsator(circ, analysis)
@@ -48,7 +48,7 @@ println(&quot;S22 (output reflection) = $(s22_dB) dB&quot;)</code></pre><pre cla
 S21 (forward gain) = 20.0 dB
 S12 (reverse isolation) = -Inf dB
 S22 (output reflection) = -Inf dB</code></pre><h2 id="Noise-Parameters"><a class="docs-heading-anchor" href="#Noise-Parameters">Noise Parameters</a><a id="Noise-Parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Noise-Parameters" title="Permalink"></a></h2><p>Enable noise parameter extraction to get noise figure, minimum noise figure, optimal source reflection coefficient, and equivalent noise resistance.</p><pre><code class="language-julia hljs"># S-parameter analysis with noise enabled
-analysis_noise = SParameterAnalysis(2.4e9, 2.4001e9, 2, z0=50.0, noise=true)
+analysis_noise = SParameterAnalysis(start=2.4e9, stop=2.4001e9, points=2, z0=50.0, noise=true)
 sp_noise = simulate_qucsator(circ, analysis_noise)
 
 # Extract noise parameters at first frequency
@@ -68,4 +68,4 @@ end</code></pre><pre class="documenter-example-output"><code class="nohighlight 
   F (Noise Figure) = 3.01 dB
   Fmin (Minimum NF) = NaN dB
   Γopt = NaN ∠ NaN°
-  Rn = 12.5 Ω</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Wednesday 4 February 2026 13:30">Wednesday 4 February 2026</span>. Using Julia version 1.11.8.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+  Rn = 12.5 Ω</code></pre></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Sunday 15 February 2026 16:14">Sunday 15 February 2026</span>. Using Julia version 1.11.9.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
