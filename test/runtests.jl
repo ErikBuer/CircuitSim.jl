@@ -10,4 +10,7 @@ DocMeta.setdocmeta!(CircuitSim, :DocTestSetup, :(using CircuitSim); recursive=tr
 Documenter.doctest(CircuitSim)
 """
 
+
+using GLMakie
 include("test_capacitor.jl")
+include("test_ac_analysis.jl")

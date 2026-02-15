@@ -39,7 +39,7 @@ Measure S-parameters at 2.4 GHz (qucsator requires at least 2 points).
 
 ```@example amp
 # S-parameter analysis: 2.4 GHz with minimal span (2 points required by simulator)
-analysis = SParameterAnalysis(2.4e9, 2.4001e9, 2, z0=50.0)
+analysis = SParameterAnalysis(start=2.4e9, stop=2.4001e9, points=2, z0=50.0)
 
 # Run simulation - returns typed SParameterResult directly
 sp_result = simulate_qucsator(circ, analysis)
@@ -67,7 +67,7 @@ Enable noise parameter extraction to get noise figure, minimum noise figure, opt
 
 ```@example amp
 # S-parameter analysis with noise enabled
-analysis_noise = SParameterAnalysis(2.4e9, 2.4001e9, 2, z0=50.0, noise=true)
+analysis_noise = SParameterAnalysis(start=2.4e9, stop=2.4001e9, points=2, z0=50.0, noise=true)
 sp_noise = simulate_qucsator(circ, analysis_noise)
 
 # Extract noise parameters at first frequency

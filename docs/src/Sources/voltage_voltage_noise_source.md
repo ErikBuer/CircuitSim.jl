@@ -31,7 +31,7 @@ add_component!(circ, GND)
 @connect circ r2.nminus GND
 
 # Noise analysis
-noise_analysis = NoiseAnalysis(1.0, 1e6, 100, "_net1", "VVN1")
+noise_analysis = NoiseAnalysis(start=1.0, stop=1e6, points=100, output_node="_net1", source="VVN1")
 result = simulate_qucsator(circ, noise_analysis)
 
 println("Correlated voltage noise sources with correlation = 0.8")

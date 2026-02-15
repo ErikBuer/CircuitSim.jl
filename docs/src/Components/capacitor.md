@@ -1,6 +1,9 @@
 # Capacitor
 
 ```@example capacitor
+using CircuitSim
+using GLMakie
+
 circ = Circuit()
 
 P1 = ACPowerSource("P1", port_num=1, impedance=50.0)
@@ -20,7 +23,7 @@ add_component!(circ, gnd)
 @connect circ P1.nminus gnd
 @connect circ P2.nminus gnd
 
-sp_result = simulate_qucsator(circ, SParameterAnalysis(1e6, 100e6, 101; sweep_type=LINEAR))
+sp_result = simulate_qucsator(circ, SParameterAnalysis(start=1e6, stop=100e6, points=101, sweep_type="linear"))
 
 freq_GHz = sp_result.frequencies_Hz ./ 1e9
 

@@ -28,7 +28,7 @@ add_component!(circ, gnd)
 @connect circ port1.nminus gnd
 
 # S-parameter analysis
-sp_analysis = SParameterAnalysis(1e9, 10e9, 50, z0=50.0)
+sp_analysis = SParameterAnalysis(start=1e9, stop=10e9, points=50, z0=50.0)
 result = simulate_qucsator(circ, sp_analysis)
 
 freq = result.frequencies_Hz

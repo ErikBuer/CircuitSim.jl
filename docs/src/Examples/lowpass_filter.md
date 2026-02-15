@@ -60,8 +60,8 @@ Simulate S-parameters from 1 MHz to 1 GHz.
 
 ```@example lpf
 # Define S-parameter analysis
-sparam = SParameterAnalysis(1e6, 1e9, 201,
-    sweep_type=LINEAR,
+sparam = SParameterAnalysis(start=1e6, stop=1e9, points=201,
+    sweep_type="linear",
     z0=50.0
 )
 
@@ -165,7 +165,7 @@ add_component!(circ_ac, v_out_probe)
 @connect circ_ac gnd_ac.n v_out_probe.n2
 
 # AC analysis from 1 MHz to 1 GHz
-ac_analysis = ACAnalysis(1e6, 1e9, 201, sweep_type=LINEAR)
+ac_analysis = ACAnalysis(start=1e6, stop=1e9, points=201, sweep_type="linear")
 ac_result = simulate_qucsator(circ_ac, ac_analysis)
 
 println("AC analysis completed:")
