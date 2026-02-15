@@ -24,7 +24,7 @@ analysis = HarmonicBalanceAnalysis(harmonics=7, frequency=1e9)
 analysis = HarmonicBalanceAnalysis(harmonics=11, frequency=100e6, reltol=1e-4)
 ```
 """
-struct HarmonicBalanceAnalysis <: AbstractAnalysis
+mutable struct HarmonicBalanceAnalysis <: AbstractAnalysis
     name::String
     harmonics::Int
     frequency::Real
@@ -35,13 +35,13 @@ struct HarmonicBalanceAnalysis <: AbstractAnalysis
 end
 
 function HarmonicBalanceAnalysis(;
-    harmonics::Int,
+    name::String="HB1",
+    harmonics::Int=3,
     frequency::Real=1e9,
     iabstol::Real=1e-12,
     vabstol::Real=1e-6,
     reltol::Real=1e-3,
-    max_iterations::Int=150,
-    name::String="HB1"
+    max_iterations::Int=150
 )
     harmonics >= 1 || throw(ArgumentError("Number of harmonics must be at least 1"))
     frequency > 0 || throw(ArgumentError("Frequency must be positive"))

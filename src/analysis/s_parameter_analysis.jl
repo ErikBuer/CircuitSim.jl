@@ -45,7 +45,7 @@ analysis = SParameterAnalysis(start=1e6, stop=1e9, points=201, noise=true)
 analysis = SParameterAnalysis(values=[1e6, 10e6, 100e6, 1e9], sweep_type="list")
 ```
 """
-struct SParameterAnalysis <: AbstractSweepAnalysis
+mutable struct SParameterAnalysis <: AbstractSweepAnalysis
     name::String
     start::Union{Nothing,Real}
     stop::Union{Nothing,Real}
@@ -60,48 +60,22 @@ end
 
 # Main constructor
 function SParameterAnalysis(;
-    start::Union{Nothing,Real}=nothing,
-    stop::Union{Nothing,Real}=nothing,
-    points::Union{Nothing,Int}=nothing,
-    values::Union{Nothing,Vector{<:Real},Real}=nothing,
+    name::String="SP1",
+    start::Real=1e6,
+    stop::Real=100e6,
+    points::Int=101,
+    values::Union{Vector{<:Real},Real}=1e6,
     sweep_type::String="log",
     z0::Real=50.0,
     noise::Bool=false,
     noise_input_port::Int=1,
-    noise_output_port::Int=2,
-    name::String="SP1"
+    noise_output_port::Int=2
 )
     sweep_lower = lowercase(sweep_type)
 
     # Validate parameters based on sweep type
-    if sweep_lower in ("lin", "linear", "log", "logarithmic")
-        if isnothing(start) || isnothing(stop) || isnothing(points)
-            throw(ArgumentError("LINEAR and LOGARITHMIC sweeps require start, stop, and points parameters"))
-        end
-        if !isnothing(values)
-            throw(ArgumentError("LINEAR and LOGARITHMIC sweeps cannot use values parameter"))
-        end
-        start > 0 || throw(ArgumentError("Start frequency must be positive"))
-        stop > start || throw(ArgumentError("Stop frequency must be greater than start"))
-        points >= 2 || throw(ArgumentError("Number of points must be at least 2"))
-    elseif sweep_lower == "list"
-        if isnothing(values) || !(values isa Vector)
-            throw(ArgumentError("LIST sweep requires values as a Vector"))
-        end
-        if !isnothing(start) || !isnothing(stop) || !isnothing(points)
-            throw(ArgumentError("LIST sweep cannot use start, stop, or points parameters"))
-        end
-        all(v -> v > 0, values) || throw(ArgumentError("All frequency values must be positive"))
-    elseif sweep_lower in ("const", "constant")
-        if isnothing(values) || !(values isa Real)
-            throw(ArgumentError("CONSTANT sweep requires values as a single Real number"))
-        end
-        if !isnothing(start) || !isnothing(stop) || !isnothing(points)
-            throw(ArgumentError("CONSTANT sweep cannot use start, stop, or points parameters"))
-        end
-        values > 0 || throw(ArgumentError("Frequency value must be positive"))
-    else
-        throw(ArgumentError("Invalid sweep_type: \"$sweep_type\". Must be 'log'/'logarithmic', 'lin'/'linear', 'list', or 'const'/'constant'"))
+    if !(sweep_lower in ("lin", "linear", "log", "logarithmic", "list"))
+        throw(ArgumentError("Invalid sweep_type: \"$sweep_type\". Must be 'log'/'logarithmic', 'lin'/'linear', or 'list'"))
     end
 
     z0 > 0 || throw(ArgumentError("Reference impedance must be positive"))
@@ -130,9 +104,6 @@ function to_qucs_analysis(a::SParameterAnalysis)::String
         push!(parts, "Type=\"list\"")
         values_str = "[" * join(format_value.(a.values), ";") * "]"
         push!(parts, "Values=\"$values_str\"")
-    elseif sweep_lower in ("const", "constant")
-        push!(parts, "Type=\"const\"")
-        push!(parts, "Values=\"$(format_value(a.values))\"")
     end
 
     push!(parts, "Z0=\"$(format_value(a.z0))\"")

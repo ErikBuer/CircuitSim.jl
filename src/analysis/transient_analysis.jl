@@ -33,7 +33,7 @@ analysis = TransientAnalysis(stop=10e-6, step=10e-9, integration_method="gear", 
 analysis = TransientAnalysis(stop=1e-3, points=501, integration_method="euler")
 ```
 """
-struct TransientAnalysis <: AbstractAnalysis
+mutable struct TransientAnalysis <: AbstractAnalysis
     name::String
     start::Real
     stop::Real
@@ -44,14 +44,14 @@ struct TransientAnalysis <: AbstractAnalysis
 end
 
 function TransientAnalysis(;
+    name::String="TR1",
     stop::Real,
     start::Real=0.0,
     points::Union{Int,Nothing}=nothing,
     step::Union{Real,Nothing}=nothing,
     integration_method::String="trapezoidal",
     order::Int=2,
-    initial_dc::Bool=true,
-    name::String="TR1"
+    initial_dc::Bool=true
 )
     stop > start || throw(ArgumentError("Stop time must be greater than start time"))
 

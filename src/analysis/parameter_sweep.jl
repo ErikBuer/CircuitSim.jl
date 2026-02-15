@@ -28,7 +28,7 @@ ac = ACAnalysis(start=1.0, stop=1e6, points=101)
 sweep = ParameterSweep(param="C1.C", start=1e-12, stop=1e-9, points=20, inner_analysis=ac, sweep_type="log")
 ```
 """
-struct ParameterSweep <: AbstractSweepAnalysis
+mutable struct ParameterSweep <: AbstractSweepAnalysis
     name::String
     param::String
     start::Real
@@ -39,13 +39,13 @@ struct ParameterSweep <: AbstractSweepAnalysis
 end
 
 function ParameterSweep(;
-    param::String,
-    start::Real,
-    stop::Real,
-    points::Int,
+    name::String="SW1",
+    param::String="",
+    start::Real=0.0,
+    stop::Real=1.0,
+    points::Int=10,
     inner_analysis::AbstractAnalysis,
-    sweep_type::String="lin",
-    name::String="SW1"
+    sweep_type::String="lin"
 )
     points >= 2 || throw(ArgumentError("Number of points must be at least 2"))
     sweep_lower = lowercase(sweep_type)

@@ -12,25 +12,6 @@ Abstract type for sweep-based analyses (AC, SP, parameter sweeps).
 """
 abstract type AbstractSweepAnalysis <: AbstractAnalysis end
 
-
-"""
-    SweepType
-
-Sweep type for frequency or parameter sweeps.
-
-Values:
-- `LINEAR`: Linear sweep
-- `LOGARITHMIC`: Logarithmic sweep
-- `LIST`: List of discrete values
-- `CONSTANT`: Single constant value
-"""
-@enum SweepType begin
-    LINEAR      # Linear sweep
-    LOGARITHMIC # Logarithmic sweep
-    LIST        # List of discrete values
-    CONSTANT    # Single constant value
-end
-
 """
     to_qucs_analysis(analysis::AbstractAnalysis) -> String
 
