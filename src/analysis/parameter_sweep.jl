@@ -1,31 +1,31 @@
 """
-    ParameterSweep(param, start, stop, points, inner_analysis; type=LINEAR, name="SW1")
+    ParameterSweep(; param, start, stop, points, inner_analysis, sweep_type="lin", name="SW1")
 
 Parameter sweep analysis.
 
 Sweeps a component parameter and runs an inner analysis at each point.
 
-# Parameters
+## Parameters
 
-- `param::String`: Parameter name to sweep (e.g., "R1.R" for resistor R1's resistance)
-- `start::Real`: Start value
-- `stop::Real`: Stop value  
-- `points::Int`: Number of sweep points
-- `inner_analysis::AbstractAnalysis`: Analysis to run at each sweep point
-- `sweep_type::SweepType`: Type of sweep (LINEAR or LOGARITHMIC, default: LINEAR)
+- `param::String`: Parameter name to sweep (e.g., "R1.R" for resistor R1's resistance) (required)
+- `start::Real`: Start value (required)
+- `stop::Real`: Stop value (required)
+- `points::Int`: Number of sweep points (required)
+- `inner_analysis::AbstractAnalysis`: Analysis to run at each sweep point (required)
+- `sweep_type::String`: "lin"/"linear" or "log"/"logarithmic" (default: "lin")
 - `name::String`: Analysis name (default: "SW1")
 
-# Example
+## Example
 
 ```julia
 # Sweep R1 from 1kΩ to 10kΩ and run DC analysis at each point
 dc = DCAnalysis()
-sweep = ParameterSweep("R1.R", 1e3, 10e3, 10, dc)
+sweep = ParameterSweep(param="R1.R", start=1e3, stop=10e3, points=10, inner_analysis=dc)
 result = simulate_qucsator(circuit, sweep)
 
 # Logarithmic parameter sweep with AC inner analysis
-ac = ACAnalysis(1.0, 1e6, 101)
-sweep = ParameterSweep("C1.C", 1e-12, 1e-9, 20, ac, sweep_type=LOGARITHMIC)
+ac = ACAnalysis(start=1.0, stop=1e6, points=101)
+sweep = ParameterSweep(param="C1.C", start=1e-12, stop=1e-9, points=20, inner_analysis=ac, sweep_type="log")
 ```
 """
 struct ParameterSweep <: AbstractSweepAnalysis
@@ -34,20 +34,30 @@ struct ParameterSweep <: AbstractSweepAnalysis
     start::Real
     stop::Real
     points::Int
-    sweep_type::SweepType
+    sweep_type::String
     inner_analysis::AbstractAnalysis
+end
 
-    function ParameterSweep(param::String, start::Real, stop::Real, points::Int,
-        inner_analysis::AbstractAnalysis;
-        sweep_type::SweepType=LINEAR,
-        name::String="SW1")
-        points >= 2 || throw(ArgumentError("Number of points must be at least 2"))
-        new(name, param, start, stop, points, sweep_type, inner_analysis)
+function ParameterSweep(;
+    param::String,
+    start::Real,
+    stop::Real,
+    points::Int,
+    inner_analysis::AbstractAnalysis,
+    sweep_type::String="lin",
+    name::String="SW1"
+)
+    points >= 2 || throw(ArgumentError("Number of points must be at least 2"))
+    sweep_lower = lowercase(sweep_type)
+    if !(sweep_lower in ("lin", "linear", "log", "logarithmic"))
+        throw(ArgumentError("Invalid sweep_type: \"$sweep_type\". Must be 'log'/'logarithmic' or 'lin'/'linear'"))
     end
+    ParameterSweep(name, param, start, stop, points, sweep_lower, inner_analysis)
 end
 
 function to_qucs_analysis(a::ParameterSweep)::String
-    type_str = a.sweep_type == LOGARITHMIC ? "log" : "lin"
+    sweep_lower = lowercase(a.sweep_type)
+    type_str = sweep_lower in ("log", "logarithmic") ? "log" : "lin"
     inner_str = to_qucs_analysis(a.inner_analysis)
 
     # The inner analysis command
@@ -69,6 +79,7 @@ end
 function to_spice_analysis(a::ParameterSweep)::String
     # SPICE parameter sweep is more complex, using .step
     inner_str = to_spice_analysis(a.inner_analysis)
-    type_str = a.sweep_type == LOGARITHMIC ? "dec" : "lin"
+    sweep_lower = lowercase(a.sweep_type)
+    type_str = sweep_lower in ("log", "logarithmic") ? "dec" : "lin"
     "$inner_str\n.step param $(a.param) $(a.start) $(a.stop) $(a.points)"
 end

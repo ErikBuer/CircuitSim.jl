@@ -24,8 +24,8 @@ add_component!(circ, gnd)
 @connect circ port1.nminus gnd
 @connect circ port2.nminus gnd
 
-sparam = SParameterAnalysis(1e9, 10e9, 100,
-    sweep_type=LINEAR,
+sparam = SParameterAnalysis(start=1e9, stop=10e9, points=100,
+    sweep_type="linear",
     z0=50.0
 )
 

@@ -1,5 +1,6 @@
 """
-    ACAnalysis(start, stop, points; type=LOGARITHMIC, name="AC1")
+    ACAnalysis(; start, stop, points, sweep_type=LOGARITHMIC, name="AC1")
+    ACAnalysis(; values, sweep_type=LIST, name="AC1")
 
 AC small-signal frequency sweep analysis.
 
@@ -7,68 +8,114 @@ Computes the small-signal AC response over a frequency range.
 
 ## Parameters
 
+For LINEAR or LOGARITHMIC sweeps:
 - `start::Real`: Start frequency in Hz
 - `stop::Real`: Stop frequency in Hz
 - `points::Int`: Number of frequency points
-- `sweep_type::SweepType`: Type of frequency sweep (LINEAR or LOGARITHMIC, default: LOGARITHMIC)
+- `sweep_type::String`: "lin"/"linear" or "log"/"logarithmic" (default: "log")
+
+For LIST sweeps:
+- `values::Vector{<:Real}`: List of frequency points in Hz
+- `sweep_type::String`: Must be "list"
+
+For CONSTANT sweeps:
+- `values::Real`: Single frequency value in Hz
+- `sweep_type::String`: Must be "const" or "constant"
+
+Common parameters:
 - `name::String`: Analysis name (default: "AC1")
 
 ## Example
 
 ```julia
 # Logarithmic sweep from 1Hz to 1MHz with 101 points
-analysis = ACAnalysis(1.0, 1e6, 101)
+analysis = ACAnalysis(start=1.0, stop=1e6, points=101)
 
 # Linear sweep
-analysis = ACAnalysis(100.0, 10e3, 100, sweep_type=LINEAR)
+analysis = ACAnalysis(start=100.0, stop=10e3, points=100, sweep_type="lin")
+
+# List of specific frequencies
+analysis = ACAnalysis(values=[1e3, 10e3, 100e3, 1e6], sweep_type="list")
+
+# Single frequency
+analysis = ACAnalysis(values=1e6, sweep_type="const")
 ```
 """
 struct ACAnalysis <: AbstractSweepAnalysis
     name::String
-    start::Real
-    stop::Real
-    points::Int
-    sweep_type::SweepType
+    start::Union{Nothing,Real}
+    stop::Union{Nothing,Real}
+    points::Union{Nothing,Int}
+    values::Union{Nothing,Vector{<:Real},Real}
+    sweep_type::String
+end
 
-    function ACAnalysis(start::Real, stop::Real, points::Int;
-        sweep_type::SweepType=LOGARITHMIC, name::String="AC1")
-        start > 0 || throw(ArgumentError("Start frequency must be positive"))
-        stop > start || throw(ArgumentError("Stop frequency must be greater than start"))
-        points >= 2 || throw(ArgumentError("Number of points must be at least 2"))
-        new(name, start, stop, points, sweep_type)
-    end
+# Main constructor
+function ACAnalysis(;
+    start::Union{Nothing,Real}=nothing,
+    stop::Union{Nothing,Real}=nothing,
+    points::Union{Nothing,Int}=nothing,
+    values::Union{Nothing,Vector{<:Real},Real}=nothing,
+    sweep_type::String="log",
+    name::String="AC1"
+)
+    sweep_lower = lowercase(sweep_type)
 
-    function ACAnalysis(start::Real, stop::Real, points::Int, sweep_type_str::String;
-        name::String="AC1")
-        sweep_type = if lowercase(sweep_type_str) in ["log", "logarithmic"]
-            LOGARITHMIC
-        elseif lowercase(sweep_type_str) in ["lin", "linear"]
-            LINEAR
-        else
-            throw(ArgumentError("Invalid sweep_type: \"$sweep_type_str\". Must be 'log'/'logarithmic' or 'lin'/'linear'"))
+    # Validate parameters based on sweep type
+    if sweep_lower in ("lin", "linear", "log", "logarithmic")
+        if isnothing(start) || isnothing(stop) || isnothing(points)
+            throw(ArgumentError("LINEAR and LOGARITHMIC sweeps require start, stop, and points parameters"))
         end
-        ACAnalysis(start, stop, points; sweep_type=sweep_type, name=name)
+        if !isnothing(values)
+            throw(ArgumentError("LINEAR and LOGARITHMIC sweeps cannot use values parameter"))
+        end
+    elseif sweep_lower == "list"
+        if isnothing(values) || !(values isa Vector)
+            throw(ArgumentError("LIST sweep requires values as a Vector"))
+        end
+        if !isnothing(start) || !isnothing(stop) || !isnothing(points)
+            throw(ArgumentError("LIST sweep cannot use start, stop, or points parameters"))
+        end
+    elseif sweep_lower in ("const", "constant")
+        if isnothing(values) || !(values isa Real)
+            throw(ArgumentError("CONSTANT sweep requires values as a single Real number"))
+        end
+        if !isnothing(start) || !isnothing(stop) || !isnothing(points)
+            throw(ArgumentError("CONSTANT sweep cannot use start, stop, or points parameters"))
+        end
+    else
+        throw(ArgumentError("Invalid sweep_type: \"$sweep_type\". Must be 'log'/'logarithmic', 'lin'/'linear', 'list', or 'const'/'constant'"))
     end
+
+    ACAnalysis(name, start, stop, points, values, sweep_lower)
 end
 
 function to_qucs_analysis(a::ACAnalysis)::String
-    type_str = a.sweep_type == LOGARITHMIC ? "log" : "lin"
     parts = [".AC:$(a.name)"]
-    push!(parts, "Type=\"$type_str\"")
-    push!(parts, "Start=\"$(format_value(a.start))\"")
-    push!(parts, "Stop=\"$(format_value(a.stop))\"")
-    push!(parts, "Points=\"$(a.points)\"")
+    sweep_lower = lowercase(a.sweep_type)
+
+    if sweep_lower in ("lin", "linear")
+        push!(parts, "Type=\"lin\"")
+        push!(parts, "Start=\"$(format_value(a.start))\"")
+        push!(parts, "Stop=\"$(format_value(a.stop))\"")
+        push!(parts, "Points=\"$(a.points)\"")
+    elseif sweep_lower in ("log", "logarithmic")
+        push!(parts, "Type=\"log\"")
+        push!(parts, "Start=\"$(format_value(a.start))\"")
+        push!(parts, "Stop=\"$(format_value(a.stop))\"")
+        push!(parts, "Points=\"$(a.points)\"")
+    elseif sweep_lower == "list"
+        push!(parts, "Type=\"list\"")
+        values_str = "[" * join(format_value.(a.values), ";") * "]"
+        push!(parts, "Values=\"$values_str\"")
+    elseif sweep_lower in ("const", "constant")
+        push!(parts, "Type=\"const\"")
+        push!(parts, "Values=\"$(format_value(a.values))\"")
+    end
+
     return join(parts, " ")
 end
 
 function to_spice_analysis(a::ACAnalysis)::String
-    type_str = a.sweep_type == LOGARITHMIC ? "dec" : "lin"
-    # SPICE uses decades for log sweep, so we need to calculate points per decade
-    if a.sweep_type == LOGARITHMIC
-        decades = log10(a.stop / a.start)
-        points_per_decade = ceil(Int, a.points / decades)
-        ".ac $type_str $points_per_decade $(a.start) $(a.stop)"
-    else
-        ".ac $type_str $(a.points) $(a.start) $(a.stop)"
-    end
+    return "TODO"
 end

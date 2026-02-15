@@ -42,5 +42,5 @@ function to_qucs_analysis(a::DCAnalysis)::String
 end
 
 function to_spice_analysis(a::DCAnalysis)::String
-    ".op"
+    "TODO"
 end

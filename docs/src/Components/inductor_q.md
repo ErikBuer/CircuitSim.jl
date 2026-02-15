@@ -41,8 +41,8 @@ Run S-parameter analysis from 1 MHz to 1000 MHz to characterize the inductor's f
 
 ```@example indq
 # S-parameter analysis
-sparam = SParameterAnalysis(1e6, 1000e6, 1000,
-    sweep_type=LINEAR,
+sparam = SParameterAnalysis(start=1e6, stop=1000e6, points=1000,
+    sweep_type="linear",
     z0=50.0
 )
 

@@ -34,7 +34,7 @@ add_component!(circ, gnd)
 @connect circ rload.n2 gnd
 
 # AC analysis
-ac_analysis = ACAnalysis(1e6, 1e7, 11)
+ac_analysis = ACAnalysis(start=1e6, stop=1e7, points=11)
 result = simulate_qucsator(circ, ac_analysis)
 
 freq = result.frequencies_Hz

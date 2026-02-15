@@ -26,7 +26,7 @@ add_component!(circ, GND)
 @connect circ I_in.nminus GND.n
 
 # Transient simulation
-tran = TransientAnalysis(10e-9, points=100)
+tran = TransientAnalysis(stop=10e-9, points=100)
 result = simulate_qucsator(circ, tran)
 
 # Extract voltages using helper functions

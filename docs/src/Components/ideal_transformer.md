@@ -31,7 +31,7 @@ add_component!(circ, gnd)
 @connect circ rload.n2 gnd
 
 # Transient analysis
-tran_analysis = TransientAnalysis(2e-3, points=200)
+tran_analysis = TransientAnalysis(stop=2e-3, points=200)
 result = simulate_qucsator(circ, tran_analysis)
 
 # Secondary voltage should be 5V (10V × 0.5)

@@ -34,7 +34,7 @@ add_component!(circ, GND)
 @connect circ rload.nminus GND
 
 # Transient analysis
-tran_analysis = TransientAnalysis(1e-3, points=100)
+tran_analysis = TransientAnalysis(stop=1e-3, points=100)
 result = simulate_qucsator(circ, tran_analysis)
 
 # Output voltage should be 10x input = 10V

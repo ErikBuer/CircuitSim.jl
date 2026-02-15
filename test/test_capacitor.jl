@@ -1,6 +1,3 @@
-using CircuitSim
-using GLMakie
-
 @testset "test Capacitor S-Parameters" begin
 
     circ = Circuit()
@@ -22,7 +19,7 @@ using GLMakie
     @connect circ P1.nminus gnd
     @connect circ P2.nminus gnd
 
-    sp_result = simulate_qucsator(circ, SParameterAnalysis(1e6, 100e6, 101; sweep_type=LINEAR))
+    sp_result = simulate_qucsator(circ, SParameterAnalysis(; start=1e6, stop=100e6, points=101, sweep_type="lin"))
 
     freq_GHz = sp_result.frequencies_Hz ./ 1e9
 
