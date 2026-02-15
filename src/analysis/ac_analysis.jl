@@ -37,6 +37,18 @@ struct ACAnalysis <: AbstractSweepAnalysis
         points >= 2 || throw(ArgumentError("Number of points must be at least 2"))
         new(name, start, stop, points, sweep_type)
     end
+
+    function ACAnalysis(start::Real, stop::Real, points::Int, sweep_type_str::String;
+        name::String="AC1")
+        sweep_type = if lowercase(sweep_type_str) in ["log", "logarithmic"]
+            LOGARITHMIC
+        elseif lowercase(sweep_type_str) in ["lin", "linear"]
+            LINEAR
+        else
+            throw(ArgumentError("Invalid sweep_type: \"$sweep_type_str\". Must be 'log'/'logarithmic' or 'lin'/'linear'"))
+        end
+        ACAnalysis(start, stop, points; sweep_type=sweep_type, name=name)
+    end
 end
 
 function to_qucs_analysis(a::ACAnalysis)::String

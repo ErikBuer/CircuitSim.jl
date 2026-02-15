@@ -7,7 +7,10 @@ export AbstractCircuitComponent
 export AbstractPassiveComponent, AbstractActiveComponent, AbstractSource, AbstractNoiseSource,
     AbstractTransmissionLine, AbstractMicrostripComponent, AbstractExternalInterface
 
-abstract type AbstractCircuitComponent end
+# All components analysis and sources are subtypes of AbstractCircuitComponent.
+abstract type AbstractCircuitSimulationElement end
+
+abstract type AbstractCircuitComponent <: AbstractCircuitSimulationElement end
 abstract type AbstractPassiveComponent <: AbstractCircuitComponent end
 abstract type AbstractActiveComponent <: AbstractCircuitComponent end
 abstract type AbstractSource <: AbstractCircuitComponent end

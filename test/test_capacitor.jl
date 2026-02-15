@@ -1,14 +1,13 @@
-# Capacitor
-
-```@example capacitor
-circ = Circuit()
+using CircuitSim
+using GLMakie
 
 P1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 P2 = ACPowerSource("P2", port_num=2, impedance=50.0)
+C = Capacitor("C1", capacitance=1e-9)
+
+circ = Circuit()
 add_component!(circ, P1)
 add_component!(circ, P2)
-
-C = Capacitor("C1", capacitance=1e-9)
 add_component!(circ, C)
 
 # Ground
@@ -42,4 +41,4 @@ lines!(ax, freq_GHz, s11_dB, label="S₁₁ (Reflection)")
 lines!(ax, freq_GHz, s21_dB, label="S₂₁ (Transmission)")
 axislegend(ax, position=:lb)
 fig
-```
+save("output/capacitor_sparams.png", fig)

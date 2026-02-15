@@ -1,9 +1,9 @@
 """
     AbstractAnalysis
 
-Abstract base type for all circuit analyses.
+Abstract base type for all circuit analysis.
 """
-abstract type AbstractAnalysis end
+abstract type AbstractAnalysis <: AbstractCircuitSimulationElement end
 
 """
     AbstractSweepAnalysis <: AbstractAnalysis
