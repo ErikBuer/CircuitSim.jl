@@ -41,50 +41,27 @@ analysis = ACAnalysis(values=[1e3, 10e3, 100e3, 1e6], sweep_type="list")
 analysis = ACAnalysis(values=1e6, sweep_type="const")
 ```
 """
-struct ACAnalysis <: AbstractSweepAnalysis
+mutable struct ACAnalysis <: AbstractSweepAnalysis
     name::String
-    start::Union{Nothing,Real}
-    stop::Union{Nothing,Real}
-    points::Union{Nothing,Int}
-    values::Union{Nothing,Vector{<:Real},Real}
+    start::Real
+    stop::Real
+    points::Int
+    values::Union{Vector{<:Real},Real}
     sweep_type::String
 end
 
 # Main constructor
 function ACAnalysis(;
-    start::Union{Nothing,Real}=nothing,
-    stop::Union{Nothing,Real}=nothing,
-    points::Union{Nothing,Int}=nothing,
-    values::Union{Nothing,Vector{<:Real},Real}=nothing,
-    sweep_type::String="log",
-    name::String="AC1"
+    name::String="AC1",
+    start::Real=1e6,
+    stop::Real=100e6,
+    points::Int=101,
+    values::Union{Vector{<:Real},Real}=1e6,
+    sweep_type::String="lin",
 )
     sweep_lower = lowercase(sweep_type)
-
-    # Validate parameters based on sweep type
-    if sweep_lower in ("lin", "linear", "log", "logarithmic")
-        if isnothing(start) || isnothing(stop) || isnothing(points)
-            throw(ArgumentError("LINEAR and LOGARITHMIC sweeps require start, stop, and points parameters"))
-        end
-        if !isnothing(values)
-            throw(ArgumentError("LINEAR and LOGARITHMIC sweeps cannot use values parameter"))
-        end
-    elseif sweep_lower == "list"
-        if isnothing(values) || !(values isa Vector)
-            throw(ArgumentError("LIST sweep requires values as a Vector"))
-        end
-        if !isnothing(start) || !isnothing(stop) || !isnothing(points)
-            throw(ArgumentError("LIST sweep cannot use start, stop, or points parameters"))
-        end
-    elseif sweep_lower in ("const", "constant")
-        if isnothing(values) || !(values isa Real)
-            throw(ArgumentError("CONSTANT sweep requires values as a single Real number"))
-        end
-        if !isnothing(start) || !isnothing(stop) || !isnothing(points)
-            throw(ArgumentError("CONSTANT sweep cannot use start, stop, or points parameters"))
-        end
-    else
-        throw(ArgumentError("Invalid sweep_type: \"$sweep_type\". Must be 'log'/'logarithmic', 'lin'/'linear', 'list', or 'const'/'constant'"))
+    if !(sweep_lower in ("lin", "linear", "log", "logarithmic", "list"))
+        throw(ArgumentError("Invalid sweep_type: \"$sweep_type\". Must be 'log'/'logarithmic', 'lin'/'linear', 'list'"))
     end
 
     ACAnalysis(name, start, stop, points, values, sweep_lower)
@@ -108,9 +85,6 @@ function to_qucs_analysis(a::ACAnalysis)::String
         push!(parts, "Type=\"list\"")
         values_str = "[" * join(format_value.(a.values), ";") * "]"
         push!(parts, "Values=\"$values_str\"")
-    elseif sweep_lower in ("const", "constant")
-        push!(parts, "Type=\"const\"")
-        push!(parts, "Values=\"$(format_value(a.values))\"")
     end
 
     return join(parts, " ")

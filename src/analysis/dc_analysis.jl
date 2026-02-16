@@ -22,13 +22,18 @@ result = simulate_qucsator(circuit, analysis)
 analysis = DCAnalysis(temp=85.0)
 ```
 """
-struct DCAnalysis <: AbstractAnalysis
+mutable struct DCAnalysis <: AbstractAnalysis
     name::String
     save_ops::Bool
     temp::Real
     save_all::Bool
 
-    function DCAnalysis(; name::String="DC1", save_ops::Bool=true, temp::Real=26.85, save_all::Bool=false)
+    function DCAnalysis(;
+        name::String="DC1",
+        save_ops::Bool=true,
+        temp::Real=26.85,
+        save_all::Bool=false
+    )
         new(name, save_ops, temp, save_all)
     end
 end
