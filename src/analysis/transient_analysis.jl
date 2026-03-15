@@ -1,5 +1,5 @@
 """
-    TransientAnalysis(; stop, start=0.0, points=nothing, step=nothing, name="TR1", integration_method="trapezoidal", order=2, initial_dc=true)
+    TransientAnalysis(; stop, start=0.0, points=nothing, step=nothing, name="TR1", integration_method="trapezoidal", order=2, initial_dc=true, reltol=1e-3, vabstol=1e-6, iabstol=1e-12, maxstep=nothing, minstep=nothing, max_iterations=150)
 
 Time-domain transient analysis.
 
@@ -19,6 +19,12 @@ Simulates the circuit behavior over time.
   - "adamsmoulton" - Adams-Moulton (order 1-6)
 - `order::Int`: Integration order for Gear and Adams-Moulton (default: 2, range: 1-6)
 - `initial_dc::Bool`: Compute initial DC operating point (default: true)
+- `reltol::Real`: Relative tolerance for error control (default: 1e-3)
+- `vabstol::Real`: Voltage absolute tolerance in V (default: 1e-6)
+- `iabstol::Real`: Current absolute tolerance in A (default: 1e-12)
+- `maxstep::Union{Real,Nothing}`: Maximum time step in seconds (default: nothing, auto-calculated)
+- `minstep::Union{Real,Nothing}`: Minimum time step in seconds (default: nothing, auto-calculated)
+- `max_iterations::Int`: Maximum Newton-Raphson iterations (default: 150)
 
 ## Example
 
@@ -29,8 +35,11 @@ analysis = TransientAnalysis(stop=1e-3, points=1001)
 # Simulate for 10μs with 10ns step using Gear order 4
 analysis = TransientAnalysis(stop=10e-6, step=10e-9, integration_method="gear", order=4)
 
-# Using backward Euler
-analysis = TransientAnalysis(stop=1e-3, points=501, integration_method="euler")
+# Using backward Euler with custom tolerances
+analysis = TransientAnalysis(stop=1e-3, points=501, integration_method="euler", reltol=1e-4, vabstol=1e-7)
+
+# With explicit time step control
+analysis = TransientAnalysis(stop=1e-3, points=1001, maxstep=1e-6, minstep=1e-12)
 ```
 """
 mutable struct TransientAnalysis <: AbstractAnalysis
@@ -41,17 +50,29 @@ mutable struct TransientAnalysis <: AbstractAnalysis
     integration_method::String
     order::Int
     initial_dc::Bool
+    reltol::Real
+    vabstol::Real
+    iabstol::Real
+    maxstep::Union{Real,Nothing}
+    minstep::Union{Real,Nothing}
+    max_iterations::Int
 end
 
 function TransientAnalysis(;
     name::String="TR1",
-    stop::Real,
+    stop::Real=1e-3,
     start::Real=0.0,
     points::Union{Int,Nothing}=nothing,
     step::Union{Real,Nothing}=nothing,
     integration_method::String="trapezoidal",
     order::Int=2,
-    initial_dc::Bool=true
+    initial_dc::Bool=true,
+    reltol::Real=1e-3,
+    vabstol::Real=1e-6,
+    iabstol::Real=1e-12,
+    maxstep::Union{Real,Nothing}=nothing,
+    minstep::Union{Real,Nothing}=nothing,
+    max_iterations::Int=150
 )
     stop > start || throw(ArgumentError("Stop time must be greater than start time"))
 
@@ -85,7 +106,26 @@ function TransientAnalysis(;
         end
     end
 
-    TransientAnalysis(name, start, stop, points, method_lower, order, initial_dc)
+    # Validate tolerances
+    reltol > 0 && reltol < 1 || throw(ArgumentError("Relative tolerance must be in range (0, 1)"))
+    vabstol > 0 && vabstol < 1 || throw(ArgumentError("Voltage absolute tolerance must be in range (0, 1)"))
+    iabstol > 0 && iabstol < 1 || throw(ArgumentError("Current absolute tolerance must be in range (0, 1)"))
+    max_iterations > 0 || throw(ArgumentError("Maximum iterations must be positive"))
+
+    # Validate time step bounds if provided
+    if maxstep !== nothing
+        maxstep > 0 || throw(ArgumentError("Maximum time step must be positive"))
+        maxstep <= (stop - start) || throw(ArgumentError("Maximum time step must not exceed simulation duration"))
+    end
+    if minstep !== nothing
+        minstep > 0 || throw(ArgumentError("Minimum time step must be positive"))
+    end
+    if maxstep !== nothing && minstep !== nothing
+        minstep < maxstep || throw(ArgumentError("Minimum time step must be less than maximum time step"))
+    end
+
+    TransientAnalysis(name, start, stop, points, method_lower, order, initial_dc,
+        reltol, vabstol, iabstol, maxstep, minstep, max_iterations)
 end
 
 function to_qucs_analysis(a::TransientAnalysis)::String
@@ -113,6 +153,21 @@ function to_qucs_analysis(a::TransientAnalysis)::String
     push!(parts, "IntegrationMethod=\"$method_str\"")
     push!(parts, "Order=\"$(a.order)\"")
     push!(parts, "InitialDC=\"$(a.initial_dc ? "yes" : "no")\"")
+
+    # Add tolerance and convergence parameters
+    push!(parts, "reltol=\"$(a.reltol)\"")
+    push!(parts, "vabstol=\"$(format_value(a.vabstol))\"")
+    push!(parts, "iabstol=\"$(format_value(a.iabstol))\"")
+    push!(parts, "MaxIter=\"$(a.max_iterations)\"")
+
+    # Add time step bounds if specified
+    if a.maxstep !== nothing
+        push!(parts, "MaxStep=\"$(format_value(a.maxstep))\"")
+    end
+    if a.minstep !== nothing
+        push!(parts, "MinStep=\"$(format_value(a.minstep))\"")
+    end
+
     return join(parts, " ")
 end
 
