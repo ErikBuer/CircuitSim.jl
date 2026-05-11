@@ -46,6 +46,3 @@ function to_qucs_analysis(a::DCAnalysis)::String
     return join(parts, " ")
 end
 
-function to_spice_analysis(a::DCAnalysis)::String
-    "TODO"
-end
