@@ -6,26 +6,21 @@ Coaxial transmission line with physical parameters.
 # Fields
 
 - `name::String`: Component identifier
-- `er::Float64`: Relative permittivity (default: 2.3)
-- `mur::Float64`: Relative permeability (default: 1.0)
-- `length_m::Float64`: Physical length in meters
-- `d_mm::Float64`: Inner conductor diameter in mm
-- `d_outer_mm::Float64`: Outer conductor diameter in mm
-- `n1::Int`: Input port positive node
-- `n2::Int`: Input port negative node
-- `n3::Int`: Output port positive node
-- `n4::Int`: Output port negative node
-
-# Pins
-
-- `:n1`, `:n2`: Input port
-- `:n3`, `:n4`: Output port
+- `n1::Int`: Port 1 node
+- `n2::Int`: Port 2 node
+- `D::Real`: Outer conductor diameter (m) (default: 2.95e-3)
+- `d::Real`: Inner conductor diameter (m) (default: 0.9e-3)
+- `L::Real`: Physical length (m) (default: 1.5)
+- `er::Real`: Relative permittivity (default: 2.29)
+- `mur::Real`: Relative permeability (default: 1.0)
+- `tand::Real`: Loss tangent (default: 4e-4)
+- `rho::Real`: Conductor resistivity (Ω·m) (default: 0.022e-6)
+- `temp::Real`: Temperature (°C) (default: 26.85)
 
 # Example
 
-```jldoctest
-julia> coax = CoaxialLine("COAX1", er=2.3, length_m=0.1, d_mm=0.5, d_outer_mm=3.0)
-CoaxialLine("COAX1", 0, 0, 2.3, 1.0, 0.1, 0.5, 3.0, 0.0004, 2.2e-8)
+```julia
+coax = CoaxialLine("COAX1", D=2.95e-3, d=0.9e-3, L=0.1)
 ```
 """
 mutable struct CoaxialLine <: AbstractTransmissionLine2Port
@@ -34,32 +29,47 @@ mutable struct CoaxialLine <: AbstractTransmissionLine2Port
     n1::Int
     n2::Int
 
-    er::Float64
-    mur::Float64
-    length_m::Float64
-    d_mm::Float64
-    d_outer_mm::Float64
-    tand::Float64
-    rho::Float64
+    D::Real      # Outer conductor diameter (m)
+    d::Real      # Inner conductor diameter (m)
+    L::Real      # Length (m)
+    er::Real     # Relative permittivity
+    mur::Real    # Relative permeability
+    tand::Real   # Loss tangent
+    rho::Real    # Resistivity (Ω·m)
+    temp::Real   # Temperature (°C)
 
     function CoaxialLine(name::AbstractString;
-        er::Real=2.3,
+        D::Real=2.95e-3,
+        d::Real=0.9e-3,
+        L::Real=1.5,
+        er::Real=2.29,
         mur::Real=1.0,
-        length_m::Real,
-        d_mm::Real,
-        d_outer_mm::Real,
-        tand::Real=0.0004,
-        rho::Real=2.2e-8
+        tand::Real=4e-4,
+        rho::Real=0.022e-6,
+        temp::Real=26.85
     )
-        new(String(name), 0, 0, Float64(er), Float64(mur), Float64(length_m),
-            Float64(d_mm), Float64(d_outer_mm), Float64(tand), Float64(rho))
+        D > 0 || throw(ArgumentError("Outer diameter must be positive"))
+        d > 0 || throw(ArgumentError("Inner diameter must be positive"))
+        d < D || throw(ArgumentError("Inner diameter must be less than outer diameter"))
+        er >= 1 || throw(ArgumentError("Relative permittivity must be >= 1"))
+        mur >= 1 || throw(ArgumentError("Relative permeability must be >= 1"))
+        new(String(name), 0, 0, D, d, L, er, mur, tand, rho, temp)
     end
 end
 
 function to_qucs_netlist(comp::CoaxialLine)::String
-    # COAX is 2-terminal, parameters use lowercase: d, D (outer), er, mur, tand, rho, L
-    params = "d=\"$(comp.d_mm/1000)\" D=\"$(comp.d_outer_mm/1000)\" L=\"$(comp.length_m)\" er=\"$(comp.er)\" mur=\"$(comp.mur)\" tand=\"$(comp.tand)\" rho=\"$(comp.rho)\""
-    return "COAX:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) $params"
+    parts = ["COAX:$(comp.name)"]
+    push!(parts, qucs_node(comp.n1))
+    push!(parts, qucs_node(comp.n2))
+    push!(parts, "D=\"$(format_value(comp.D))\"")
+    push!(parts, "d=\"$(format_value(comp.d))\"")
+    push!(parts, "L=\"$(format_value(comp.L))\"")
+    push!(parts, "er=\"$(comp.er)\"")
+    push!(parts, "mur=\"$(comp.mur)\"")
+    push!(parts, "tand=\"$(comp.tand)\"")
+    push!(parts, "rho=\"$(comp.rho)\"")
+    push!(parts, "Temp=\"$(comp.temp)\"")
+    return join(parts, " ")
 end
 
 function to_spice_netlist(comp::CoaxialLine)::String

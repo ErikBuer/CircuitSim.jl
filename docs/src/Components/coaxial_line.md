@@ -12,8 +12,8 @@ circ = Circuit()
 # Components
 port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
-# RG-58 like: εr=2.3, inner=0.9mm, outer=2.95mm
-coax = CoaxialLine("COAX1", er=2.3, length_m=1.0, d_mm=0.9, d_outer_mm=2.95)
+# RG-58 like: εr=2.29, inner=0.9mm, outer=2.95mm, 1m length
+coax = CoaxialLine("COAX1", er=2.29, L=1.0, d=0.9e-3, D=2.95e-3)
 gnd = Ground("GND")
 
 add_component!(circ, port1)
