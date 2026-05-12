@@ -10,7 +10,7 @@ circ = Circuit()
 # Components
 port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
-loop = CircularLoop("CL1", r=5e-3, w=0.5e-3)  # 5mm radius, 0.5mm width
+loop = CircularLoop("CL1", a=5e-3, w=0.5e-3)  # 5mm radius, 0.5mm width
 gnd = Ground("GND")
 
 add_component!(circ, port1)
