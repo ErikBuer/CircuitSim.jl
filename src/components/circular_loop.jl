@@ -13,14 +13,13 @@ Reference: I. Bahl, Fundamentals of RF and Microwave Transistor Amplifiers,
 - `n2::Int`: Node 2
 - `a::Real`: Loop radius (m)
 - `w::Real`: Wire/trace width (m)
-- `substrate::Substrate`: Substrate definition
+- `substrate::String`: Substrate reference name (default: "Subst1")
 - `temp::Real`: Simulation temperature (°C)
 
 # Example
 
 ```julia
-sub = Substrate("Sub1", er=9.8, h=0.635e-3, t=35e-6)
-loop = CircularLoop("CL1", substrate=sub, a=200e-6, w=25e-6)
+loop = CircularLoop("CL1", substrate="Sub1", a=200e-6, w=25e-6)
 ```
 """
 mutable struct CircularLoop <: AbstractCircularLoop
@@ -31,11 +30,11 @@ mutable struct CircularLoop <: AbstractCircularLoop
 
     a::Real         # Loop radius (m)
     w::Real         # Wire/trace width (m)
-    substrate::Substrate  # Substrate definition
+    substrate::String  # Substrate reference name
     temp::Real      # Simulation temperature (°C)
 
     function CircularLoop(name::AbstractString;
-        substrate::Substrate,
+        substrate::String="Subst1",
         a::Real=200e-6,
         w::Real=25e-6,
         temp::Real=26.85
@@ -51,7 +50,7 @@ function to_qucs_netlist(cl::CircularLoop)::String
     parts = ["CIRCULARLOOP:$(cl.name)"]
     push!(parts, qucs_node(cl.n1))
     push!(parts, qucs_node(cl.n2))
-    push!(parts, "Subst=\"$(cl.substrate.name)\"")
+    push!(parts, "Subst=\"$(cl.substrate)\"")
     push!(parts, "W=\"$(format_value(cl.w))\"")
     push!(parts, "a=\"$(format_value(cl.a))\"")
     push!(parts, "Temp=\"$(cl.temp)\"")

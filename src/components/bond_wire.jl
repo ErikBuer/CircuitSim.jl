@@ -14,14 +14,13 @@ A bond wire connection for chip interconnects.
 - `rho::Real`: Specific resistance of the metal (Ω·m)
 - `mur::Real`: Relative permeability of the metal
 - `model::String`: Model type (FREESPACE, MIRROR, DESCHARLES)
-- `substrate::Substrate`: Substrate definition
+- `substrate::String`: Substrate reference name (default: "Subst1")
 - `temp::Real`: Simulation temperature (°C)
 
 # Example
 
 ```julia
-sub = Substrate("Sub1", er=9.8, h=0.635e-3, t=35e-6)
-wire = BondWire("BW1", substrate=sub, l=1e-3, d=25e-6, h=0.3e-3)
+wire = BondWire("BW1", substrate="Sub1", l=1e-3, d=25e-6, h=0.3e-3)
 ```
 
 ## Qucs Format
@@ -38,11 +37,11 @@ mutable struct BondWire <: AbstractBondWire
     rho::Real       # Specific resistance of the metal (Ω·m)
     mur::Real       # Relative permeability of the metal
     model::String   # Model type (FREESPACE, MIRROR, DESCHARLES)
-    substrate::Substrate  # Substrate definition
+    substrate::String  # Substrate reference name
     temp::Real      # Simulation temperature (°C)
 
     function BondWire(name::AbstractString;
-        substrate::Substrate,
+        substrate::String="Subst1",
         l::Real=3e-3,
         d::Real=50e-6,
         h::Real=2e-3,
@@ -73,7 +72,7 @@ function to_qucs_netlist(bw::BondWire)::String
     push!(parts, "mur=\"$(bw.mur)\"")
     push!(parts, "rho=\"$(bw.rho)\"")
     push!(parts, "Model=\"$(bw.model)\"")
-    push!(parts, "Subst=\"$(bw.substrate.name)\"")
+    push!(parts, "Subst=\"$(bw.substrate)\"")
     push!(parts, "Temp=\"$(bw.temp)\"")
     return join(parts, " ")
 end
