@@ -12,7 +12,8 @@ add_component!(circ, port1)
 add_component!(circ, port2)
 add_component!(circ, port3)
 
-CIRC = Circulator("CIRC1")
+# Standard 50Ω circulator (all ports matched to 50Ω)
+CIRC = Circulator("CIRC1", z1=50.0, z2=50.0, z3=50.0)
 add_component!(circ, CIRC)
 
 gnd = Ground("GND")

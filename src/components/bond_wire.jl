@@ -11,12 +11,16 @@ A bond wire connection for chip interconnects.
 - `l::Real`: Wire length (m)
 - `d::Real`: Wire diameter (m)
 - `h::Real`: Wire height above substrate (m)
-- `rho::Real`: Resistivity relative to copper
+- `rho::Real`: Specific resistance of the metal (Ω·m)
+- `mur::Real`: Relative permeability of the metal
+- `model::String`: Model type (FREESPACE, MIRROR, DESCHARLES)
+- `substrate::String`: Substrate reference name (default: "Subst1")
+- `temp::Real`: Simulation temperature (°C)
 
 # Example
 
 ```julia
-wire = BondWire("BW1", l=1e-3, d=25e-6, h=0.3e-3)
+wire = BondWire("BW1", substrate="Sub1", l=1e-3, d=25e-6, h=0.3e-3)
 ```
 
 ## Qucs Format
@@ -30,20 +34,31 @@ mutable struct BondWire <: AbstractBondWire
     l::Real         # Wire length (m)
     d::Real         # Wire diameter (m)
     h::Real         # Height above substrate (m)
-    rho::Real       # Resistivity (relative to copper)
-    model::String   # Model type
+    rho::Real       # Specific resistance of the metal (Ω·m)
+    mur::Real       # Relative permeability of the metal
+    model::String   # Model type (FREESPACE, MIRROR, DESCHARLES)
+    substrate::String  # Substrate reference name
+    temp::Real      # Simulation temperature (°C)
 
     function BondWire(name::AbstractString;
-        l::Real=1e-3,
-        d::Real=25e-6,
-        h::Real=0.3e-3,
-        rho::Real=1.0,      # 1.0 = gold, 0.6 = copper relative
-        model::String="FREESPACE")
+        substrate::String="Subst1",
+        l::Real=3e-3,
+        d::Real=50e-6,
+        h::Real=2e-3,
+        rho::Real=0.022e-6,  # Specific resistance (Ω·m)
+        mur::Real=1.0,       # Relative permeability of the metal
+        model::String="FREESPACE",
+        temp::Real=26.85)    # Temperature (°C)
+
+        if model ∉ ("FREESPACE", "MIRROR", "DESCHARLES")
+            throw(ArgumentError("Invalid model type: $model. Must be one of FREESPACE, MIRROR, DESCHARLES"))
+        end
         l > 0 || throw(ArgumentError("Wire length must be positive"))
         d > 0 || throw(ArgumentError("Wire diameter must be positive"))
         h >= 0 || throw(ArgumentError("Wire height must be non-negative"))
+        mur > 0 || throw(ArgumentError("Relative permeability must be positive"))
         rho > 0 || throw(ArgumentError("Resistivity must be positive"))
-        new(String(name), 0, 0, l, d, h, rho, model)
+        new(String(name), 0, 0, l, d, h, rho, mur, model, substrate, temp)
     end
 end
 
@@ -54,20 +69,12 @@ function to_qucs_netlist(bw::BondWire)::String
     push!(parts, "D=\"$(format_value(bw.d))\"")
     push!(parts, "L=\"$(format_value(bw.l))\"")
     push!(parts, "H=\"$(format_value(bw.h))\"")
-    push!(parts, "mur=\"1\"")
+    push!(parts, "mur=\"$(bw.mur)\"")
     push!(parts, "rho=\"$(bw.rho)\"")
     push!(parts, "Model=\"$(bw.model)\"")
-    push!(parts, "Subst=\"Sub1\"")
+    push!(parts, "Subst=\"$(bw.substrate)\"")
+    push!(parts, "Temp=\"$(bw.temp)\"")
     return join(parts, " ")
-end
-
-function to_spice_netlist(bw::BondWire)::String
-    # Approximate bond wire as an inductor
-    # Simple formula: L ≈ 2*l*(ln(4*l/d) - 1) nH for l in mm, d in mm
-    l_mm = bw.l * 1000
-    d_mm = bw.d * 1000
-    l_nh = 2 * l_mm * (log(4 * l_mm / d_mm) - 1)
-    "L$(bw.name) $(bw.n1) $(bw.n2) $(l_nh)n  ; Bond wire approx"
 end
 
 function _get_node_number(bw::BondWire, pin::Symbol)::Int

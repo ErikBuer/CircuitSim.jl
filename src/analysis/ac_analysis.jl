@@ -89,7 +89,3 @@ function to_qucs_analysis(a::ACAnalysis)::String
 
     return join(parts, " ")
 end
-
-function to_spice_analysis(a::ACAnalysis)::String
-    return "TODO"
-end
