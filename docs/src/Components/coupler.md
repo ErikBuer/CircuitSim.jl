@@ -1,38 +1,34 @@
 # Coupler
 
+Directional coupler with specified coupling factor and phase.
+
+## Parameters
+
+- `coupling`: Coupling factor (linear, 0 to 1), default: √(1/2) ≈ 0.7071 (≈ 3 dB)
+- `phase`: Phase shift in degrees, default: 0° (range: -180° to +180°)
+- `z0`: Reference impedance, default: 50 Ω
+
+## Conversion: dB to linear coupling
+
+- 3 dB: coupling = √(1/2) ≈ 0.7071
+- 6 dB: coupling = 10^(-6/20) ≈ 0.501
+- 10 dB: coupling = 10^(-10/20) ≈ 0.316
+- 20 dB: coupling = 10^(-20/20) = 0.1
+
+## Example
+
 ```@example coupler
 using CircuitSim
 
-circ = Circuit()
+# 3 dB (50/50) directional coupler
+cpl1 = Coupler("CPL1")
 
-port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
-port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
-port3 = ACPowerSource("P3", port_num=3, impedance=50.0)
-port4 = ACPowerSource("P4", port_num=4, impedance=50.0)
-add_component!(circ, port1)
-add_component!(circ, port2)
-add_component!(circ, port3)
-add_component!(circ, port4)
+# 10 dB directional coupler
+cpl2 = Coupler("CPL2", coupling=0.316)
 
-CPL = Coupler("CPL1", coupling=3.0)
-add_component!(circ, CPL)
+# 90° hybrid coupler (3 dB with 90° phase shift)
+cpl3 = Coupler("CPL3", phase=90.0)
 
-gnd = Ground("GND")
-add_component!(circ, gnd)
-
-@connect circ port1.nplus CPL.n1
-@connect circ port2.nplus CPL.n2
-@connect circ port3.nplus CPL.n3
-@connect circ port4.nplus CPL.n4
-@connect circ port1.nminus gnd
-@connect circ port2.nminus gnd
-@connect circ port3.nminus gnd
-@connect circ port4.nminus gnd
-
-sparam = SParameterAnalysis(start=1e9, stop=10e9, points=101,
-    sweep_type="linear",
-    z0=50.0
-)
-
-result = simulate_qucsator(circ, sparam)
+# Custom impedance coupler
+cpl4 = Coupler("CPL4", coupling=0.7071, z0=75.0)
 ```
