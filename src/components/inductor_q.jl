@@ -65,18 +65,6 @@ function to_qucs_netlist(comp::InductorQ)::String
     return join(parts, " ")
 end
 
-function to_spice_netlist(comp::InductorQ)::String
-    # SPICE models Q factor using series resistance
-    # ESR = 2*pi*f*L / Q
-    esr = 2 * π * comp.freq * comp.inductance / comp.q
-
-    lines = String[]
-    push!(lines, "* Inductor with Q=$(comp.q) at $(comp.freq) Hz")
-    push!(lines, "L$(comp.name) $(comp.n1) $(comp.n1)_int $(comp.inductance)")
-    push!(lines, "R$(comp.name)_esr $(comp.n1)_int $(comp.n2) $(esr)")
-    return join(lines, "\n")
-end
-
 function _get_node_number(component::InductorQ, pin::Symbol)::Int
     if pin == :n1
         return component.n1
