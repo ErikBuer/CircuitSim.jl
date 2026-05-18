@@ -1,30 +1,24 @@
 # Isolator
 
+Ideal RF isolator with unidirectional transmission.
+
+## Parameters
+
+- `z1`: Port 1 impedance, default: 50 Ω
+- `z2`: Port 2 impedance, default: 50 Ω
+- `temp`: Temperature in Celsius, default: 26.85°C
+
+## Example
+
 ```@example isolator
 using CircuitSim
 
-circ = Circuit()
+# Standard 50Ω isolator
+iso1 = Isolator("ISO1")
 
-port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
-port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
-add_component!(circ, port1)
-add_component!(circ, port2)
+# Isolator with custom port impedances
+iso2 = Isolator("ISO2", z1=50.0, z2=75.0)
 
-ISO = Isolator("ISO1")
-add_component!(circ, ISO)
-
-gnd = Ground("GND")
-add_component!(circ, gnd)
-
-@connect circ port1.nplus ISO.n1
-@connect circ port2.nplus ISO.n2
-@connect circ port1.nminus gnd
-@connect circ port2.nminus gnd
-
-sparam = SParameterAnalysis(start=1e9, stop=10e9, points=100,
-    sweep_type="linear",
-    z0=50.0
-)
-
-result = simulate_qucsator(circ, sparam)
+# Isolator at elevated temperature
+iso3 = Isolator("ISO3", temp=85.0)
 ```
