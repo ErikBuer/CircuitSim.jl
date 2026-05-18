@@ -9,27 +9,28 @@ between two ports with a specific phase relationship.
 # Fields
 
 - `name::String`: Component identifier
-- `n1::Int`: Port 1 (sum) node number
-- `n2::Int`: Port 2 (difference/isolated) node number
-- `n3::Int`: Port 3 (output 1) node number
-- `n4::Int`: Port 4 (output 2) node number
-- `phase::Real`: Phase difference in degrees (90 or 180) (default: 90)
-- `insertion_loss::Real`: Insertion loss in dB (default: 0.5)
-- `isolation::Real`: Isolation between ports in dB (default: 20)
+- `n1::Int`: Port 1 node number
+- `n2::Int`: Port 2 node number
+- `n3::Int`: Port 3 node number
+- `n4::Int`: Port 4 node number
+- `phase::Real`: Phase difference in degrees (default: 0, range: -180 to +180)
 - `z0::Real`: Reference impedance in Ohms (default: 50)
 
 # Example
 
 ```julia
 using CircuitSim
-# 90 degree hybrid (quadrature hybrid)
+# Default hybrid (0° phase)
 HYB1 = Hybrid("HYB1")
 
-# 180 degree hybrid (rat-race, magic-T)
-HYB2 = Hybrid("HYB2", phase=180.0)
+# 90° hybrid (quadrature hybrid)
+HYB2 = Hybrid("HYB2", phase=90.0)
 
-# Low-loss 90 degree hybrid
-HYB3 = Hybrid("HYB3", insertion_loss=0.2, isolation=30.0)
+# 180° hybrid (rat-race, magic-T)
+HYB3 = Hybrid("HYB3", phase=180.0)
+
+# Custom impedance
+HYB4 = Hybrid("HYB4", phase=90.0, z0=75.0)
 ```
 """
 mutable struct Hybrid <: AbstractHybridCoupler
@@ -41,21 +42,15 @@ mutable struct Hybrid <: AbstractHybridCoupler
     n4::Int
 
     phase::Real
-    insertion_loss::Real
-    isolation::Real
     z0::Real
 
     function Hybrid(name::AbstractString;
-        phase::Real=90.0,
-        insertion_loss::Real=0.5,
-        isolation::Real=20.0,
+        phase::Real=0.0,
         z0::Real=50.0
     )
-        (phase == 90.0 || phase == 180.0) || @warn "Hybrid phase is typically 90° or 180°, got $(phase)°"
-        insertion_loss >= 0 || throw(ArgumentError("Insertion loss must be non-negative"))
-        isolation >= 0 || throw(ArgumentError("Isolation must be non-negative"))
+        -180 <= phase <= 180 || throw(ArgumentError("Phase must be between -180 and +180 degrees"))
         z0 > 0 || throw(ArgumentError("Impedance must be positive"))
-        new(String(name), 0, 0, 0, 0, phase, insertion_loss, isolation, z0)
+        new(String(name), 0, 0, 0, 0, phase, z0)
     end
 end
 
@@ -69,31 +64,6 @@ function to_qucs_netlist(comp::Hybrid)::String
     push!(parts, "phi=\"$(format_value(comp.phase))\"")
     push!(parts, "Zref=\"$(format_value(comp.z0))\"")
     return join(parts, " ")
-end
-
-function to_spice_netlist(comp::Hybrid)::String
-    # SPICE model for hybrid coupler
-    # 3dB split with phase relationship
-    # S31 = -3dB, S41 = -3dB with phase shift
-
-    mag = 1 / sqrt(2) * 10^(-comp.insertion_loss / 20)  # -3dB with loss
-    phase_rad = deg2rad(comp.phase)
-
-    lines = String[]
-    push!(lines, "* Hybrid Coupler $(comp.name): $(comp.phase)° phase difference")
-    if comp.phase == 90.0
-        push!(lines, "* Quadrature (90°) Hybrid")
-    elseif comp.phase == 180.0
-        push!(lines, "* Rat-Race/Magic-T (180°) Hybrid")
-    end
-    push!(lines, "* Ports: 1=sum, 2=diff/isolated, 3=out1, 4=out2")
-    push!(lines, "B$(comp.name)_3 $(comp.n3) 0 V=V($(comp.n1))*$(mag)")
-    push!(lines, "B$(comp.name)_4 $(comp.n4) 0 V=V($(comp.n1))*$(mag)*exp(j*$(phase_rad))")
-    push!(lines, "R$(comp.name)_1 $(comp.n1) 0 $(comp.z0)")
-    push!(lines, "R$(comp.name)_2 $(comp.n2) 0 $(comp.z0)")
-    push!(lines, "R$(comp.name)_3 $(comp.n3) 0 $(comp.z0)")
-    push!(lines, "R$(comp.name)_4 $(comp.n4) 0 $(comp.z0)")
-    return join(lines, "\n")
 end
 
 function _get_node_number(component::Hybrid, pin::Symbol)::Int
