@@ -1,6 +1,18 @@
 # Microstrip Cross Junction
 
-A microstrip cross-junction for connecting four transmission lines.
+Microstrip cross-junction for connecting four transmission lines.
+
+## Parameters
+
+- `w1`: Port 1 width in meters, default: 1e-3
+- `w2`: Port 2 width in meters, default: 2e-3
+- `w3`: Port 3 width in meters, default: 1e-3
+- `w4`: Port 4 width in meters, default: 2e-3
+- `substrate`: Substrate reference name, default: "Subst1"
+- `disp_model`: Dispersion model, default: "Kirschning"
+- `model`: Microstrip model, default: "Hammerstad"
+
+## Example
 
 ```@example mcross
 using CircuitSim
@@ -16,7 +28,7 @@ port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 port3 = ACPowerSource("P3", port_num=3, impedance=50.0)
 port4 = ACPowerSource("P4", port_num=4, impedance=50.0)
-cross = MicrostripCross("MX1", substrate=sub, w1=1.5e-3, w2=1.5e-3, w3=1.5e-3, w4=1.5e-3)
+cross = MicrostripCross("MX1", substrate="Sub1", w1=1.5e-3, w2=1.5e-3, w3=1.5e-3, w4=1.5e-3)
 gnd = Ground("GND")
 
 add_component!(circ, port1)
