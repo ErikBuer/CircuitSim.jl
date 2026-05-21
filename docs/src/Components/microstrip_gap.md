@@ -1,5 +1,18 @@
 # Microstrip Gap
 
+Microstrip series gap discontinuity providing capacitive coupling.
+
+## Parameters
+
+- `w1`: Width at port 1 in meters, default: 1e-3
+- `w2`: Width at port 2 in meters, default: 1e-3
+- `s`: Gap spacing in meters, default: 1e-3
+- `substrate`: Substrate reference name, default: "Subst1"
+- `disp_model`: Dispersion model, default: "Kirschning"
+- `model`: Microstrip model, default: "Hammerstad"
+
+## Example
+
 ```@example microstrip_gap
 using CircuitSim
 
@@ -13,7 +26,7 @@ port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 add_component!(circ, port1)
 add_component!(circ, port2)
 
-GAP = MicrostripGap("GAP1", substrate=sub, w1=1e-3, w2=1e-3, s=0.5e-3)
+GAP = MicrostripGap("GAP1", substrate="Sub1", w1=1e-3, w2=1e-3, s=0.5e-3)
 add_component!(circ, GAP)
 
 gnd = Ground("GND")
