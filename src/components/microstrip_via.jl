@@ -7,38 +7,38 @@ A microstrip via hole connecting to ground plane.
 
 - `name::String`: Component identifier
 - `n1::Int`: Node (top connection)
-- `substrate::Substrate`: Substrate definition reference
-- `d::Real`: Via hole diameter (m)
-- `t::Real`: Metal thickness (m), uses substrate if 0
+- `d::Real`: Via hole diameter in meters (default: 100e-6)
+- `substrate::String`: Substrate reference name (default: "Subst1")
+- `temp::Real`: Temperature in Celsius (default: 26.85)
 
 # Example
 
 ```julia
-sub = Substrate("FR4", er=4.5, h=1.6e-3)
-via = MicrostripVia("VIA1", sub, d=0.3e-3)
+using CircuitSim
+# Default via
+via1 = MicrostripVia("VIA1", d=0.3e-3)
+
+# Custom substrate reference
+via2 = MicrostripVia("VIA2", substrate="Sub1", d=0.3e-3)
 ```
-
-# Qucs Format
-
-`MVIA:Name Node1 gnd Subst="SubstName" D="diameter"`
 """
 mutable struct MicrostripVia <: AbstractMicrostripVia
     name::String
 
     n1::Int
 
-    substrate::Substrate
-    d::Real         # Via diameter (m)
-    t::Real         # Metal thickness override (m), 0 = use substrate
+    d::Real            # Via diameter (m)
+    substrate::String  # Substrate reference name
+    temp::Real         # Temperature (°C)
 
     function MicrostripVia(name::AbstractString;
-        substrate::Substrate,
-        d::Real=0.3e-3,
-        t::Real=0.0
+        d::Real=100e-6,
+        substrate::String="Subst1",
+        temp::Real=26.85
     )
         d > 0 || throw(ArgumentError("Via diameter must be positive"))
-        t >= 0 || throw(ArgumentError("Metal thickness must be non-negative"))
-        new(String(name), 0, substrate, d, t)
+        temp >= -273.15 || throw(ArgumentError("Temperature must be above absolute zero"))
+        new(String(name), 0, d, substrate, temp)
     end
 end
 
@@ -46,18 +46,12 @@ function to_qucs_netlist(mv::MicrostripVia)::String
     parts = ["MVIA:$(mv.name)"]
     push!(parts, qucs_node(mv.n1))
     push!(parts, "gnd")  # Vias connect to ground
-    push!(parts, "Subst=\"$(mv.substrate.name)\"")
     push!(parts, "D=\"$(format_value(mv.d))\"")
-    if mv.t > 0
-        push!(parts, "T=\"$(format_value(mv.t))\"")
-    end
+    push!(parts, "Subst=\"$(mv.substrate)\"")
+    push!(parts, "Temp=\"$(format_value(mv.temp))\"")
     return join(parts, " ")
 end
 
-function to_spice_netlist(mv::MicrostripVia)::String
-    # Approximate via as a small inductance
-    "* Via $(mv.name) from $(mv.n1) to ground, D=$(mv.d)m"
-end
 
 function _get_node_number(mv::MicrostripVia, terminal::Int)::Int
     terminal == 1 && return mv.n1
