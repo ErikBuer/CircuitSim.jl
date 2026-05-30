@@ -8,18 +8,19 @@ A planar spiral inductor on a substrate.
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (outer terminal)
 - `n2::Int`: Node 2 (inner terminal)
-- `substrate::Substrate`: Substrate definition reference
 - `geometry::String`: Inductor geometry ("Circular", "Square", "Hexagonal", "Octogonal")
-- `w::Real`: Track width (m)
-- `s::Real`: Track spacing (m)
-- `di::Real`: Inner diameter (m)
-- `turns::Real`: Number of turns
+- `w::Real`: Track width in meters (default: 25e-6)
+- `di::Real`: Inner diameter in meters (default: 200e-6)
+- `s::Real`: Track spacing in meters (default: 25e-6)
+- `turns::Real`: Number of turns (default: 3)
+- `substrate::String`: Substrate reference name (default: "Subst1")
+- `temp::Real`: Temperature in Celsius (default: 26.85)
 
 # Example
 
 ```julia
-sub = Substrate("FR4", er=4.5, h=1.6e-3)
-spiral = SpiralInductor("L1", sub, geometry="Circular", w=0.2e-3, s=0.15e-3, di=1e-3, turns=5.5)
+using CircuitSim
+spiral = SpiralInductor("L1", geometry="Circular", w=25e-6, di=200e-6, s=25e-6, turns=3, substrate="Sub1")
 ```
 """
 mutable struct SpiralInductor <: AbstractSpiralInductor
@@ -28,28 +29,31 @@ mutable struct SpiralInductor <: AbstractSpiralInductor
     n1::Int
     n2::Int
 
-    substrate::Substrate
     geometry::String    # Inductor geometry
-    w::Real         # Track width (m)
-    s::Real         # Track spacing (m)
-    di::Real        # Inner diameter (m)
-    turns::Real     # Number of turns
+    w::Real             # Track width (m)
+    di::Real            # Inner diameter (m)
+    s::Real             # Track spacing (m)
+    turns::Real         # Number of turns
+    substrate::String   # Substrate reference name
+    temp::Real          # Temperature (°C)
 
     function SpiralInductor(name::AbstractString;
-        substrate::Substrate,
         geometry::AbstractString="Circular",
-        w::Real=0.2e-3,
-        s::Real=0.15e-3,
-        di::Real=1e-3,
-        turns::Real=5.0
+        w::Real=25e-6,
+        di::Real=200e-6,
+        s::Real=25e-6,
+        turns::Real=3,
+        substrate::String="Subst1",
+        temp::Real=26.85
     )
         valid_geometries = ["Circular", "Square", "Hexagonal", "Octogonal"]
         geometry in valid_geometries || throw(ArgumentError("Geometry must be one of: $(join(valid_geometries, ", "))"))
         w > 0 || throw(ArgumentError("Track width must be positive"))
-        s > 0 || throw(ArgumentError("Track spacing must be positive"))
         di > 0 || throw(ArgumentError("Inner diameter must be positive"))
+        s >= 0 || throw(ArgumentError("Track spacing must be non-negative"))
         turns > 0 || throw(ArgumentError("Number of turns must be positive"))
-        new(String(name), 0, 0, substrate, String(geometry), w, s, di, turns)
+        temp >= -273.15 || throw(ArgumentError("Temperature must be above absolute zero"))
+        new(String(name), 0, 0, String(geometry), w, di, s, turns, substrate, temp)
     end
 end
 
@@ -57,22 +61,14 @@ function to_qucs_netlist(sp::SpiralInductor)::String
     parts = ["SPIRALIND:$(sp.name)"]
     push!(parts, qucs_node(sp.n1))
     push!(parts, qucs_node(sp.n2))
-    push!(parts, "Subst=\"$(sp.substrate.name)\"")
     push!(parts, "Geometry=\"$(sp.geometry)\"")
     push!(parts, "W=\"$(format_value(sp.w))\"")
-    push!(parts, "S=\"$(format_value(sp.s))\"")
     push!(parts, "Di=\"$(format_value(sp.di))\"")
+    push!(parts, "S=\"$(format_value(sp.s))\"")
     push!(parts, "N=\"$(sp.turns)\"")
+    push!(parts, "Subst=\"$(sp.substrate)\"")
+    push!(parts, "Temp=\"$(format_value(sp.temp))\"")
     return join(parts, " ")
-end
-
-function to_spice_netlist(sp::SpiralInductor)::String
-    # Approximate spiral inductance using Wheeler's formula (simplified)
-    # L ≈ n² * d_avg / (1 + 2.75 * fill_ratio)
-    davg = sp.di + sp.turns * (sp.w + sp.s)
-    fill = (sp.turns * (sp.w + sp.s)) / (davg / 2)
-    l_approx = sp.turns^2 * davg * 1e9 / (1 + 2.75 * fill)  # nH approx
-    "L$(sp.name) $(sp.n1) $(sp.n2) $(l_approx)n  ; Spiral inductor approx"
 end
 
 function _get_node_number(sp::SpiralInductor, pin::Symbol)::Int
