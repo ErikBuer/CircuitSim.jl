@@ -128,7 +128,7 @@ end
 
 function to_qucs_netlist(spf::SPfile)::String
     # Build node list: N port nodes followed by ground reference node
-    parts = ["SPDfile:$(spf.name)"]
+    parts = ["SPfile:$(spf.name)"]
 
     # Add all N+1 nodes (N ports + 1 ground reference)
     for i in 1:length(spf.nodes)
