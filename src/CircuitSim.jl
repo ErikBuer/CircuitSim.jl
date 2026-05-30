@@ -46,6 +46,7 @@ export OpAmp, Gyrator
 export TransmissionLine
 export FourTerminalTransmissionLine
 export CoupledLine
+export TwistedPair
 export CoaxialLine
 export IdealTransformer, MutualInductor
 export SPfile
@@ -210,6 +211,7 @@ include("components/gyrator.jl")
 include("components/transmission_line.jl")
 include("components/four_terminal_transmission_line.jl")
 include("components/coupled_line.jl")
+include("components/twisted_pair.jl")
 include("components/coaxial_line.jl")
 include("components/ideal_transformer.jl")
 include("components/mutual_inductor.jl")
