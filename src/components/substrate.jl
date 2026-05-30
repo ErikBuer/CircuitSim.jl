@@ -6,12 +6,12 @@ Defines the substrate properties for microstrip and planar components.
 # Fields
 
 - `name::String`: Substrate identifier
-- `er::Real`: Relative permittivity (dielectric constant)
-- `h::Real`: Substrate height/thickness in meters
-- `t::Real`: Metal thickness in meters
-- `tand::Real`: Loss tangent (tan δ)
+- `er::Real`: Relative permittivity (dielectric constant, default: 9.8)
+- `h::Real`: Substrate height/thickness in meters (default: 1e-3)
+- `t::Real`: Metal thickness in meters (default: 35e-6)
+- `tand::Real`: Loss tangent (tan δ, default: 1e-3)
 - `rho::Real`: Metal resistivity in Ω·m (Copper ≈ 0.022e-6)
-- `rough::Real`: Surface roughness in meters
+- `rough::Real`: Surface roughness in meters (default: 0.15e-6)
 
 # Example
 
@@ -36,19 +36,19 @@ mutable struct Substrate <: AbstractCircuitComponent
     rough::Real     # Surface roughness (m)
 
     function Substrate(name::AbstractString;
-        er::Real=4.5,
-        h::Real=1.6e-3,
+        er::Real=9.8,
+        h::Real=1e-3,
         t::Real=35e-6,
-        tand::Real=0.02,
+        tand::Real=1e-3,
         rho::Real=0.022e-6,
-        rough::Real=0.0
+        rough::Real=0.15e-6
     )
-        er > 0 || throw(ArgumentError("Relative permittivity must be positive"))
+        1 <= er <= 100 || throw(ArgumentError("Relative permittivity must be in range [1, 100]"))
         h > 0 || throw(ArgumentError("Substrate height must be positive"))
-        t >= 0 || throw(ArgumentError("Metal thickness must be non-negative"))
-        tand >= 0 || throw(ArgumentError("Loss tangent must be non-negative"))
+        t > 0 || throw(ArgumentError("Metal thickness must be positive"))
+        tand > 0 || throw(ArgumentError("Loss tangent must be positive"))
         rho > 0 || throw(ArgumentError("Resistivity must be positive"))
-        rough >= 0 || throw(ArgumentError("Surface roughness must be non-negative"))
+        rough > 0 || throw(ArgumentError("Surface roughness must be positive"))
         new(String(name), er, h, t, tand, rho, rough)
     end
 end
@@ -63,11 +63,6 @@ function to_qucs_netlist(sub::Substrate)::String
     push!(parts, "rho=\"$(format_value(sub.rho))\"")
     push!(parts, "D=\"$(format_value(sub.rough))\"")
     return join(parts, " ")
-end
-
-# SPICE doesn't have substrate definitions - parameters go into component models
-function to_spice_netlist(sub::Substrate)::String
-    "* Substrate $(sub.name): er=$(sub.er), h=$(sub.h)m, t=$(sub.t)m, tand=$(sub.tand)"
 end
 
 # Substrate doesn't have pins/nodes - it's a parameter definition

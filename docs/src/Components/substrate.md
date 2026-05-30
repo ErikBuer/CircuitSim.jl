@@ -1,5 +1,16 @@
 # Substrate
 
+Defines substrate properties for microstrip and planar components.
+
+## Parameters
+
+- `er`: Relative permittivity, range: 1 to 100, default: 9.8
+- `h`: Substrate height in meters, default: 1e-3
+- `t`: Metal thickness in meters, default: 35e-6
+- `tand`: Loss tangent, default: 1e-3
+- `rho`: Metal resistivity in Ohm*m, default: 0.022e-6
+- `rough`: Surface roughness in meters, default: 0.15e-6
+
 ```@example substrate
 using CircuitSim
 
