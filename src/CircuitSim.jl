@@ -134,7 +134,6 @@ include("components/inductor.jl")
 include("components/capacitor_q.jl")
 include("components/inductor_q.jl")
 include("components/ground.jl")
-include("components/open.jl")
 
 # File I/O utilities
 include("io/file_loader.jl")
