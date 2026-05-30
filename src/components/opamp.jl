@@ -9,8 +9,8 @@ Operational amplifier with ideal characteristics.
 - `ninp::Int`: Non-inverting input node
 - `ninn::Int`: Inverting input node  
 - `nout::Int`: Output node
-- `g::Float64`: Open-loop voltage gain (default: 1e6)
-- `umax::Float64`: Maximum output voltage (default: 15.0 V)
+- `g::Float64`: Open-loop voltage gain, must be >= 1 (default: 1e6)
+- `umax::Float64`: Maximum output voltage in V, must be positive (default: 15.0)
 
 # Pins
 
@@ -39,13 +39,16 @@ mutable struct OpAmp <: AbstractActiveComponent
         g::Real=1e6,
         umax::Real=15.0
     )
+        g >= 1 || throw(ArgumentError("Gain G must be >= 1"))
+        umax > 0 || throw(ArgumentError("Maximum output voltage Umax must be positive"))
         new(String(name), 0, 0, 0, Float64(g), Float64(umax))
     end
 end
 
 function to_qucs_netlist(comp::OpAmp)::String
     params = "G=\"$(comp.g)\" Umax=\"$(comp.umax)\""
-    return "OpAmp:$(comp.name) $(qucs_node(comp.ninp)) $(qucs_node(comp.ninn)) $(qucs_node(comp.nout)) $params"
+    # Node order: INM (inverting), INP (non-inverting), OUT
+    return "OpAmp:$(comp.name) $(qucs_node(comp.ninn)) $(qucs_node(comp.ninp)) $(qucs_node(comp.nout)) $params"
 end
 
 function to_spice_netlist(comp::OpAmp)::String
