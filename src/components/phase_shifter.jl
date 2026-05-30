@@ -11,19 +11,18 @@ maintaining amplitude (ideally).
 - `name::String`: Component identifier
 - `n1::Int`: Input terminal node number
 - `n2::Int`: Output terminal node number
-- `phase::Real`: Phase shift in degrees
-- `z0::Real`: Reference impedance in Ohms (default: 50)
-- `insertion_loss::Real`: Insertion loss in dB (default: 0 for ideal)
+- `phase::Real`: Phase shift in degrees (default: 1e-90, essentially 0)
+- `z0::Real`: Reference impedance in Ohms, must be positive (default: 50)
 
 # Example
 
 ```@example
 using CircuitSim
 # 90 degree phase shifter
-PS1 = PhaseShifter("PS1", 90.0)
+PS1 = PhaseShifter("PS1", phase=90.0)
 
-# 180 degree phase shifter with 0.5 dB loss
-PS2 = PhaseShifter("PS2", 180.0, insertion_loss=0.5)
+# 180 degree phase shifter with custom impedance
+PS2 = PhaseShifter("PS2", phase=180.0, z0=75.0)
 ```
 """
 mutable struct PhaseShifter <: AbstractPhaseShifter
@@ -32,18 +31,15 @@ mutable struct PhaseShifter <: AbstractPhaseShifter
     n1::Int
     n2::Int
 
-    phase::Real
-    z0::Real
-    insertion_loss::Real
+    phase::Real  # Phase shift (degrees)
+    z0::Real     # Reference impedance (Ohms)
 
     function PhaseShifter(name::AbstractString;
-        phase::Real,
-        z0::Real=50.0,
-        insertion_loss::Real=0.0
+        phase::Real=1e-90,
+        z0::Real=50.0
     )
-        z0 > 0 || throw(ArgumentError("Impedance must be positive"))
-        insertion_loss >= 0 || throw(ArgumentError("Insertion loss must be non-negative"))
-        new(String(name), 0, 0, phase, z0, insertion_loss)
+        z0 > 0 || throw(ArgumentError("Reference impedance must be positive"))
+        new(String(name), 0, 0, phase, z0)
     end
 end
 
@@ -56,19 +52,6 @@ function to_qucs_netlist(comp::PhaseShifter)::String
     push!(parts, "phi=\"$(format_value(comp.phase))\"")
     push!(parts, "Zref=\"$(format_value(comp.z0))\"")
     return join(parts, " ")
-end
-
-function to_spice_netlist(comp::PhaseShifter)::String
-    # SPICE model using transmission line with electrical length
-    # Or behavioral source with phase shift
-    phase_rad = deg2rad(comp.phase)
-    mag = 10^(-comp.insertion_loss / 20)
-
-    lines = String[]
-    push!(lines, "* Phase Shifter $(comp.name): $(comp.phase)° shift, $(comp.insertion_loss)dB loss")
-    push!(lines, "* Using ideal transmission line model")
-    push!(lines, "T$(comp.name) $(comp.n1) 0 $(comp.n2) 0 Z0=$(comp.z0) TD=0 F=1G NL=$(comp.phase/360)")
-    return join(lines, "\n")
 end
 
 function _get_node_number(component::PhaseShifter, pin::Symbol)::Int
