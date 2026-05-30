@@ -43,7 +43,9 @@ export Amplifier, Isolator, Attenuator
 export Circulator, PhaseShifter
 export Coupler, Hybrid
 export OpAmp, Gyrator
-export TransmissionLine, CoaxialLine
+export TransmissionLine
+export FourTerminalTransmissionLine
+export CoaxialLine
 export IdealTransformer, MutualInductor
 export SPfile
 
@@ -204,6 +206,7 @@ include("components/hybrid.jl")
 include("components/opamp.jl")
 include("components/gyrator.jl")
 include("components/transmission_line.jl")
+include("components/four_terminal_transmission_line.jl")
 include("components/coaxial_line.jl")
 include("components/ideal_transformer.jl")
 include("components/mutual_inductor.jl")

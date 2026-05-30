@@ -70,6 +70,7 @@ makedocs(
             "Components/gyrator.md",
             "Components/spiral_inductor.md",
             "Components/circular_loop.md",
+            "Components/transmission_line.md",
             "Components/four_terminal_transmission_line.md",
             "Components/coaxial_line.md",
             "Components/ideal_transformer.md",
