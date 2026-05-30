@@ -72,6 +72,7 @@ makedocs(
             "Components/circular_loop.md",
             "Components/transmission_line.md",
             "Components/four_terminal_transmission_line.md",
+            "Components/coupled_line.md",
             "Components/coaxial_line.md",
             "Components/ideal_transformer.md",
             "Components/mutual_inductor.md",
