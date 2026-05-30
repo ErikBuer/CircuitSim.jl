@@ -2,6 +2,14 @@
 
 Two coupled inductors with mutual inductance defined by coupling coefficient k.
 
+## Parameters
+
+- `l1`: Inductance of first coil in H, default: 1e-3
+- `l2`: Inductance of second coil in H, default: 1e-3
+- `k`: Coupling coefficient, range: -1 < k < 1, default: 0.9
+
+## Example
+
 Transformer using coupled inductors.
 
 ```@example mutual
