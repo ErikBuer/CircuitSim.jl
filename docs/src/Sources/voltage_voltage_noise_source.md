@@ -22,17 +22,15 @@ add_component!(circ, r2)
 add_component!(circ, GND)
 
 # Connect first noise source
-@connect circ vnoise.v1plus r1.nplus
+@connect circ vnoise.v1plus r1.n1
 @connect circ vnoise.v1minus GND
-@connect circ r1.nminus GND
+@connect circ r1.n2 GND
 # Connect second noise source
-@connect circ vnoise.v2plus r2.nplus
+@connect circ vnoise.v2plus r2.n1
 @connect circ vnoise.v2minus GND
-@connect circ r2.nminus GND
+@connect circ r2.n2 GND
 
-# Noise analysis
-noise_analysis = NoiseAnalysis(start=1.0, stop=1e6, points=100, output_node="_net1", source="VVN1")
-result = simulate_qucsator(circ, noise_analysis)
-
-println("Correlated voltage noise sources with correlation = 0.8")
+# In qucsator, noise is enabled on AC/SP analysis
+ac_noise = ACAnalysis(start=1.0, stop=1e6, points=100, sweep_type="log", noise=true)
+println(to_qucs_analysis(ac_noise))
 ```

@@ -115,7 +115,10 @@ makedocs(
             "Devices/equation_defined.md",
         ],
         "Analysis"=>[
+            "Analysis/dc_analysis.md",
             "Analysis/ac_analysis.md",
+            "Analysis/transient_analysis.md",
+            "Analysis/harmonic_balance_analysis.md",
         ],
         "Examples"=>[
             "Examples/lowpass_filter.md",
