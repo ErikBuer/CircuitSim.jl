@@ -31,9 +31,6 @@ mutable struct ACPowerSource <: AbstractSource
     end
 end
 
-# Alias for convenience
-const Pac = ACPowerSource
-
 function to_qucs_netlist(ps::ACPowerSource)::String
     # Generates Qucsator "Pac" component
     # Note: f parameter required by qucsator but overridden during sweep analysis

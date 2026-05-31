@@ -22,17 +22,15 @@ add_component!(circ, r2)
 add_component!(circ, GND)
 
 # Connect current noise source
-@connect circ ivnoise.i1plus r1.nplus
+@connect circ ivnoise.i1plus r1.n1
 @connect circ ivnoise.i1minus GND
-@connect circ r1.nminus GND
+@connect circ r1.n2 GND
 # Connect voltage noise source
-@connect circ ivnoise.v2plus r2.nplus
+@connect circ ivnoise.v2plus r2.n1
 @connect circ ivnoise.v2minus GND
-@connect circ r2.nminus GND
+@connect circ r2.n2 GND
 
-# Noise analysis
-noise_analysis = NoiseAnalysis(start=1.0, stop=1e6, points=100, output_node="_net1", source="IVN1")
-result = simulate_qucsator(circ, noise_analysis)
-
-println("Correlated current-voltage noise with correlation = 0.7")
+# In qucsator, noise is enabled on AC/SP analysis
+ac_noise = ACAnalysis(start=1.0, stop=1e6, points=100, sweep_type="log", noise=true)
+println(to_qucs_analysis(ac_noise))
 ```

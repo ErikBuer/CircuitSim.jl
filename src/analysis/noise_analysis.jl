@@ -54,9 +54,6 @@ function NoiseAnalysis(;
     NoiseAnalysis(name, start, stop, points, output_node, source, sweep_lower)
 end
 
-function to_qucs_analysis(a::NoiseAnalysis)::String
-    ""
-end
 
 function to_spice_analysis(a::NoiseAnalysis)::String
     sweep_lower = lowercase(a.sweep_type)
