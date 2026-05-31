@@ -93,6 +93,7 @@ makedocs(
             "Components/coplanar_open.md",
             "Components/coplanar_short.md",
             "Components/coplanar_step.md",
+            "Components/coplanar_gap.md",
             "Components/microstrip_via.md",
             "Components/microstrip_radial_stub.md",
             "Components/microstrip_mitered_bend.md",
