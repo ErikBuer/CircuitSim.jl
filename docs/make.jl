@@ -114,6 +114,9 @@ makedocs(
             "Devices/bjt.md",
             "Devices/equation_defined.md",
         ],
+        "Analysis"=>[
+            "Analysis/ac_analysis.md",
+        ],
         "Examples"=>[
             "Examples/lowpass_filter.md",
             "Examples/dc_divider.md",
