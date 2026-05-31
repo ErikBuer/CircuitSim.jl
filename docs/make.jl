@@ -73,6 +73,7 @@ makedocs(
             "Components/transmission_line.md",
             "Components/rlcg_transmission_line.md",
             "Components/tapered_line.md",
+            "Components/rectangular_waveguide.md",
             "Components/four_terminal_transmission_line.md",
             "Components/coupled_line.md",
             "Components/twisted_pair.md",
