@@ -19,6 +19,7 @@ export VoltageExponentialSource, CurrentExponentialSource
 export VoltageNoiseSource, CurrentNoiseSource
 export CurrentControlledCurrentSource, CurrentControlledVoltageSource
 export VoltageControlledCurrentSource, VoltageControlledVoltageSource
+export ExternallyControlledVoltageSource
 export VoltageAMSource, VoltagePMSource
 export CurrentCurrentNoiseSource, CurrentVoltageNoiseSource, VoltageVoltageNoiseSource
 
@@ -174,6 +175,7 @@ include("sources/current_controlled_current_source.jl")
 include("sources/current_controlled_voltage_source.jl")
 include("sources/voltage_controlled_current_source.jl")
 include("sources/voltage_controlled_voltage_source.jl")
+include("sources/ecvs.jl")
 include("sources/voltage_am_source.jl")
 include("sources/voltage_pm_source.jl")
 include("sources/current_current_noise_source.jl")

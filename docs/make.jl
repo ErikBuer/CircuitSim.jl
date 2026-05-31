@@ -41,6 +41,7 @@ makedocs(
             "Sources/current_controlled_voltage_source.md",
             "Sources/voltage_controlled_current_source.md",
             "Sources/voltage_controlled_voltage_source.md",
+            "Sources/externally_controlled_voltage_source.md",
             "Sources/voltage_am_source.md",
             "Sources/voltage_pm_source.md",
             "Sources/current_current_noise_source.md",
