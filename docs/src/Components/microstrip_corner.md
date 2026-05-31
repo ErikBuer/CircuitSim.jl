@@ -1,33 +1,26 @@
 # Microstrip Corner
 
+90° microstrip bend.
+
+## Parameters
+
+- `w`: Line width in meters, default: 1e-3
+- `substrate`: Substrate reference name, default: "Subst1"
+
+## Model Validity
+
+- 0.2 ≤ W/h ≤ 6.0
+- 2.36 ≤ εᵣ ≤ 10.4
+- freq·h ≤ 12 MHz
+
+## Example
+
 ```@example microstrip_corner
 using CircuitSim
 
-circ = Circuit()
+# Default substrate reference
+corner1 = MicrostripCorner("CORNER1", w=1e-3)
 
-sub = Substrate("Sub1", er=4.5, h=1.6e-3, t=35e-6)
-add_component!(circ, sub)
-
-port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
-port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
-add_component!(circ, port1)
-add_component!(circ, port2)
-
-CORNER = MicrostripCorner("CORNER1", substrate=sub, w=1e-3)
-add_component!(circ, CORNER)
-
-gnd = Ground("GND")
-add_component!(circ, gnd)
-
-@connect circ port1.nplus CORNER.n1
-@connect circ CORNER.n2 port2.nplus
-@connect circ port1.nminus gnd
-@connect circ port2.nminus gnd
-
-sparam = SParameterAnalysis(start=1e9, stop=10e9, points=100,
-    sweep_type="linear",
-    z0=50.0
-)
-
-result = simulate_qucsator(circ, sparam)
+# Custom substrate reference
+corner2 = MicrostripCorner("CORNER2", w=2.5e-3, substrate="Sub1")
 ```

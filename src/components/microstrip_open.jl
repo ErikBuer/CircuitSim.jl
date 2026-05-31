@@ -7,14 +7,13 @@ A microstrip open-circuit termination with end-effect modeling.
 
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (input)
-- `substrate::Substrate`: Substrate definition reference
+- `substrate::String`: Substrate definition name
 - `w::Real`: Line width (m)
 
 # Example
 
 ```julia
-sub = Substrate("FR4", er=4.5, h=1.6e-3)
-open_end = MicrostripOpen("MO1", sub, w=3.0e-3)
+open_end = MicrostripOpen("MO1", substrate="Subst1", w=3.0e-3)
 ```
 
 # Qucs Format
@@ -26,11 +25,11 @@ mutable struct MicrostripOpen <: AbstractMicrostripOpen
 
     n1::Int
 
-    substrate::Substrate
+    substrate::String
     w::Real
 
     function MicrostripOpen(name::AbstractString;
-        substrate::Substrate,
+        substrate::String="Subst1",
         w::Real=1e-3
     )
         w > 0 || throw(ArgumentError("Width must be positive"))
@@ -41,7 +40,7 @@ end
 function to_qucs_netlist(mo::MicrostripOpen)::String
     parts = ["MOPEN:$(mo.name)"]
     push!(parts, qucs_node(mo.n1))
-    push!(parts, "Subst=\"$(mo.substrate.name)\"")
+    push!(parts, "Subst=\"$(mo.substrate)\"")
     push!(parts, "W=\"$(format_value(mo.w))\"")
     push!(parts, "MSDispModel=\"Kirschning\"")
     push!(parts, "MSModel=\"Hammerstad\"")

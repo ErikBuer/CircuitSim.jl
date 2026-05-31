@@ -10,21 +10,29 @@ A pair of microstrip coupled transmission lines (4-port).
 - `n2::Int`: Node 2 (line 1 output)
 - `n3::Int`: Node 3 (line 2 input)
 - `n4::Int`: Node 4 (line 2 output)
-- `substrate::Substrate`: Substrate definition reference
-- `w::Real`: Line width (m)
-- `l::Real`: Line length (m)
-- `s::Real`: Line spacing (m)
+- `w::Real`: Line width in meters (default: 1e-3)
+- `l::Real`: Line length in meters (default: 10e-3)
+- `s::Real`: Line spacing in meters (default: 1e-3)
+- `substrate::String`: Substrate reference name (default: "Subst1")
+- `model::String`: Quasi-static model ("Kirschning" or "Hammerstad", default: "Kirschning")
+- `disp_model::String`: Dispersion model ("Kirschning" or "Getsinger", default: "Kirschning")
+- `temp::Real`: Temperature in Celsius (default: 26.85)
 
 # Example
 
 ```julia
-sub = Substrate("FR4", er=4.5, h=1.6e-3)
-coupled = MicrostripCoupled("MCPL1", sub, w=1.0e-3, l=20e-3, s=0.2e-3)
+using CircuitSim
+# Default with Kirschning model
+coupled1 = MicrostripCoupled("MCPL1", w=1.0e-3, l=20e-3, s=0.2e-3)
+
+# Custom substrate and Hammerstad model
+coupled2 = MicrostripCoupled("MCPL2", substrate="MySub", 
+    w=1.0e-3, l=20e-3, s=0.2e-3, model="Hammerstad")
+
+# With Getsinger dispersion model
+coupled3 = MicrostripCoupled("MCPL3", w=1.0e-3, l=20e-3, s=0.2e-3,
+    disp_model="Getsinger")
 ```
-
-# Qucs Format
-
-`MCOUPLED:Name Node1 Node2 Node3 Node4 Subst="SubstName" W="width" L="length" S="spacing"`
 """
 mutable struct MicrostripCoupled <: AbstractMicrostripCoupled
     name::String
@@ -34,23 +42,34 @@ mutable struct MicrostripCoupled <: AbstractMicrostripCoupled
     n3::Int
     n4::Int
 
-    substrate::Substrate
     w::Real         # Line width (m)
     l::Real         # Line length (m)
     s::Real         # Line spacing (m)
-    model::String   # Model name
+    substrate::String  # Substrate reference name
+    model::String   # Quasi-static model
+    disp_model::String  # Dispersion model
+    temp::Real      # Temperature (°C)
 
     function MicrostripCoupled(name::AbstractString;
-        substrate::Substrate,
         w::Real=1e-3,
         l::Real=10e-3,
-        s::Real=0.2e-3,
-        model::String="Kirschning"
+        s::Real=1e-3,
+        substrate::String="Subst1",
+        model::String="Kirschning",
+        disp_model::String="Kirschning",
+        temp::Real=26.85
     )
+        if model ∉ ("Kirschning", "Hammerstad")
+            throw(ArgumentError("Invalid model type: $model. Must be one of Kirschning, Hammerstad"))
+        end
+        if disp_model ∉ ("Kirschning", "Getsinger")
+            throw(ArgumentError("Invalid dispersion model type: $disp_model. Must be one of Kirschning, Getsinger"))
+        end
         w > 0 || throw(ArgumentError("Width must be positive"))
         l > 0 || throw(ArgumentError("Length must be positive"))
         s > 0 || throw(ArgumentError("Spacing must be positive"))
-        new(String(name), 0, 0, 0, 0, substrate, w, l, s, model)
+        temp >= -273.15 || throw(ArgumentError("Temperature must be above absolute zero"))
+        new(String(name), 0, 0, 0, 0, w, l, s, substrate, model, disp_model, temp)
     end
 end
 
@@ -60,17 +79,14 @@ function to_qucs_netlist(mc::MicrostripCoupled)::String
     push!(parts, qucs_node(mc.n2))
     push!(parts, qucs_node(mc.n3))
     push!(parts, qucs_node(mc.n4))
-    push!(parts, "Subst=\"$(mc.substrate.name)\"")
     push!(parts, "W=\"$(format_value(mc.w))\"")
     push!(parts, "L=\"$(format_value(mc.l))\"")
     push!(parts, "S=\"$(format_value(mc.s))\"")
+    push!(parts, "Subst=\"$(mc.substrate)\"")
     push!(parts, "Model=\"$(mc.model)\"")
-    push!(parts, "DispModel=\"$(mc.model)\"")
+    push!(parts, "DispModel=\"$(mc.disp_model)\"")
+    push!(parts, "Temp=\"$(format_value(mc.temp))\"")
     return join(parts, " ")
-end
-
-function to_spice_netlist(mc::MicrostripCoupled)::String
-    "* Microstrip coupled lines $(mc.name) nodes $(mc.n1)-$(mc.n2)/$(mc.n3)-$(mc.n4), W=$(mc.w)m, L=$(mc.l)m, S=$(mc.s)m"
 end
 
 function _get_node_number(mc::MicrostripCoupled, terminal::Int)::Int

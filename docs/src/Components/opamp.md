@@ -2,6 +2,13 @@
 
 Ideal operational amplifier with configurable gain and output voltage limits.
 
+## Parameters
+
+- `g`: Open-loop voltage gain, must be >= 1, default: 1e6
+- `umax`: Maximum output voltage in V, must be positive, default: 15.0
+
+## Example
+
 Non-inverting amplifier configuration with gain of 11.
 
 ```@example opamp

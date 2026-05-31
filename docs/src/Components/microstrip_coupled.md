@@ -1,48 +1,34 @@
 # Microstrip Coupled Lines
 
-A pair of microstrip coupled transmission lines for directional couplers and filters.
+Pair of microstrip coupled transmission lines for directional couplers and filters.
+
+## Parameters
+
+- `w`: Line width in meters, default: 1e-3
+- `l`: Line length in meters, default: 10e-3
+- `s`: Line spacing in meters, default: 1e-3
+- `substrate`: Substrate reference name, default: "Subst1"
+- `model`: Quasi-static model, default: "Kirschning" (options: "Kirschning", "Hammerstad")
+- `disp_model`: Dispersion model, default: "Kirschning" (options: "Kirschning", "Getsinger")
+- `temp`: Temperature in Celsius, default: 26.85°C
+
+## Example
 
 ```@example mcoupled
 using CircuitSim
 
-circ = Circuit()
+# Default with Kirschning models
+coupled1 = MicrostripCoupled("MCPL1", w=1.0e-3, l=20e-3, s=0.2e-3)
 
-# Substrate definition
-sub = Substrate("Sub1", er=4.5, h=1.6e-3, t=35e-6)
-add_component!(circ, sub)
+# Custom substrate reference
+coupled2 = MicrostripCoupled("MCPL2", substrate="Sub1", 
+    w=1.0e-3, l=20e-3, s=0.2e-3)
 
-# Components
-port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
-port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
-port3 = ACPowerSource("P3", port_num=3, impedance=50.0)
-port4 = ACPowerSource("P4", port_num=4, impedance=50.0)
-coupled = MicrostripCoupled("MCPL1", substrate=sub, w=1.0e-3, l=20e-3, s=0.2e-3)
-gnd = Ground("GND")
+# Using Hammerstad quasi-static model
+coupled3 = MicrostripCoupled("MCPL3", w=1.0e-3, l=20e-3, s=0.2e-3,
+    model="Hammerstad")
 
-add_component!(circ, port1)
-add_component!(circ, port2)
-add_component!(circ, port3)
-add_component!(circ, port4)
-add_component!(circ, coupled)
-add_component!(circ, gnd)
-
-# Connect 4-port device
-@connect circ port1.nplus coupled.n1
-@connect circ coupled.n2 port2.nplus
-@connect circ port3.nplus coupled.n3
-@connect circ coupled.n4 port4.nplus
-@connect circ port1.nminus gnd
-@connect circ port2.nminus gnd
-@connect circ port3.nminus gnd
-@connect circ port4.nminus gnd
-
-# S-parameter analysis
-sp_analysis = SParameterAnalysis(start=1e9, stop=10e9, points=50, z0=50.0)
-result = simulate_qucsator(circ, sp_analysis)
-
-freq = result.frequencies_Hz
-s21 = result.s_matrix[(2,1)]
-s31 = result.s_matrix[(3,1)]
-println("Coupled lines S21 at ", freq[1]/1e9, " GHz: ", round(20*log10(abs(s21[1])), digits=2), " dB")
-println("Coupled lines S31 at ", freq[1]/1e9, " GHz: ", round(20*log10(abs(s31[1])), digits=2), " dB")
+# Using Getsinger dispersion model
+coupled4 = MicrostripCoupled("MCPL4", w=1.0e-3, l=20e-3, s=0.2e-3,
+    disp_model="Getsinger")
 ```

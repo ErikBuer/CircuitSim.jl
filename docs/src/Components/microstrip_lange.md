@@ -1,6 +1,18 @@
 # Microstrip Lange Coupler
 
-An interdigitated microstrip directional coupler providing tight coupling over wide bandwidth.
+Interdigitated microstrip directional coupler providing tight coupling over wide bandwidth.
+
+## Parameters
+
+- `w`: Finger width in meters, default: 1e-3
+- `l`: Finger length in meters, default: 10e-3
+- `s`: Finger spacing in meters, default: 1e-3
+- `substrate`: Substrate reference name, default: "Subst1"
+- `model`: Quasi-static model, default: "Kirschning" (options: "Kirschning", "Hammerstad")
+- `disp_model`: Dispersion model, default: "Kirschning" (options: "Kirschning", "Getsinger")
+- `temp`: Temperature in Celsius, default: 26.85°C
+
+## Example
 
 ```@example lange
 using CircuitSim
@@ -16,7 +28,7 @@ port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
 port3 = ACPowerSource("P3", port_num=3, impedance=50.0)
 port4 = ACPowerSource("P4", port_num=4, impedance=50.0)
-lange = MicrostripLange("LC1", substrate=sub, w=0.15e-3, l=10e-3, s=0.1e-3, n=4)
+lange = MicrostripLange("LC1", substrate="Sub1", w=0.15e-3, l=10e-3, s=0.1e-3)
 gnd = Ground("GND")
 
 add_component!(circ, port1)

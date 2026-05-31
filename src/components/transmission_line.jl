@@ -1,61 +1,56 @@
 """
-    TransmissionLine <: AbstractComponent
+    TransmissionLine <: AbstractTransmissionLine
 
-Simple lossless transmission line.
+2-port ideal transmission line (TLIN).
 
 # Fields
 
 - `name::String`: Component identifier
-- `z0::Float64`: Characteristic impedance in Ω (default: 50.0)
-- `length_m::Float64`: Physical length in meters
-- `alpha::Float64`: Attenuation constant in 1/m (default: 0.0)
-- `n1::Int`: Input port positive node
-- `n2::Int`: Input port negative node
-- `n3::Int`: Output port positive node
-- `n4::Int`: Output port negative node
+- `z0::Float64`: Characteristic impedance in Ω (default: 50.0, must be > 0)
+- `length_m::Float64`: Physical length in meters (default: 1e-3)
+- `alpha::Float64`: Attenuation factor, linear scale (default: 1.0, must be > 0)
+- `temp::Float64`: Temperature in °C (default: 26.85)
+- `n1::Int`: Port 1 node
+- `n2::Int`: Port 2 node
 
 # Pins
 
-- `:n1`, `:n2`: Input port
-- `:n3`, `:n4`: Output port
+- `:n1`: Port 1
+- `:n2`: Port 2
 
 # Example
 
 ```jldoctest
 julia> tline = TransmissionLine("TL1", z0=75.0, length_m=0.1)
-TransmissionLine("TL1", 0, 0, 0, 0, 75.0, 0.1, 0.0)
+TransmissionLine("TL1", 0, 0, 75.0, 0.1, 1.0, 26.85)
 ```
 """
-mutable struct TransmissionLine <: AbstractTransmissionLine2Port
+mutable struct TransmissionLine <: AbstractTransmissionLine
     name::String
 
     n1::Int
     n2::Int
-    n3::Int
-    n4::Int
 
     z0::Float64
     length_m::Float64
     alpha::Float64
+    temp::Float64
 
     function TransmissionLine(name::AbstractString;
         z0::Real=50.0,
-        length_m::Real,
-        alpha::Real=0.0
+        length_m::Real=1e-3,
+        alpha::Real=1.0,
+        temp::Real=26.85
     )
-        new(String(name), 0, 0, 0, 0, Float64(z0), Float64(length_m), Float64(alpha))
+        z0 > 0 || error("z0 must be > 0 (got $z0)")
+        alpha > 0 || error("alpha must be > 0 (got $alpha)")
+        new(String(name), 0, 0, Float64(z0), Float64(length_m), Float64(alpha), Float64(temp))
     end
 end
 
 function to_qucs_netlist(comp::TransmissionLine)::String
-    # TLIN4P requires Alpha > 0, use small value if 0
-    alpha_val = comp.alpha > 0 ? comp.alpha : 1e-10
-    params = "Z=\"$(comp.z0)\" L=\"$(comp.length_m)\" Alpha=\"$alpha_val\""
-    return "TLIN4P:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) $(qucs_node(comp.n3)) $(qucs_node(comp.n4)) $params"
-end
-
-function to_spice_netlist(comp::TransmissionLine)::String
-    "T$(comp.name) $(comp.n1) $(comp.n2) $(comp.n3) $(comp.n4) Z0=$(comp.z0) TD=0"
+    params = "Z=\"$(comp.z0)\" L=\"$(comp.length_m)\" Alpha=\"$(comp.alpha)\" Temp=\"$(comp.temp)\""
+    return "TLIN:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) $params"
 end
 
 function _get_node_number(comp::TransmissionLine, pin::Symbol)
@@ -63,11 +58,21 @@ function _get_node_number(comp::TransmissionLine, pin::Symbol)
         return comp.n1
     elseif pin == :n2
         return comp.n2
-    elseif pin == :n3
-        return comp.n3
-    elseif pin == :n4
-        return comp.n4
     else
-        error("Invalid pin $pin for TransmissionLine. Use :n1, :n2, :n3, or :n4")
+        error("Invalid pin $pin for TransmissionLine. Use :n1 or :n2")
     end
+end
+
+function _set_node_number!(comp::TransmissionLine, pin::Symbol, node::Int)
+    if pin == :n1
+        comp.n1 = node
+    elseif pin == :n2
+        comp.n2 = node
+    else
+        error("Invalid pin $pin for TransmissionLine. Use :n1 or :n2")
+    end
+end
+
+function get_pins(::TransmissionLine)
+    return [:n1, :n2]
 end

@@ -8,14 +8,18 @@ A 90° microstrip corner/bend.
 - `name::String`: Component identifier
 - `n1::Int`: Node 1 (input)
 - `n2::Int`: Node 2 (output)
-- `substrate::Substrate`: Substrate definition reference
-- `w::Real`: Line width (m)
+- `w::Real`: Line width in meters (default: 1e-3)
+- `substrate::String`: Substrate reference name (default: "Subst1")
 
 # Example
 
 ```julia
-sub = Substrate("FR4", er=4.5, h=1.6e-3)
-corner = MicrostripCorner("MC1", sub, w=3.0e-3)
+using CircuitSim
+# Default substrate reference
+corner1 = MicrostripCorner("MC1", w=3.0e-3)
+
+# Custom substrate reference
+corner2 = MicrostripCorner("MC2", w=2.5e-3, substrate="MySub")
 ```
 
 # Qucs Format
@@ -28,15 +32,15 @@ mutable struct MicrostripCorner <: AbstractMicrostripCorner
     n1::Int
     n2::Int
 
-    substrate::Substrate
     w::Real
+    substrate::String
 
     function MicrostripCorner(name::AbstractString;
-        substrate::Substrate,
-        w::Real=1e-3
+        w::Real=1e-3,
+        substrate::String="Subst1"
     )
         w > 0 || throw(ArgumentError("Width must be positive"))
-        new(String(name), 0, 0, substrate, w)
+        new(String(name), 0, 0, w, substrate)
     end
 end
 
@@ -44,13 +48,9 @@ function to_qucs_netlist(mc::MicrostripCorner)::String
     parts = ["MCORN:$(mc.name)"]
     push!(parts, qucs_node(mc.n1))
     push!(parts, qucs_node(mc.n2))
-    push!(parts, "Subst=\"$(mc.substrate.name)\"")
+    push!(parts, "Subst=\"$(mc.substrate)\"")
     push!(parts, "W=\"$(format_value(mc.w))\"")
     return join(parts, " ")
-end
-
-function to_spice_netlist(mc::MicrostripCorner)::String
-    "* Microstrip corner $(mc.name) from $(mc.n1) to $(mc.n2), W=$(mc.w)m"
 end
 
 function _get_node_number(mc::MicrostripCorner, terminal::Int)::Int

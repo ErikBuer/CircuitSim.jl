@@ -21,7 +21,6 @@ For an N-port S-parameter file, the component has N+1 nodes:
 - `num_ports::Int`: Number of ports
 - `data_format::String`: Data format ("rectangular" or "polar")
 - `interpolator::String`: Interpolation method ("linear" or "cubic")
-- `temp::Real`: Temperature in Kelvin (default 293.15K = 20°C)
 - `during_dc::String`: DC behavior ("open", "short", or "unspecified")
 
 # Example
@@ -44,8 +43,7 @@ custom = SPfile("DEV", "data.txt", num_ports=3)
 # Custom options
 filter_sp = SPfile("FILT1", "filter.s2p", 
     data_format="polar",
-    interpolator="cubic",
-    temp=298.15)
+    interpolator="cubic")
 ```
 
 # Notes
@@ -73,13 +71,14 @@ mutable struct SPfile <: AbstractSParameterFile
         num_ports::Union{Int,Nothing}=nothing,
         data_format::String="rectangular",
         interpolator::String="linear",
-        temp::Real=293.15,
+        temp::Real=26.85,
         during_dc::String="open"
     )
 
         data_format in ["rectangular", "polar"] || throw(ArgumentError("data_format must be 'rectangular' or 'polar'"))
         interpolator in ["linear", "cubic"] || throw(ArgumentError("interpolator must be 'linear' or 'cubic'"))
-        during_dc in ["open", "short", "unspecified"] || throw(ArgumentError("during_dc must be 'open', 'short', or 'unspecified'"))
+        during_dc in ["open", "short", "shortall", "unspecified"] || throw(ArgumentError("during_dc must be 'open', 'short', 'shortall', or 'unspecified'"))
+        temp >= -273.15 || throw(ArgumentError("Temperature must be above absolute zero"))
 
         # Detect number of ports from file extension or use provided value
         detected_ports = if num_ports !== nothing
@@ -141,12 +140,9 @@ function to_qucs_netlist(spf::SPfile)::String
     push!(parts, "File=\"$(spf.name).s$(spf.num_ports)p\"")
     push!(parts, "Data=\"$(spf.data_format)\"")
     push!(parts, "Interpolator=\"$(spf.interpolator)\"")
+    push!(parts, "Temp=\"$(format_value(spf.temp))\"")
     push!(parts, "duringDC=\"$(spf.during_dc)\"")
     return join(parts, " ")
-end
-
-function to_spice_netlist(spf::SPfile)::String
-    "* S-parameter file $(spf.name) from $(spf.file)"
 end
 
 # TODO dont limit to 4 ports - make dynamic

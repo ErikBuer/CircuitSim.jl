@@ -1,5 +1,14 @@
 # Phase Shifter
 
+RF phase shifter component that introduces a specified phase shift while maintaining amplitude.
+
+## Parameters
+
+- `phase`: Phase shift in degrees, default: 1e-90 (essentially 0)
+- `z0`: Reference impedance in Ohms, must be positive, default: 50
+
+## Example
+
 ```@example phase_shifter
 using CircuitSim
 

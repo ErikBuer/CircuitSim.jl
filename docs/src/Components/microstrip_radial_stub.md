@@ -2,6 +2,18 @@
 
 A microstrip radial (butterfly) stub for wideband impedance matching and filtering.
 
+## Parameters
+
+- `ri`: Inner radius in meters, default: 1e-3
+- `ro`: Outer radius in meters, default: 10e-3
+- `wf`: Feedline width in meters, default: 1e-3
+- `alpha`: Stub angle in degrees, default: 90.0 (range: 0 to 180)
+- `substrate`: Substrate reference name, default: "Subst1"
+- `eff_dimens`: Effective dimensions model, default: "OldQucsNoCorrection" (options: "OldQucsNoCorrection", "Chew_Kong", "Giannini")
+- `model`: Analysis model, default: "OldQucsModel" (options: "OldQucsModel", "March", "Giannini")
+
+## Example
+
 ```@example mrstub
 using CircuitSim
 
@@ -13,8 +25,8 @@ add_component!(circ, sub)
 
 # Components
 port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
-ms_line = MicrostripLine("MS1", substrate=sub, w=3.0e-3, l=10e-3)
-rstub = MicrostripRadialStub("RS1", substrate=sub, ri=0.5e-3, ro=5.0e-3, wf=1.0e-3, alpha=60.0)
+ms_line = MicrostripLine("MS1", substrate="Sub1", w=3.0e-3, l=10e-3)
+rstub = MicrostripRadialStub("RS1", substrate="Sub1", ri=1e-3, ro=10e-3, wf=1.0e-3, alpha=90.0)
 gnd = Ground("GND")
 
 add_component!(circ, port1)

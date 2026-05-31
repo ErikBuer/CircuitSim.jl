@@ -42,10 +42,6 @@ function to_qucs_netlist(comp::DCBlock)::String
     "DCBlock:$(comp.name) $(qucs_node(comp.n1)) $(qucs_node(comp.n2)) C=\"$(format_capacitance(comp.capacitance))\""
 end
 
-function to_spice_netlist(comp::DCBlock)::String
-    "C$(comp.name)_dcb $(comp.n1) $(comp.n2) $(comp.capacitance)"
-end
-
 function _get_node_number(component::DCBlock, pin::Symbol)::Int
     if pin == :n1
         return component.n1

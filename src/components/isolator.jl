@@ -12,19 +12,22 @@ sources from reflections.
 - `name::String`: Component identifier
 - `n1::Int`: Input terminal node number
 - `n2::Int`: Output terminal node number
-- `forward_loss::Real`: Insertion loss in forward direction (dB) (default: 0.5)
-- `reverse_loss::Real`: Isolation in reverse direction (dB) (default: 20)
-- `z0::Real`: Reference impedance in Ohms (default: 50)
+- `z1::Real`: Port 1 impedance in Ohms (default: 50)
+- `z2::Real`: Port 2 impedance in Ohms (default: 50)
+- `temp::Real`: Temperature in Celsius (default: 26.85)
 
 # Example
 
 ```julia
 using CircuitSim
-# Standard isolator: 0.5 dB forward loss, 20 dB isolation
+# Standard isolator with 50Ω ports
 ISO1 = Isolator("ISO1")
 
-# Custom isolator: 1 dB forward loss, 30 dB isolation
-ISO2 = Isolator("ISO2", forward_loss=1.0, reverse_loss=30.0)
+# Isolator with custom port impedances
+ISO2 = Isolator("ISO2", z1=50.0, z2=75.0)
+
+# Isolator at specific temperature
+ISO3 = Isolator("ISO3", temp=85.0)
 ```
 """
 mutable struct Isolator <: AbstractIsolator
@@ -33,19 +36,19 @@ mutable struct Isolator <: AbstractIsolator
     n1::Int
     n2::Int
 
-    forward_loss::Real
-    reverse_loss::Real
-    z0::Real
+    z1::Real
+    z2::Real
+    temp::Real
 
     function Isolator(name::AbstractString;
-        forward_loss::Real=0.5,
-        reverse_loss::Real=20.0,
-        z0::Real=50.0
+        z1::Real=50.0,
+        z2::Real=50.0,
+        temp::Real=26.85
     )
-        forward_loss >= 0 || throw(ArgumentError("Forward loss must be non-negative"))
-        reverse_loss >= 0 || throw(ArgumentError("Reverse loss must be non-negative"))
-        z0 > 0 || throw(ArgumentError("Impedance must be positive"))
-        new(String(name), 0, 0, forward_loss, reverse_loss, z0)
+        z1 > 0 || throw(ArgumentError("Z1 impedance must be positive"))
+        z2 > 0 || throw(ArgumentError("Z2 impedance must be positive"))
+        temp >= -273.15 || throw(ArgumentError("Temperature must be above absolute zero"))
+        new(String(name), 0, 0, z1, z2, temp)
     end
 end
 
@@ -53,24 +56,10 @@ function to_qucs_netlist(comp::Isolator)::String
     parts = ["Isolator:$(comp.name)"]
     push!(parts, "$(qucs_node(comp.n1))")
     push!(parts, "$(qucs_node(comp.n2))")
-    push!(parts, "L1=\"$(format_value(comp.forward_loss)) dB\"")
-    push!(parts, "L2=\"$(format_value(comp.reverse_loss)) dB\"")
-    push!(parts, "Z=\"$(format_value(comp.z0))\"")
+    push!(parts, "Z1=\"$(format_value(comp.z1))\"")
+    push!(parts, "Z2=\"$(format_value(comp.z2))\"")
+    push!(parts, "Temp=\"$(format_value(comp.temp))\"")
     return join(parts, " ")
-end
-
-function to_spice_netlist(comp::Isolator)::String
-    # SPICE approximation using voltage-controlled sources
-    # Forward path: attenuator
-    # Reverse path: high attenuation
-    g_forward = 10^(-comp.forward_loss / 20)
-    g_reverse = 10^(-comp.reverse_loss / 20)
-
-    lines = String[]
-    push!(lines, "* Isolator $(comp.name): Forward=$(comp.forward_loss)dB, Reverse=$(comp.reverse_loss)dB")
-    push!(lines, "B$(comp.name)_fwd $(comp.n2) 0 V=V($(comp.n1))*$(g_forward)")
-    push!(lines, "R$(comp.name)_load $(comp.n2) 0 $(comp.z0)")
-    return join(lines, "\n")
 end
 
 function _get_node_number(component::Isolator, pin::Symbol)::Int

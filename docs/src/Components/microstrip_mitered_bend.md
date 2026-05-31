@@ -2,6 +2,13 @@
 
 A mitered 90° microstrip bend with corner cut for improved high-frequency performance.
 
+## Parameters
+
+- `w`: Line width in meters, default: 1e-3
+- `substrate`: Substrate reference name, default: "Subst1"
+
+## Example
+
 ```@example mbend
 using CircuitSim
 
@@ -14,7 +21,7 @@ add_component!(circ, sub)
 # Components
 port1 = ACPowerSource("P1", port_num=1, impedance=50.0)
 port2 = ACPowerSource("P2", port_num=2, impedance=50.0)
-bend = MicrostripMiteredBend("MB1", substrate=sub, w=3.0e-3)
+bend = MicrostripMiteredBend("MB1", substrate="Sub1", w=3.0e-3)
 gnd = Ground("GND")
 
 add_component!(circ, port1)
