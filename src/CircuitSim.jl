@@ -50,6 +50,7 @@ export TwistedPair
 export RLCGTransmissionLine
 export TaperedLine
 export RectangularWaveguide
+export CircularWaveguide
 export CoaxialLine
 export IdealTransformer, MutualInductor
 export SPfile
@@ -218,6 +219,7 @@ include("components/twisted_pair.jl")
 include("components/rlcg_transmission_line.jl")
 include("components/tapered_line.jl")
 include("components/rectangular_waveguide.jl")
+include("components/circular_waveguide.jl")
 include("components/coaxial_line.jl")
 include("components/ideal_transformer.jl")
 include("components/mutual_inductor.jl")
