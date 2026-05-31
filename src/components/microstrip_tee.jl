@@ -1,28 +1,34 @@
 """
     MicrostripTee <: AbstractMicrostripTee
 
-A microstrip T-junction (3-port).
+A microstrip T-junction (3-port, MTEE).
 
 # Fields
 
 - `name::String`: Component identifier
-- `n1::Int`: Node 1 (main line input)
-- `n2::Int`: Node 2 (main line output)
-- `n3::Int`: Node 3 (branch)
-- `substrate::Substrate`: Substrate definition reference
-- `w1::Real`: Main line width (m)
-- `w2::Real`: Branch width (m)
+- `n1::Int`: Port 1 node
+- `n2::Int`: Port 2 node
+- `n3::Int`: Port 3 node
+- `w1::Float64`: Width at port 1 in meters (default: 1e-3, must be > 0)
+- `w2::Float64`: Width at port 2 in meters (default: 1e-3, must be > 0)
+- `w3::Float64`: Width at port 3 in meters (default: 2e-3, must be > 0)
+- `substrate::String`: Substrate reference name (default: "Subst1")
+- `disp_model::String`: Dispersion model (default: "Kirschning")
+- `model::String`: Quasi-static model (default: "Hammerstad")
+- `temp::Float64`: Temperature in °C (default: 26.85)
+
+# Pins
+
+- `:n1`: Port 1
+- `:n2`: Port 2
+- `:n3`: Port 3
 
 # Example
 
-```julia
-sub = Substrate("FR4", er=4.5, h=1.6e-3)
-tee = MicrostripTee("MTEE1", sub, w1=3.0e-3, w2=1.5e-3)
+```jldoctest
+julia> tee = MicrostripTee("MTEE1")
+MicrostripTee("MTEE1", 0, 0, 0, 0.001, 0.001, 0.002, "Subst1", "Kirschning", "Hammerstad", 26.85)
 ```
-
-# Qucs Format
-
-`MTEE:Name Node1 Node2 Node3 Subst="SubstName" W1="width1" W2="width2" W3="width3"`
 """
 mutable struct MicrostripTee <: AbstractMicrostripTee
     name::String
@@ -31,45 +37,78 @@ mutable struct MicrostripTee <: AbstractMicrostripTee
     n2::Int
     n3::Int
 
-    substrate::Substrate
-    w1::Real        # Port 1 width (m)
-    w2::Real        # Port 2 width (m)
-    w3::Real        # Port 3 (branch) width (m)
+    w1::Float64
+    w2::Float64
+    w3::Float64
+    substrate::String
+    disp_model::String
+    model::String
+    temp::Float64
 
     function MicrostripTee(name::AbstractString;
-        substrate::Substrate,
         w1::Real=1e-3,
         w2::Real=1e-3,
-        w3::Real=1e-3
+        w3::Real=2e-3,
+        substrate::String="Subst1",
+        disp_model::String="Kirschning",
+        model::String="Hammerstad",
+        temp::Real=26.85
     )
-        w1 > 0 || throw(ArgumentError("Width 1 must be positive"))
-        w2 > 0 || throw(ArgumentError("Width 2 must be positive"))
-        w3 > 0 || throw(ArgumentError("Width 3 must be positive"))
-        new(String(name), 0, 0, 0, substrate, w1, w2, w3)
+        w1 > 0 || error("w1 must be > 0 (got $w1)")
+        w2 > 0 || error("w2 must be > 0 (got $w2)")
+        w3 > 0 || error("w3 must be > 0 (got $w3)")
+        temp >= -273.15 || error("temp must be >= -273.15 (got $temp)")
+
+        model in ["Hammerstad", "Schneider", "Wheeler"] ||
+            error("model must be one of: Hammerstad, Schneider, Wheeler")
+        disp_model in ["Kirschning", "Hammerstad", "Getsinger", "Schneider", "Pramanick", "Yamashita", "Kobayashi"] ||
+            error("disp_model must be one of: Kirschning, Hammerstad, Getsinger, Schneider, Pramanick, Yamashita, Kobayashi")
+
+        new(String(name), 0, 0, 0,
+            Float64(w1), Float64(w2), Float64(w3),
+            substrate, disp_model, model, Float64(temp))
     end
 end
 
-function to_qucs_netlist(mt::MicrostripTee)::String
-    parts = ["MTEE:$(mt.name)"]
-    push!(parts, qucs_node(mt.n1))
-    push!(parts, qucs_node(mt.n2))
-    push!(parts, qucs_node(mt.n3))
-    push!(parts, "Subst=\"$(mt.substrate.name)\"")
-    push!(parts, "W1=\"$(format_value(mt.w1))\"")
-    push!(parts, "W2=\"$(format_value(mt.w2))\"")
-    push!(parts, "W3=\"$(format_value(mt.w3))\"")
-    push!(parts, "MSModel=\"Hammerstad\"")
-    push!(parts, "MSDispModel=\"Kirschning\"")
+function to_qucs_netlist(comp::MicrostripTee)::String
+    parts = ["MTEE:$(comp.name)"]
+    push!(parts, qucs_node(comp.n1))
+    push!(parts, qucs_node(comp.n2))
+    push!(parts, qucs_node(comp.n3))
+    push!(parts, "W1=\"$(comp.w1)\"")
+    push!(parts, "W2=\"$(comp.w2)\"")
+    push!(parts, "W3=\"$(comp.w3)\"")
+    push!(parts, "Subst=\"$(comp.substrate)\"")
+    push!(parts, "MSDispModel=\"$(comp.disp_model)\"")
+    push!(parts, "MSModel=\"$(comp.model)\"")
+    push!(parts, "Temp=\"$(comp.temp)\"")
     return join(parts, " ")
 end
 
-function to_spice_netlist(mt::MicrostripTee)::String
-    "* Microstrip tee $(mt.name) nodes $(mt.n1)-$(mt.n2)-$(mt.n3), W1=$(mt.w1)m, W2=$(mt.w2)m, W3=$(mt.w3)m"
+function _get_node_number(comp::MicrostripTee, pin::Symbol)
+    if pin == :n1
+        return comp.n1
+    elseif pin == :n2
+        return comp.n2
+    elseif pin == :n3
+        return comp.n3
+    else
+        error("Invalid pin $pin for MicrostripTee. Use :n1, :n2 or :n3")
+    end
 end
 
-function _get_node_number(mt::MicrostripTee, terminal::Int)::Int
-    terminal == 1 && return mt.n1
-    terminal == 2 && return mt.n2
-    terminal == 3 && return mt.n3
-    throw(ArgumentError("MicrostripTee has 3 terminals (1, 2, 3), got $terminal"))
+function _set_node_number!(comp::MicrostripTee, pin::Symbol, node::Int)
+    if pin == :n1
+        comp.n1 = node
+    elseif pin == :n2
+        comp.n2 = node
+    elseif pin == :n3
+        comp.n3 = node
+    else
+        error("Invalid pin $pin for MicrostripTee. Use :n1, :n2 or :n3")
+    end
+end
+
+function get_pins(::MicrostripTee)
+    return [:n1, :n2, :n3]
 end
