@@ -46,14 +46,6 @@ function to_qucs_netlist(c::VoltageControlledCurrentSource)
     return "VCCS:$(c.name) $(qucs_node(c.n1)) $(qucs_node(c.n2)) $(qucs_node(c.n3)) $(qucs_node(c.n4)) $params"
 end
 
-# SPICE netlist format: G<name> <n+> <n-> <nc+> <nc-> <transconductance>
-function to_spice_netlist(c::VoltageControlledCurrentSource)
-    if c.t > 0.0
-        @warn "SPICE does not support time delay T for VCCS $(c.name), ignoring"
-    end
-    return "G$(c.name) $(c.n3) $(c.n4) $(c.n1) $(c.n2) $(c.g)"
-end
-
 function _get_node_number(c::VoltageControlledCurrentSource, pin::Symbol)
     pin == :n1 && return c.n1
     pin == :n2 && return c.n2

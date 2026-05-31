@@ -33,17 +33,6 @@ function to_qucs_netlist(c::CurrentControlledVoltageSource)
     return "CCVS:$(c.name) $(qucs_node(c.n1)) $(qucs_node(c.n2)) $(qucs_node(c.n3)) $(qucs_node(c.n4)) $params"
 end
 
-# SPICE netlist format: H<name> <n+> <n-> <vcontrol> <gain>
-# Note: SPICE requires a voltage source name for current sensing
-function to_spice_netlist(c::CurrentControlledVoltageSource)
-    if c.t > 0.0
-        @warn "SPICE does not support time delay T for CCVS $(c.name), ignoring"
-    end
-    # In SPICE, current is sensed through a voltage source
-    # This is a simplified version - full SPICE conversion may need additional voltage source
-    return "H$(c.name) $(c.n3) $(c.n4) V_sense_$(c.name) $(c.g)"
-end
-
 function _get_node_number(c::CurrentControlledVoltageSource, pin::Symbol)
     pin == :n1 && return c.n1
     pin == :n2 && return c.n2

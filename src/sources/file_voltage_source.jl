@@ -170,8 +170,5 @@ function to_qucs_netlist(comp::FileVoltageSource)::String
     return "Vfile:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) File=\"$(actual_file)\" Interpolator=\"$(comp.interpolator)\" Repeat=\"$(repeat_str)\" G=\"$(comp.gain)\" T=\"$(comp.delay)\""
 end
 
-function to_spice_netlist(comp::FileVoltageSource)::String
-    error("FileVoltageSource is not yet supported in SPICE backend")
-end
 
 num_pins(::Type{FileVoltageSource}) = 2

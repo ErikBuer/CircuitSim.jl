@@ -46,14 +46,6 @@ function to_qucs_netlist(c::VoltageControlledVoltageSource)
     return "VCVS:$(c.name) $(qucs_node(c.n1)) $(qucs_node(c.n2)) $(qucs_node(c.n3)) $(qucs_node(c.n4)) $params"
 end
 
-# SPICE netlist format: E<name> <n+> <n-> <nc+> <nc-> <gain>
-function to_spice_netlist(c::VoltageControlledVoltageSource)
-    if c.t > 0.0
-        @warn "SPICE does not support time delay T for VCVS $(c.name), ignoring"
-    end
-    return "E$(c.name) $(c.n3) $(c.n4) $(c.n1) $(c.n2) $(c.g)"
-end
-
 function _get_node_number(c::VoltageControlledVoltageSource, pin::Symbol)
     pin == :n1 && return c.n1
     pin == :n2 && return c.n2

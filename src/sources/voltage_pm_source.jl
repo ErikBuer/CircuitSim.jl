@@ -48,14 +48,6 @@ function to_qucs_netlist(c::VoltagePMSource)
     return "PM_Mod:$(c.name) $(c.nplus) $(c.nminus) $(c.nmod) $params"
 end
 
-# SPICE does not have native PM sources - use behavioral source
-function to_spice_netlist(c::VoltagePMSource)
-    # B-source with PM modulation formula
-    # V = U * sin(2*pi*f*t + phase + m*V(modnode))
-    phase_rad = c.phase * π / 180
-    return "B$(c.name) $(c.nplus) $(c.nminus) V=$(c.u)*sin(2*pi*$(c.f)*time+$(phase_rad)+$(c.m)*V($(c.nmod)))"
-end
-
 function _get_node_number(c::VoltagePMSource, pin::Symbol)
     pin == :nplus && return c.nplus
     pin == :nminus && return c.nminus

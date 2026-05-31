@@ -168,8 +168,4 @@ function to_qucs_netlist(comp::FileCurrentSource)::String
     return "Ifile:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) File=\"$(actual_file)\" Interpolator=\"$(comp.interpolator)\" Repeat=\"$(repeat_str)\" G=\"$(comp.gain)\" T=\"$(comp.delay)\""
 end
 
-function to_spice_netlist(comp::FileCurrentSource)::String
-    error("FileCurrentSource is not yet supported in SPICE backend")
-end
-
 num_pins(::Type{FileCurrentSource}) = 2

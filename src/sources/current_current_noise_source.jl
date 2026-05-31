@@ -56,11 +56,6 @@ function to_qucs_netlist(c::CurrentCurrentNoiseSource)
     return "iinoise:$(c.name) $(c.i1plus) $(c.i1minus) $(c.i2plus) $(c.i2minus) $params"
 end
 
-# SPICE does not have native correlated noise sources
-function to_spice_netlist(c::CurrentCurrentNoiseSource)
-    @warn "SPICE does not support correlated noise sources like iinoise $(c.name)"
-    return "* Correlated noise source $(c.name) not supported in SPICE"
-end
 
 function _get_node_number(c::CurrentCurrentNoiseSource, pin::Symbol)
     pin == :i1plus && return c.i1plus
