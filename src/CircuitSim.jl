@@ -238,14 +238,14 @@ include("components/mutual_inductor.jl")
 include("components/spfile.jl")
 
 # Nonlinear semiconductor devices
-include("devices/diode.jl")
-include("devices/tunnel_diode.jl")
-include("devices/jfet.jl")
-include("devices/diac.jl")
-include("devices/mosfet.jl")
-include("devices/thyristor.jl")
-include("devices/triac.jl")
-include("devices/bjt.jl")
-include("devices/equation_defined.jl")
+include("components/nonlinear_devices/diode.jl")
+include("components/nonlinear_devices/tunnel_diode.jl")
+include("components/nonlinear_devices/jfet.jl")
+include("components/nonlinear_devices/diac.jl")
+include("components/nonlinear_devices/mosfet.jl")
+include("components/nonlinear_devices/thyristor.jl")
+include("components/nonlinear_devices/triac.jl")
+include("components/nonlinear_devices/bjt.jl")
+include("components/nonlinear_devices/equation_defined.jl")
 
 end
