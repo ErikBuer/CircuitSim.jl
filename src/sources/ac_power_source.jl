@@ -44,11 +44,6 @@ function to_qucs_netlist(ps::ACPowerSource)::String
     return netlist
 end
 
-function to_spice_netlist(ps::ACPowerSource)::String
-    # SPICE doesn't have a direct equivalent
-    return ""
-end
-
 function _get_node_number(ps::ACPowerSource, terminal::Symbol)::Int
     if terminal == :nplus
         return ps.nplus

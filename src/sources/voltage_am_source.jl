@@ -48,13 +48,6 @@ function to_qucs_netlist(c::VoltageAMSource)
     return "AM_Mod:$(c.name) $(c.nplus) $(c.nminus) $(c.nmod) $params"
 end
 
-# SPICE does not have native AM sources - use behavioral source
-function to_spice_netlist(c::VoltageAMSource)
-    # B-source with AM modulation formula
-    # V = U * (1 + m * V(modnode)) * sin(2*pi*f*t + phase)
-    phase_rad = c.phase * π / 180
-    return "B$(c.name) $(c.nplus) $(c.nminus) V=$(c.u)*(1+$(c.m)*V($(c.nmod)))*sin(2*pi*$(c.f)*time+$(phase_rad))"
-end
 
 function _get_node_number(c::VoltageAMSource, pin::Symbol)
     pin == :nplus && return c.nplus

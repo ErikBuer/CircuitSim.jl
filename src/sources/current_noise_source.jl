@@ -54,10 +54,6 @@ function to_qucs_netlist(src::CurrentNoiseSource)::String
     return join(parts, " ")
 end
 
-function to_spice_netlist(src::CurrentNoiseSource)::String
-    "I$(src.name) $(src.n1) $(src.n2) DC 0  ; Noise source (SPICE approximation)"
-end
-
 function _get_node_number(src::CurrentNoiseSource, pin::Symbol)::Int
     if pin == :nplus || pin == :n1
         return src.n1

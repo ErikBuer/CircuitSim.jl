@@ -57,12 +57,6 @@ function to_qucs_netlist(c::VoltageVoltageNoiseSource)
     return "vvnoise:$(c.name) $(c.v1plus) $(c.v1minus) $(c.v2plus) $(c.v2minus) $params"
 end
 
-# SPICE does not have native correlated noise sources
-function to_spice_netlist(c::VoltageVoltageNoiseSource)
-    @warn "SPICE does not support correlated noise sources like vvnoise $(c.name)"
-    return "* Correlated noise source $(c.name) not supported in SPICE"
-end
-
 function _get_node_number(c::VoltageVoltageNoiseSource, pin::Symbol)
     pin == :v1plus && return c.v1plus
     pin == :v1minus && return c.v1minus
