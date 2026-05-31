@@ -48,6 +48,7 @@ export FourTerminalTransmissionLine
 export CoupledLine
 export TwistedPair
 export RLCGTransmissionLine
+export TaperedLine
 export CoaxialLine
 export IdealTransformer, MutualInductor
 export SPfile
@@ -214,6 +215,7 @@ include("components/four_terminal_transmission_line.jl")
 include("components/coupled_line.jl")
 include("components/twisted_pair.jl")
 include("components/rlcg_transmission_line.jl")
+include("components/tapered_line.jl")
 include("components/coaxial_line.jl")
 include("components/ideal_transformer.jl")
 include("components/mutual_inductor.jl")
