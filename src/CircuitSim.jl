@@ -35,6 +35,8 @@ export MicrostripCoupled, MicrostripTee, MicrostripCross
 export MicrostripVia, MicrostripRadialStub, MicrostripLange
 export CoplanarOpen
 export COPEN
+export CoplanarShort
+export CSHORT
 
 # Components - Other RF
 export BondWire, SpiralInductor, CircularLoop
@@ -196,6 +198,7 @@ include("components/microstrip_via.jl")
 include("components/microstrip_radial_stub.jl")
 include("components/microstrip_lange.jl")
 include("components/coplanar_open.jl")
+include("components/coplanar_short.jl")
 
 # Other RF components
 include("components/bond_wire.jl")
