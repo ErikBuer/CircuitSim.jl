@@ -42,23 +42,8 @@ mutable struct CoplanarShort <: AbstractMicrostripComponent
         w > 0 || error("w must be > 0 (got $w)")
         s > 0 || error("s must be > 0 (got $s)")
         backside in ["Metal", "Air"] || error("backside must be one of: Metal, Air")
-
         new(String(name), 0, Float64(w), Float64(s), substrate, backside)
     end
-end
-
-function CoplanarShort(name::AbstractString;
-    w::Real=1e-3,
-    s::Real=1e-3,
-    substrate::Substrate,
-    backside::String="Metal"
-)
-    return CoplanarShort(name;
-        w=w,
-        s=s,
-        substrate=substrate.name,
-        backside=backside
-    )
 end
 
 function to_qucs_netlist(comp::CoplanarShort)::String

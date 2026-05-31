@@ -70,26 +70,6 @@ mutable struct MicrostripTee <: AbstractMicrostripTee
     end
 end
 
-function MicrostripTee(name::AbstractString;
-    w1::Real=1e-3,
-    w2::Real=1e-3,
-    w3::Real=2e-3,
-    substrate::Substrate,
-    disp_model::String="Kirschning",
-    model::String="Hammerstad",
-    temp::Real=26.85
-)
-    return MicrostripTee(name;
-        w1=w1,
-        w2=w2,
-        w3=w3,
-        substrate=substrate.name,
-        disp_model=disp_model,
-        model=model,
-        temp=temp
-    )
-end
-
 function to_qucs_netlist(comp::MicrostripTee)::String
     parts = ["MTEE:$(comp.name)"]
     push!(parts, qucs_node(comp.n1))

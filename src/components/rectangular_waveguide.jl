@@ -27,7 +27,7 @@
 
 ```jldoctest
 julia> wg = RectangularWaveguide("WG1")
-RectangularWaveguide("WG1", 0, 0, 0.0286, 0.010160000000000001, 1.5, 1.0, 1.0, 0.0004, 2.2e-8, 26.85, "unspecified")
+RectangularWaveguide("WG1", 0, 0, 0.0286, 0.01016, 1.5, 1.0, 1.0, 0.0004, 2.2e-8, 26.85, "unspecified")
 ```
 """
 mutable struct RectangularWaveguide <: AbstractTransmissionLine

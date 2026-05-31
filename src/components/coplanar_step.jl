@@ -57,22 +57,6 @@ mutable struct CoplanarStep <: AbstractMicrostripComponent
     end
 end
 
-function CoplanarStep(name::AbstractString;
-    w1::Real=1e-3,
-    w2::Real=2e-3,
-    s::Real=4e-3,
-    substrate::Substrate,
-    backside::String="Metal"
-)
-    return CoplanarStep(name;
-        w1=w1,
-        w2=w2,
-        s=s,
-        substrate=substrate.name,
-        backside=backside
-    )
-end
-
 function to_qucs_netlist(comp::CoplanarStep)::String
     parts = ["CSTEP:$(comp.name)"]
     push!(parts, qucs_node(comp.n1))

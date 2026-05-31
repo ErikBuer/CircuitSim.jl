@@ -13,7 +13,7 @@
 - `length_m::Float64`: Physical length in meters (default: 75e-3)
 - `weighting::String`: Profile weighting ("Exponential", "Linear", "Triangular", "Klopfenstein")
 - `gamma_max::Float64`: Maximum ripple for Klopfenstein profile (default: 0.1, must be > 0)
-- `alpha::Float64`: Loss coefficient in linear scale (default: 0.0, must be >= 0)
+- `alpha::Float64`: Loss coefficient in linear scale (default: 1.0, must be > 0)
 - `temp::Float64`: Temperature in °C (default: 26.85)
 
 # Pins
@@ -25,7 +25,7 @@
 
 ```jldoctest
 julia> tl = TaperedLine("TP1")
-TaperedLine("TP1", 0, 0, 50.0, 100.0, 0.075, "Exponential", 0.1, 0.0, 26.85)
+TaperedLine("TP1", 0, 0, 50.0, 100.0, 0.075, "Exponential", 0.1, 1.0, 26.85)
 ```
 """
 mutable struct TaperedLine <: AbstractTransmissionLine
@@ -48,7 +48,7 @@ mutable struct TaperedLine <: AbstractTransmissionLine
         length_m::Real=75e-3,
         weighting::String="Exponential",
         gamma_max::Real=0.1,
-        alpha::Real=0.0,
+        alpha::Real=1.0,
         temp::Real=26.85
     )
         z1 > 0 || error("z1 must be > 0 (got $z1)")
@@ -56,7 +56,7 @@ mutable struct TaperedLine <: AbstractTransmissionLine
         weighting in ["Exponential", "Linear", "Triangular", "Klopfenstein"] ||
             error("weighting must be one of: Exponential, Linear, Triangular, Klopfenstein")
         gamma_max > 0 || error("gamma_max must be > 0 (got $gamma_max)")
-        alpha >= 0 || error("alpha must be >= 0 (got $alpha)")
+        alpha > 0 || error("alpha must be > 0 (got $alpha)")
         temp >= -273.15 || error("temp must be >= -273.15 (got $temp)")
 
         new(String(name), 0, 0,

@@ -45,23 +45,8 @@ mutable struct CoplanarGap <: AbstractMicrostripComponent
         w > 0 || error("w must be > 0 (got $w)")
         g > 0 || error("g must be > 0 (got $g)")
         s > 0 || error("s must be > 0 (got $s)")
-
         new(String(name), 0, 0, Float64(w), Float64(g), substrate, Float64(s))
     end
-end
-
-function CoplanarGap(name::AbstractString;
-    w::Real=1e-3,
-    g::Real=5e-4,
-    substrate::Substrate,
-    s::Real=1e-3
-)
-    return CoplanarGap(name;
-        w=w,
-        g=g,
-        substrate=substrate.name,
-        s=s
-    )
 end
 
 function to_qucs_netlist(comp::CoplanarGap)::String

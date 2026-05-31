@@ -46,25 +46,8 @@ mutable struct CoplanarOpen <: AbstractMicrostripComponent
         s > 0 || error("s must be > 0 (got $s)")
         g > 0 || error("g must be > 0 (got $g)")
         backside in ["Metal", "Air"] || error("backside must be one of: Metal, Air")
-
         new(String(name), 0, Float64(w), Float64(s), Float64(g), substrate, backside)
     end
-end
-
-function CoplanarOpen(name::AbstractString;
-    w::Real=1e-3,
-    s::Real=1e-3,
-    g::Real=5e-3,
-    substrate::Substrate,
-    backside::String="Metal"
-)
-    return CoplanarOpen(name;
-        w=w,
-        s=s,
-        g=g,
-        substrate=substrate.name,
-        backside=backside
-    )
 end
 
 function to_qucs_netlist(comp::CoplanarOpen)::String
