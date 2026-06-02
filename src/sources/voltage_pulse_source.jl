@@ -42,10 +42,10 @@ mutable struct VoltagePulseSource <: AbstractVoltagePulseSource
         tr::Real=1e-9,
         tf::Real=1e-9
     )
-        t1 >= 0 || throw(ArgumentError("Start time must be non-negative"))
-        t2 > t1 || throw(ArgumentError("End time must be greater than start time"))
-        tr > 0 || throw(ArgumentError("Rise time must be positive"))
-        tf > 0 || throw(ArgumentError("Fall time must be positive"))
+        t1 >= 0 || throw(ArgumentError("Start time t1 must be non-negative, got $t1"))
+        t2 >= 0 || throw(ArgumentError("End time t2 must be non-negative, got $t2"))
+        tr > 0 || throw(ArgumentError("Rise time tr must be positive, got $tr"))
+        tf > 0 || throw(ArgumentError("Fall time tf must be positive, got $tf"))
         new(String(name), 0, 0, u1, u2, t1, t2, tr, tf)
     end
 end
@@ -64,7 +64,8 @@ function to_qucs_netlist(src::VoltagePulseSource)::String
 end
 
 function to_spice_netlist(src::VoltagePulseSource)::String
-    "V$(src.name) $(src.n1) $(src.n2) PULSE($(src.u1) $(src.u2) $(src.t1) $(src.tr) $(src.tf) $(src.t2-src.t1-src.tr))"
+    pw = max(0.0, src.t2 - src.t1 - src.tr - src.tf)
+    "V$(src.name) $(src.n1) $(src.n2) PULSE($(src.u1) $(src.u2) $(src.t1) $(src.tr) $(src.tf) $pw)"
 end
 
 function _get_node_number(src::VoltagePulseSource, pin::Symbol)::Int

@@ -36,9 +36,10 @@ mutable struct VoltageNoiseSource <: AbstractVoltageNoiseSource
         c::Real=1.0,
         e::Real=0.0
     )
-        u > 0 || throw(ArgumentError("Noise PSD must be positive"))
-        a >= 0 || throw(ArgumentError("Frequency offset must be non-negative"))
-        c > 0 || throw(ArgumentError("Frequency coefficient must be positive"))
+        u >= 0 || throw(ArgumentError("Noise PSD u must be non-negative, got $u"))
+        a >= 0 || throw(ArgumentError("Frequency offset a must be non-negative, got $a"))
+        c >= 0 || throw(ArgumentError("Frequency coefficient c must be non-negative, got $c"))
+        e >= 0 || throw(ArgumentError("Frequency exponent e must be non-negative, got $e"))
         new(String(name), 0, 0, u, a, c, e)
     end
 end

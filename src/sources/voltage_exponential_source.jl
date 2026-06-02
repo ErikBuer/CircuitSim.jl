@@ -42,10 +42,10 @@ mutable struct VoltageExponentialSource <: AbstractSource
         tr::Real=1e-9,
         tf::Real=1e-9
     )
-        t1 >= 0 || throw(ArgumentError("Rise delay must be non-negative"))
-        t2 > t1 || throw(ArgumentError("Fall delay must be greater than rise delay"))
-        tr > 0 || throw(ArgumentError("Rise time constant must be positive"))
-        tf > 0 || throw(ArgumentError("Fall time constant must be positive"))
+        t1 >= 0 || throw(ArgumentError("Rise delay t1 must be non-negative, got $t1"))
+        t2 >= 0 || throw(ArgumentError("Fall delay t2 must be non-negative, got $t2"))
+        tr > 0 || throw(ArgumentError("Rise time constant tr must be positive, got $tr"))
+        tf > 0 || throw(ArgumentError("Fall time constant tf must be positive, got $tf"))
         new(String(name), 0, 0, u1, u2, t1, t2, tr, tf)
     end
 end

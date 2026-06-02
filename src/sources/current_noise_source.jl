@@ -1,5 +1,5 @@
 """
-    CurrentNoiseSource <: AbstractCurrentSource
+    CurrentNoiseSource <: AbstractCurrentNoiseSource
 
 Current noise source for noise analysis with frequency-dependent PSD.
 
@@ -36,9 +36,10 @@ mutable struct CurrentNoiseSource <: AbstractCurrentNoiseSource
         c::Real=1.0,
         e::Real=0.0
     )
-        i > 0 || throw(ArgumentError("Noise PSD must be positive"))
+        i >= 0 || throw(ArgumentError("Noise PSD must be non-negative"))
         a >= 0 || throw(ArgumentError("Frequency offset must be non-negative"))
-        c > 0 || throw(ArgumentError("Frequency coefficient must be positive"))
+        c >= 0 || throw(ArgumentError("Frequency coefficient must be non-negative"))
+        e >= 0 || throw(ArgumentError("Frequency exponent must be non-negative"))
         new(String(name), 0, 0, i, a, c, e)
     end
 end

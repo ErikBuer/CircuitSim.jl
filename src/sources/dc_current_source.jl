@@ -9,7 +9,7 @@ Current flows from nminus to nplus (into nplus).
 - `name::String`: Component identifier
 - `nplus::Int`: Positive terminal node number
 - `nminus::Int`: Negative terminal node number
-- `current::Real`: DC current in Amperes
+- `current::Real`: DC current in Amperes (default 1e-3)
 
 # Example
 
@@ -26,7 +26,7 @@ mutable struct DCCurrentSource <: AbstractDCCurrentSource
     current::Real
 
     DCCurrentSource(name::AbstractString;
-        current::Real
+        current::Real=1e-3
     ) = new(String(name), 0, 0, current)
 end
 

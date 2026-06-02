@@ -9,7 +9,7 @@ Exponential rise/fall current source for transient analysis.
 - `n1::Int`: Positive terminal node number
 - `n2::Int`: Negative terminal node number
 - `i1::Real`: Initial current level (A)
-- `i2::Real`: Final current level (A)
+- `i2::Real`: Final current level (A, default 1.0)
 - `t1::Real`: Rise delay time (s)
 - `t2::Real`: Fall delay time (s)
 - `tr::Real`: Rise time constant (s, optional, default 1ns)
@@ -18,7 +18,7 @@ Exponential rise/fall current source for transient analysis.
 # Example
 
 ```julia
-isrc = CurrentExponentialSource("Iexp1", i1=0.0, i2=10e-3, t1=1e-9, t2=10e-9)
+isrc = CurrentExponentialSource("Iexp1", i1=0.0, i2=1.0, t1=1e-9, t2=10e-9)
 ```
 """
 mutable struct CurrentExponentialSource <: AbstractSource
@@ -36,7 +36,7 @@ mutable struct CurrentExponentialSource <: AbstractSource
 
     function CurrentExponentialSource(name::AbstractString;
         i1::Real=0.0,
-        i2::Real=1e-3,
+        i2::Real=1.0,
         t1::Real=0.0,
         t2::Real=1e-3,
         tr::Real=1e-9,
