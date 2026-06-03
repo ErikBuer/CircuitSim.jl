@@ -35,10 +35,10 @@ mutable struct VoltageVoltageNoiseSource <: AbstractNoiseSource
     c::Real       # Flicker noise coefficient
     e::Real       # Flicker noise frequency exponent
 
-    function VoltageVoltageNoiseSource(name::String;
+    function VoltageVoltageNoiseSource(name::AbstractString;
         v1::Real=1e-6,
         v2::Real=1e-6,
-        c_corr::Real=0.0,
+        c_corr::Real=0.5,
         a::Real=0.0,
         c::Real=1.0,
         e::Real=0.0
@@ -47,14 +47,17 @@ mutable struct VoltageVoltageNoiseSource <: AbstractNoiseSource
         v1 >= 0 || throw(ArgumentError("Voltage v1 must be non-negative, got $v1"))
         v2 >= 0 || throw(ArgumentError("Voltage v2 must be non-negative, got $v2"))
         -1 <= c_corr <= 1 || throw(ArgumentError("Correlation coefficient c_corr must be between -1 and 1, got $c_corr"))
-        new(name, -1, -1, -1, -1, v1, v2, c_corr, a, c, e)
+        a >= 0 || throw(ArgumentError("Flicker noise exponent a must be non-negative, got $a"))
+        c >= 0 || throw(ArgumentError("Flicker noise coefficient c must be non-negative, got $c"))
+        e >= 0 || throw(ArgumentError("Flicker noise frequency exponent e must be non-negative, got $e"))
+        new(String(name), -1, -1, -1, -1, v1, v2, c_corr, a, c, e)
     end
 end
 
-# Qucsator netlist format: vvnoise:Name Node1+ Node1- Node2+ Node2- v1="..." v2="..." C="..." a="..." c="..." e="..."
+# Qucsator netlist format: VVnoise:Name V1+ V2+ V2- V1- v1="..." v2="..." C="..." a="..." c="..." e="..."
 function to_qucs_netlist(c::VoltageVoltageNoiseSource)
-    params = "v1=\"$(c.v1)\" v2=\"$(c.v2)\" C=\"$(c.c_corr)\" a=\"$(c.a)\" c=\"$(c.c)\" e=\"$(c.e)\""
-    return "vvnoise:$(c.name) $(c.v1plus) $(c.v1minus) $(c.v2plus) $(c.v2minus) $params"
+    params = "v1=\"$(format_value(c.v1))\" v2=\"$(format_value(c.v2))\" C=\"$(format_value(c.c_corr))\" a=\"$(format_value(c.a))\" c=\"$(format_value(c.c))\" e=\"$(format_value(c.e))\""
+    return "VVnoise:$(c.name) $(qucs_node(c.v1plus)) $(qucs_node(c.v2plus)) $(qucs_node(c.v2minus)) $(qucs_node(c.v1minus)) $params"
 end
 
 function _get_node_number(c::VoltageVoltageNoiseSource, pin::Symbol)

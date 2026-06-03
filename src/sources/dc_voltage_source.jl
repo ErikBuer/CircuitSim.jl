@@ -8,7 +8,7 @@ DC voltage source with two terminals.
 - `name::String`: Component identifier
 - `nplus::Int`: Positive terminal node number
 - `nminus::Int`: Negative terminal node number
-- `voltage::Real`: DC voltage in Volts
+- `voltage::Real`: DC voltage in Volts (default 1.0)
 
 # Example
 
@@ -24,7 +24,7 @@ mutable struct DCVoltageSource <: AbstractDCVoltageSource
     voltage::Real
 
     DCVoltageSource(name::AbstractString;
-        voltage::Real
+        voltage::Real=1.0
     ) = new(String(name), 0, 0, voltage)
 end
 

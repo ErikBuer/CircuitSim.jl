@@ -27,23 +27,18 @@ mutable struct VoltageControlledCurrentSource <: AbstractSource
     g::Real  # Transconductance in Siemens (A/V)
     t::Real  # Optional time delay in seconds
 
-    function VoltageControlledCurrentSource(name::String;
+    function VoltageControlledCurrentSource(name::AbstractString;
         g::Real=1.0,
         t::Real=0.0
     )
-        g >= 0 || throw(ArgumentError("Transconductance g must be non-negative, got $g"))
         t >= 0 || throw(ArgumentError("Time delay t must be non-negative, got $t"))
-        new(name, -1, -1, -1, -1, g, t)
+        new(String(name), -1, -1, -1, -1, g, t)
     end
 end
 
 # Qucsator netlist format: VCCS:Name Node1+ Node1- Node2+ Node2- G="..." T="..."
 function to_qucs_netlist(c::VoltageControlledCurrentSource)
-    params = "G=\"$(c.g)\""
-    if c.t > 0.0
-        params *= " T=\"$(c.t)\""
-    end
-    return "VCCS:$(c.name) $(qucs_node(c.n1)) $(qucs_node(c.n2)) $(qucs_node(c.n3)) $(qucs_node(c.n4)) $params"
+    return "VCCS:$(c.name) $(qucs_node(c.n1)) $(qucs_node(c.n2)) $(qucs_node(c.n3)) $(qucs_node(c.n4)) G=\"$(format_value(c.g))\" T=\"$(format_value(c.t))\""
 end
 
 function _get_node_number(c::VoltageControlledCurrentSource, pin::Symbol)

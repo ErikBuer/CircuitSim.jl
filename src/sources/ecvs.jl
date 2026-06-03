@@ -13,7 +13,7 @@ through the `U` property and advanced in time with `Tnext`.
 - `n2::Int`: Negative terminal node number
 - `u::Real`: Control voltage in Volts
 - `interpolator::String`: Interpolation method (`"hold"`, `"linear"`, `"cubic"`)
-- `tnext::Real`: Next control time in seconds
+- `tnext::Real`: Next control time in seconds (no range restriction)
 
 # Example
 
@@ -33,13 +33,13 @@ mutable struct ExternallyControlledVoltageSource <: AbstractSource
 
     function ExternallyControlledVoltageSource(name::AbstractString;
         u::Real=0.0,
-        interpolator::String="linear",
+        interpolator::AbstractString="linear",
         tnext::Real=0.0
     )
-        interpolator in ["hold", "linear", "cubic"] ||
-            error("interpolator must be one of: hold, linear, cubic")
-        tnext >= 0 || error("tnext must be >= 0 (got $tnext)")
-        new(String(name), 0, 0, Float64(u), interpolator, Float64(tnext))
+        interpolator_value = String(interpolator)
+        interpolator_value in ["hold", "linear", "cubic"] ||
+            throw(ArgumentError("interpolator must be one of: hold, linear, cubic"))
+        new(String(name), 0, 0, Float64(u), interpolator_value, Float64(tnext))
     end
 end
 

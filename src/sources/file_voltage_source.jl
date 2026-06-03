@@ -99,7 +99,8 @@ mutable struct FileVoltageSource <: AbstractSource
         gain::Real=1.0,
         delay::Real=0.0
     )
-        @assert interpolator in ["linear", "cubic", "hold"] "interpolator must be 'linear', 'cubic', or 'hold'"
+        interpolator in ["linear", "cubic", "hold"] || throw(ArgumentError("interpolator must be 'linear', 'cubic', or 'hold', got $interpolator"))
+        delay >= 0 || throw(ArgumentError("delay (T) must be >= 0, got $delay"))
         new(String(name), 0, 0, String(file), nothing, nothing, String(interpolator), repeat, gain, delay, :auto)
     end
 
@@ -113,10 +114,11 @@ mutable struct FileVoltageSource <: AbstractSource
         delay::Real=0.0,
         format::Symbol=:csv
     )
-        @assert length(time_vec) == length(voltage_vec) "time and voltage vectors must have same length"
-        @assert length(time_vec) >= 2 "must have at least 2 data points"
-        @assert interpolator in ["linear", "cubic", "hold"] "interpolator must be 'linear', 'cubic', or 'hold'"
-        @assert format in [:csv, :qucs_dataset] "format must be :csv or :qucs_dataset"
+        length(time_vec) == length(voltage_vec) || throw(ArgumentError("time and voltage vectors must have same length"))
+        length(time_vec) >= 2 || throw(ArgumentError("must have at least 2 data points"))
+        interpolator in ["linear", "cubic", "hold"] || throw(ArgumentError("interpolator must be 'linear', 'cubic', or 'hold', got $interpolator"))
+        delay >= 0 || throw(ArgumentError("delay (T) must be >= 0, got $delay"))
+        format in [:csv, :qucs_dataset] || throw(ArgumentError("format must be :csv or :qucs_dataset, got $format"))
         new(String(name), 0, 0, nothing, time_vec, voltage_vec, String(interpolator), repeat, gain, delay, format)
     end
 end
@@ -167,7 +169,7 @@ function to_qucs_netlist(comp::FileVoltageSource)::String
 
     repeat_str = comp.repeat ? "yes" : "no"
 
-    return "Vfile:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) File=\"$(actual_file)\" Interpolator=\"$(comp.interpolator)\" Repeat=\"$(repeat_str)\" G=\"$(comp.gain)\" T=\"$(comp.delay)\""
+    return "Vfile:$(comp.name) $(qucs_node(comp.nplus)) $(qucs_node(comp.nminus)) File=\"$(actual_file)\" Interpolator=\"$(comp.interpolator)\" Repeat=\"$(repeat_str)\" G=\"$(format_value(comp.gain))\" T=\"$(format_value(comp.delay))\""
 end
 
 

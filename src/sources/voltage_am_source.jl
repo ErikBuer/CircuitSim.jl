@@ -29,7 +29,7 @@ mutable struct VoltageAMSource <: AbstractSource
     m::Real      # Modulation index (0 to 1)
     phase::Real  # Phase in degrees (-360 to 360)
 
-    function VoltageAMSource(name::String;
+    function VoltageAMSource(name::AbstractString;
         u::Real=1.0,
         f::Real=1e9,
         m::Real=1.0,
@@ -38,14 +38,14 @@ mutable struct VoltageAMSource <: AbstractSource
         f > 0 || throw(ArgumentError("Frequency f must be positive, got $f"))
         0 <= m <= 1 || throw(ArgumentError("Modulation index m must be between 0 and 1, got $m"))
         -360 <= phase <= 360 || throw(ArgumentError("Phase must be between -360 and 360 degrees, got $phase"))
-        new(name, -1, -1, -1, u, f, m, phase)
+        new(String(name), -1, -1, -1, u, f, m, phase)
     end
 end
 
 # Qucsator netlist format: AM_Mod:Name Node+ Node- ModNode U="..." f="..." m="..." Phase="..."
 function to_qucs_netlist(c::VoltageAMSource)
-    params = "U=\"$(c.u)\" f=\"$(c.f)\" m=\"$(c.m)\" Phase=\"$(c.phase)\""
-    return "AM_Mod:$(c.name) $(c.nplus) $(c.nminus) $(c.nmod) $params"
+    params = "U=\"$(format_value(c.u))\" f=\"$(format_value(c.f))\" m=\"$(format_value(c.m))\" Phase=\"$(format_value(c.phase))\""
+    return "AM_Mod:$(c.name) $(qucs_node(c.nplus)) $(qucs_node(c.nminus)) $(qucs_node(c.nmod)) $params"
 end
 
 

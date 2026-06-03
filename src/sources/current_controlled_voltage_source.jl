@@ -2,6 +2,8 @@
 Current-Controlled Voltage Source (CCVS).
 
 A voltage source whose output voltage is controlled by the current through another element.
+
+`g` follows qucs `CCVS` property `G` and is not sign-restricted.
 """
 mutable struct CurrentControlledVoltageSource <: AbstractSource
     name::String
@@ -14,21 +16,20 @@ mutable struct CurrentControlledVoltageSource <: AbstractSource
     g::Real  # Transresistance in Ohms (V/A)
     t::Real  # Optional time delay in seconds
 
-    function CurrentControlledVoltageSource(name::String;
+    function CurrentControlledVoltageSource(name::AbstractString;
         g::Real=1.0,
         t::Real=0.0
     )
-        g >= 0 || throw(ArgumentError("Transresistance g must be non-negative, got $g"))
         t >= 0 || throw(ArgumentError("Time delay t must be non-negative, got $t"))
-        new(name, -1, -1, -1, -1, g, t)
+        new(String(name), -1, -1, -1, -1, g, t)
     end
 end
 
 # Qucsator netlist format: CCVS:Name Node1+ Node1- Node2+ Node2- G="..." T="..."
 function to_qucs_netlist(c::CurrentControlledVoltageSource)
-    params = "G=\"$(c.g)\""
+    params = "G=\"$(format_value(c.g))\""
     if c.t > 0.0
-        params *= " T=\"$(c.t)\""
+        params *= " T=\"$(format_value(c.t))\""
     end
     return "CCVS:$(c.name) $(qucs_node(c.n1)) $(qucs_node(c.n2)) $(qucs_node(c.n3)) $(qucs_node(c.n4)) $params"
 end

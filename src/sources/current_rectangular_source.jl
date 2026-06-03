@@ -46,7 +46,6 @@ mutable struct CurrentRectangularSource <: AbstractCurrentRectifiedSource
         tl > 0 || throw(ArgumentError("Low time must be positive"))
         tr > 0 || throw(ArgumentError("Rise time must be positive"))
         tf > 0 || throw(ArgumentError("Fall time must be positive"))
-        td >= 0 || throw(ArgumentError("Delay time must be non-negative"))
         new(String(name), 0, 0, i, th, tl, tr, tf, td)
     end
 end
@@ -65,8 +64,12 @@ function to_qucs_netlist(src::CurrentRectangularSource)::String
 end
 
 function to_spice_netlist(src::CurrentRectangularSource)::String
+    # Match qucs Irect behavior where rise/fall are clipped by TH/TL.
+    tr = min(src.tr, src.th)
+    tf = min(src.tf, src.tl)
+    pw = max(0.0, src.th - tr)
     per = src.th + src.tl
-    "I$(src.name) $(src.n1) $(src.n2) PULSE(0 $(src.i) $(src.td) $(src.tr) $(src.tf) $(src.th) $(per))"
+    "I$(src.name) $(src.n1) $(src.n2) PULSE(0 $(src.i) $(src.td) $(tr) $(tf) $(pw) $(per))"
 end
 
 function _get_node_number(src::CurrentRectangularSource, pin::Symbol)::Int

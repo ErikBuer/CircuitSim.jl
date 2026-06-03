@@ -1,12 +1,12 @@
 """
-    CurrentControlledCurrentSource(name::String; g::Real=1.0, t::Real=0.0)
+    CurrentControlledCurrentSource(name::AbstractString; g::Real=1.0, t::Real=0.0)
 
 Create a current-controlled current source with 4-port configuration.
 
 # Arguments
 
-- `name::String`: Component identifier
-- `g::Real`: Current gain (dimensionless) (default 1.0)
+- `name::AbstractString`: Component identifier
+- `g::Real`: Current gain (dimensionless, can be negative) (default 1.0)
 - `t::Real`: Time delay in seconds (default 0.0)
 
 # Fields
@@ -27,21 +27,20 @@ mutable struct CurrentControlledCurrentSource <: AbstractSource
     g::Real  # Current gain (dimensionless)
     t::Real  # Optional time delay in seconds
 
-    function CurrentControlledCurrentSource(name::String;
+    function CurrentControlledCurrentSource(name::AbstractString;
         g::Real=1.0,
         t::Real=0.0
     )
-        g >= 0 || throw(ArgumentError("Current gain g must be non-negative, got $g"))
         t >= 0 || throw(ArgumentError("Time delay t must be non-negative, got $t"))
-        new(name, -1, -1, -1, -1, g, t)
+        new(String(name), -1, -1, -1, -1, g, t)
     end
 end
 
 # Qucsator netlist format: CCCS:Name Node1+ Node1- Node2+ Node2- G="..." T="..."
 function to_qucs_netlist(c::CurrentControlledCurrentSource)
-    params = "G=\"$(c.g)\""
+    params = "G=\"$(format_value(c.g))\""
     if c.t > 0.0
-        params *= " T=\"$(c.t)\""
+        params *= " T=\"$(format_value(c.t))\""
     end
     return "CCCS:$(c.name) $(qucs_node(c.n1)) $(qucs_node(c.n2)) $(qucs_node(c.n3)) $(qucs_node(c.n4)) $params"
 end

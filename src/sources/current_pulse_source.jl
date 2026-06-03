@@ -9,7 +9,7 @@ Current source with pulse waveform for transient analysis.
 - `n1::Int`: Positive terminal node number
 - `n2::Int`: Negative terminal node number
 - `i1::Real`: Initial current level (A)
-- `i2::Real`: Pulsed current level (A)
+- `i2::Real`: Pulsed current level (A, default 1.0)
 - `t1::Real`: Start time of pulse (s)
 - `t2::Real`: End time of pulse (s)
 - `tr::Real`: Rise time (s, optional, default 1ns)
@@ -18,7 +18,7 @@ Current source with pulse waveform for transient analysis.
 # Example
 
 ```julia
-isrc = CurrentPulseSource("Ipulse1", i1=0.0, i2=10e-3, t1=1e-9, t2=10e-9)
+isrc = CurrentPulseSource("Ipulse1", i1=0.0, i2=1.0, t1=1e-9, t2=10e-9)
 ```
 """
 mutable struct CurrentPulseSource <: AbstractSource
@@ -36,7 +36,7 @@ mutable struct CurrentPulseSource <: AbstractSource
 
     function CurrentPulseSource(name::AbstractString;
         i1::Real=0.0,
-        i2::Real=1e-3,
+        i2::Real=1.0,
         t1::Real=0.0,
         t2::Real=1e-3,
         tr::Real=1e-9,
@@ -64,7 +64,8 @@ function to_qucs_netlist(src::CurrentPulseSource)::String
 end
 
 function to_spice_netlist(src::CurrentPulseSource)::String
-    "I$(src.name) $(src.n1) $(src.n2) PULSE($(src.i1) $(src.i2) $(src.t1) $(src.tr) $(src.tf) $(src.t2-src.t1-src.tr))"
+    pulse_width = max(0.0, src.t2 - src.t1 - src.tr - src.tf)
+    "I$(src.name) $(src.n1) $(src.n2) PULSE($(src.i1) $(src.i2) $(src.t1) $(src.tr) $(src.tf) $(pulse_width))"
 end
 
 function _get_node_number(src::CurrentPulseSource, pin::Symbol)::Int

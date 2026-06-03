@@ -48,11 +48,10 @@ mutable struct VoltageRectangularSource <: AbstractVoltageRectifiedSource
         td::Real=0.0
     )
 
-        th > 0 || throw(ArgumentError("High time must be positive"))
-        tl > 0 || throw(ArgumentError("Low time must be positive"))
-        tr > 0 || throw(ArgumentError("Rise time must be positive"))
-        tf > 0 || throw(ArgumentError("Fall time must be positive"))
-        td >= 0 || throw(ArgumentError("Delay time must be non-negative"))
+        th >= 0 || throw(ArgumentError("High time th must be non-negative, got $th"))
+        tl >= 0 || throw(ArgumentError("Low time tl must be non-negative, got $tl"))
+        tr >= 0 || throw(ArgumentError("Rise time tr must be non-negative, got $tr"))
+        tf >= 0 || throw(ArgumentError("Fall time tf must be non-negative, got $tf"))
         new(String(name), 0, 0, u, th, tl, tr, tf, td)
     end
 end
@@ -71,8 +70,11 @@ function to_qucs_netlist(src::VoltageRectangularSource)::String
 end
 
 function to_spice_netlist(src::VoltageRectangularSource)::String
+    tr = min(src.tr, src.th)
+    tf = min(src.tf, src.tl)
+    pw = max(0.0, src.th - tr)
     per = src.th + src.tl
-    "V$(src.name) $(src.n1) $(src.n2) PULSE(0 $(src.u) $(src.td) $(src.tr) $(src.tf) $(src.th) $(per))"
+    "V$(src.name) $(src.n1) $(src.n2) PULSE(0 $(src.u) $(src.td) $tr $tf $pw $per)"
 end
 
 function _get_node_number(src::VoltageRectangularSource, pin::Symbol)::Int
